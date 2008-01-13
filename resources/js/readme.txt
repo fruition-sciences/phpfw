@@ -1,0 +1,1 @@
+Copy the content of this folder under your web app's www/js/core directory.

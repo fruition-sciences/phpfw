@@ -1,0 +1,1 @@
+php -f generator\GenerateBeans.php beans templates ../www/classes/beans/generated
