@@ -17,9 +17,13 @@ class BeanDescriptor {
         $this->addRequiredDefaultValues();
         $this->addBasicFields();
         $this->generateRelsMap();
+        $this->markPrimaryKeyField();
     }
 
     public function fieldConstant($field) {
+        if (isset($field["primaryKey"])) {
+            return "ID";
+        } 
         return strtoupper($field["column"]);
     }
 
@@ -66,6 +70,10 @@ class BeanDescriptor {
             default:
                 throw new Exception("Unknown field type: " . $field["type"]);
         }
+    }
+
+    private function getPrimaryKeyField() {
+        return $this->xml->field[0];
     }
 
     private function capitalizeFirstLetter($name) {
@@ -120,5 +128,14 @@ class BeanDescriptor {
     			$field['defaultValue'] = "false"; 
     		}
     	}
+    }
+
+    /**
+     * Current implementation marks the first field as the 'primaryKey'.
+     * This means that the constant for this field will be named ID. 
+     */
+    private function markPrimaryKeyField() {
+        $primaryKeyField = $this->getPrimaryKeyField();
+        $primaryKeyField['primaryKey'] = 1;
     }
 }
