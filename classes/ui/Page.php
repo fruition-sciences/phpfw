@@ -20,6 +20,8 @@ abstract class Page {
     public $title;
 
     public abstract function getPageTemplate();
+    
+    public abstract function setPageTemplate($templatePath);
 
     function begin($menuItem="") { 
         $this->mode = "begin";
