@@ -10,6 +10,7 @@ class User {
     private $alias;
     private $name;
     private $isAdmin;
+    private $groupId;
 
     public function setId($id) {
         $this->id = $id;
@@ -41,5 +42,13 @@ class User {
 
     public function isAdmin() {
     	return $this->isAdmin;
+    }
+
+    public function setGroupId($groupId) {
+        $this->groupId = $groupId;
+    }
+
+    public function getGroupId() {
+        return $this->groupId;
     }
 }
