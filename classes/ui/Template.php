@@ -7,6 +7,11 @@
 
 class Template {
     private $map = array();
+    private $page;
+
+    public function __construct($page) {
+        $this->page = $page;
+    }
 
     public function set($key, $val) {
         $this->map[$key] = $val;

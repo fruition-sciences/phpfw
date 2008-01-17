@@ -18,8 +18,10 @@ abstract class BaseView implements View {
     protected $template;
     private $components = array(); // Map component_name -> component
     private $ctx;
+    private $page;
 
     public function init($ctx) {
+        $this->ctx = $ctx;
         $this->prepare($ctx);
         $this->initChildComponents($ctx);
     }
@@ -31,18 +33,19 @@ abstract class BaseView implements View {
         $this->ctx = $ctx;
         $templateName = get_class($this) . ".php"; 
         $path = "application/templates/controller/" . $ctx->getControllerAlias() . "/" . $templateName;
-        global $ui, $page, $form, $page, $format;
-        $ui = $ctx->getUIManager();
-        $page = $ui->newPage();
-        $page->ctx = $ctx;
+        global $form, $format;
         $form = $ctx->getForm();
         $format = new Formatter();
+        // Make $page and $ui globals, so they can be accessed by the view template.
+        global $page, $ui;
+        $page = $this->getPage(); 
+        $ui = $this->ctx->getUIManager(); 
         include($path);
     }
 
     protected function getTemplate() {
         if (!isset($this->template)) {
-            $this->template = new Template();
+            $this->template = new Template($this->getPage());
         }
         return $this->template;
     }
@@ -57,6 +60,7 @@ abstract class BaseView implements View {
 
     public function addComponent($name, $component) {
         $this->components[$name] = $component;
+        $component->setParentView($this);
     }
 
     /**
@@ -71,5 +75,16 @@ abstract class BaseView implements View {
         foreach ($this->components as $name=>$component) {
             $component->init($ctx);
         }
+    }
+
+    public function getPage() {
+        if (!$this->page) {
+            // Define page and ui as global, so they'll be available on the template
+            global $ui;
+            $ui = $this->ctx->getUIManager();
+            $this->page = $ui->newPage();
+            $this->page->ctx = $this->ctx;
+        }
+        return $this->page;
     }
 }
