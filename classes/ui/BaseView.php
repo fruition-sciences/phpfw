@@ -80,11 +80,13 @@ abstract class BaseView implements View {
     public function getPage() {
         if (!$this->page) {
             // Define page and ui as global, so they'll be available on the template
-            global $ui;
-            $ui = $this->ctx->getUIManager();
-            $this->page = $ui->newPage();
+            $this->page = $this->newPage();
             $this->page->ctx = $this->ctx;
         }
         return $this->page;
+    }
+    
+    protected function newPage() {
+        return new FSPage();
     }
 }

@@ -9,13 +9,22 @@ class Menu {
     private $xml;
     private $mainMenuId;
     private $subMenuId;
+    private $xmlFile = "application/menu/menu.xml";
 
-    public function __construct() {
+    /**
+     * Construct a new template.
+     *
+     * @param String $xmlFile path to XML file. Relative to include path. 
+     */
+    public function __construct($xmlFile=null) {
+        if ($xmlFile) {
+            $this->xmlFile = $xmlFile;
+        }
         $this->load();
     }
 
     private function load() {
-        $xmlStr = FileUtils::getFileContent("application/menu/menu.xml");
+        $xmlStr = FileUtils::getFileContent($this->xmlFile);
         $this->xml = new SimpleXMLElement($xmlStr);
     }
 

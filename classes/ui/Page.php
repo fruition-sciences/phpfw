@@ -18,10 +18,27 @@ abstract class Page {
     public $onload = array();
     //public $menu;
     public $title;
+    public $pageTemplateFile;
 
-    public abstract function getPageTemplate();
-    
-    public abstract function setPageTemplate($templatePath);
+    public function __construct($pageTemplateFile) {
+        $this->pageTemplateFile = $pageTemplateFile;
+    }
+
+    /**
+     * Return the path to the page template file.
+     */
+    public function getPageTemplate() {
+        return $this->pageTemplateFile;
+    }
+
+    /**
+     * Allows overwriting the path to the page template file.
+     *
+     * @param String $pageTemplate the new path the page template file.
+     */
+    public function setPageTemplate($pageTemplateFile) {
+        $this->pageTemplateFile = $pageTemplateFile;
+    }
 
     function begin($menuItem="") { 
         $this->mode = "begin";
