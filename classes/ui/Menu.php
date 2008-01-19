@@ -62,6 +62,10 @@ class Menu {
         $this->mainMenuId = $mainMenuId;
     }
 
+    public function getMainMenuId() {
+        return $this->mainMenuId;
+    }
+
     public function setSubMenuId($subMenuId) {
         $this->subMenuId = $subMenuId;
     }
