@@ -7,7 +7,7 @@
 class Config {
     private static $theInstance;
     private $xml; // SimpleXML
-    const configFile = "setup/config/config.xml";
+    const configFile = "build/setup/config/config.xml";
 //    private $configArray = array();
 
     private function __construct() {
