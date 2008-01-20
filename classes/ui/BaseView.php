@@ -43,6 +43,10 @@ abstract class BaseView implements View {
         include($path);
     }
 
+    protected function getContext() {
+        return $this->ctx;
+    }
+
     protected function getTemplate() {
         if (!isset($this->template)) {
             $this->template = new Template($this->getPage());
@@ -69,6 +73,10 @@ abstract class BaseView implements View {
      */
     public function component($name) {
         $this->components[$name]->render($this->ctx);
+    }
+
+    public function getComponent($name) {
+        return $this->components[$name];
     }
 
     private function initChildComponents($ctx) {

@@ -19,4 +19,8 @@ abstract class Component extends BaseView {
     public function getPage() {
         return $this->parentView->getPage();
     }
+
+    public function show() {
+        $this->render($this->getContext());
+    }
 }
