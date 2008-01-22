@@ -34,6 +34,9 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanHomeBase {
             case 'id': case 'long': case 'Boolean':
                 $rsMethod = "getLong";
                 break;
+            case 'double':
+                $rsMethod = "getDouble";
+                break;
             case 'String':
                 $rsMethod = "getString";
                 break;

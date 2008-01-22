@@ -11,7 +11,17 @@ echo "<" . "?php";
 
 abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
     const TABLE_NAME = "<?php echo $descriptor->xml['tableName'] ?>";
-    
+
+<?php if (sizeof($descriptor->xml->constant) > 0) { ?>
+    // Constants
+<?php     foreach ($descriptor->xml->constant as $constant) { ?>
+    /**
+     * <?php echo $constant['comment'] ?>.
+     */
+    const <?php echo $constant['name'] ?> = <?php echo $constant['id'] ?>;
+
+<?php     } ?>
+<?php } ?>
     // Columns
 <?php
   foreach ($descriptor->xml->field as $field) {
@@ -158,6 +168,21 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
   }
 ?>
 
+<?php
+  if (sizeof($descriptor->xml->constant) > 0) {
+?>
+    /**
+     * Get the localized label of this constant bean.
+     */
+    public function getLabel() {
+        $key = strtoupper(self::TABLE_NAME) . '_' . $this->constantName;
+        $label = I18nUtil::lookup("constants", $key)->__toString();
+        return $label;
+    }
+
+<?php
+  }
+?>
     public function insert() {
         $db = Transaction::getInstance()->getDB();
         $this->createDate = time();

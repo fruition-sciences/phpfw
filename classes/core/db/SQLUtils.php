@@ -32,6 +32,13 @@ class SQLUtils {
         return $val;
     }
 
+    public static function convertDouble($val) {
+        if ($val == null) {
+            return "null";
+        }
+        return $val;
+    }
+
     public static function convertId($val) {
         if ($val < 0 || $val == null) {
             return "null";

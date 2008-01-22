@@ -62,6 +62,8 @@ class BeanDescriptor {
                 return "SQLUtils::convertLong(\$this->${field['name']})";
             case "id":
                 return "SQLUtils::convertId(\$this->${field['name']})";
+            case "double":
+                return "SQLUtils::convertDouble(\$this->${field['name']})";
             case "Date":
                 return "SQLUtils::convertDate(\$this->${field['name']})";
                 //return "\"'\" . mysql_escape_string(\$this->${field['name']}) . \"'\"";

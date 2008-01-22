@@ -20,6 +20,10 @@ class ResultSet {
         return $this->map[$key];
     }
 
+    public function getDouble($key) { 
+        return $this->map[$key];
+    }
+
     public function getDate($key) {
         return strtotime($this->map[$key]);
     }

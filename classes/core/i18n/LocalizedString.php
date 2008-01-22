@@ -9,6 +9,10 @@ class LocalizedString {
     private $msg;
     private $attributes = array();
 
+    public function __construct($msg) {
+        $this->setMessage($msg);
+    }
+
     public function setMessage($msg) {
         $this->msg = $msg;
     }
