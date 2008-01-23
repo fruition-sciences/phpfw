@@ -11,6 +11,10 @@ echo "<" . "?php";
  */
 
 abstract class <?php echo $descriptor->xml['name'] ?>BeanHomeBase {
+<?php if ($descriptor->xml['cache']) { ?>
+    private static $cache; // Maps id -> <?php echo $descriptor->xml['name'] ?>Bean
+
+<?php } ?>
     public static function find($id) {
         $db = Transaction::getInstance()->getDB();
         $sql = "select * from " . <?php echo $descriptor->xml['name'] ?>Bean::TABLE_NAME .
@@ -20,6 +24,31 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanHomeBase {
         return self::create($rs);
     }
 
+<?php if ($descriptor->xml['cache']) { ?>
+    /**
+     * Returns the bean that has the given primary key.
+     * This method is available only for beans marked with the 'cache' flag.
+     * The 'cache' flag should be used only for beans that represent constants.
+     * 
+     * @param long $id the primary key.
+     */
+    public static function get($id) {
+        self::getAll();
+        return self::$cache[$id];
+    }
+
+    public static function getAll() {
+        if (isset(self::$cache)) {
+            return;
+        }
+        self::$cache = array();
+        $beans = self::findAll();
+        foreach ($beans as $bean) {
+            self::$cache[$bean->getId()] = $bean;
+        }
+    }
+
+<?php } ?>
     public static function create($rs, $alias='') {
         $bean = new <?php echo $descriptor->xml['name'] ?>Bean();
         $prefix = $alias ? "${alias}_" : "";

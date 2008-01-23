@@ -66,6 +66,12 @@ class Form {
         return $control;
     }
 
+    public function hidden($name) {
+        $control = new Hidden($name);
+        $this->registerControl($control);
+        return $control;
+    }
+
     /**
      * Create a new file upload control.
      */

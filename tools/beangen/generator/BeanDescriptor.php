@@ -5,6 +5,8 @@
  *
  */
 
+require_once("classes/utils/StringUtils.php");
+
 class BeanDescriptor {
     private $xmlFile;
     public $xml;
@@ -79,9 +81,7 @@ class BeanDescriptor {
     }
 
     private function capitalizeFirstLetter($name) {
-        $str = "" . $name;
-        $first = strtoupper($str[0]);
-        return $first . substr($str, 1);
+        return StringUtils::capitalizeFirstLetter($name);
     }
 
     /**

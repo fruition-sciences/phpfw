@@ -75,7 +75,7 @@ class StringUtils {
      *
      * @param String $filePath the file path to examine.
      */
-    private function getPathDelimiter($filePath) {
+    private static function getPathDelimiter($filePath) {
         if (stristr($filePath, '\\')) {
             return '\\';
     	}
@@ -91,7 +91,7 @@ class StringUtils {
      * @param   string  $force      Optional. Force a certain unit. B|KB|MB|GB|TB
      * @return  string              The formatted file size
      */
-    public function formatFileSize($bytes, $format = '', $force = '')
+    public static function formatFileSize($bytes, $format = '', $force = '')
     {
         $force = strtoupper($force);
         $defaultFormat = '%01d %s';
@@ -108,5 +108,11 @@ class StringUtils {
             $power = $bytes > 0 ? floor(log($bytes, 1024)) : 0;
  
         return sprintf($format, $bytes / pow(1024, $power), $units[$power]);
+    }
+
+    public static function capitalizeFirstLetter($name) {
+        $str = "" . $name;
+        $first = strtoupper($str[0]);
+        return $first . substr($str, 1);
     }
 }

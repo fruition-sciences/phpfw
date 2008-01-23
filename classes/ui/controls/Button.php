@@ -14,7 +14,7 @@ class Button extends HtmlElement {
     private $onclick = array();
 
     public function __construct($title) {
-        parent::__construct("button", $title);
+        parent::__construct("button");
         $this->title = $title;
         $this->href = Href::current();
     }
@@ -78,5 +78,13 @@ class Button extends HtmlElement {
         $this->onclick[] = $onclick;
         $onclickStr = StringUtils::arrayToString($this->onclick, "; ", true);
         parent::set("onclick", $onclickStr);
+    }
+
+    public function setTitle($title) {
+        $this->title = $title;
+    }
+
+    public function getTitle() {
+        return $this->title;
     }
 }

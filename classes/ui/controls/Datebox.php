@@ -21,7 +21,7 @@ class Datebox extends HtmlElement {
     public function toInput() {
         $buttonName = $this->getButtonName();
         $img = new HtmlElement("img", $buttonName);
-        $img->set('src', Application::getAppRoot() . "js/zpcal/themes/img.gif");
+        $img->set('src', Application::getAppRoot() . "js/core/zpcal/themes/img.gif");
         $img->set('id', $buttonName);
         $img->set('class', 'calendarIcon');
         $script = $this->getCalInitScript();
