@@ -34,6 +34,9 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanHomeBase {
      */
     public static function get($id) {
         self::getAll();
+        if (!isset(self::$cache[$id])) {
+            return null;
+        }
         return self::$cache[$id];
     }
 
