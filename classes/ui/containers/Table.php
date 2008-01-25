@@ -95,7 +95,7 @@ class Table extends HtmlElement {
         $this->noDataMessage = $noDataMessage;
     }
 
-    private function endRowOrHead() {
+    protected function endRowOrHead() {
         if ($this->inHead) {
             echo "</tr>\n";
             $this->inHead = false;
@@ -246,5 +246,9 @@ class Table extends HtmlElement {
         }
         $this->pagingInfo->setOrderByColumn($column);
         $this->pagingInfo->setOrderByAscending($asc);
+    }
+
+    public function getRowCount() {
+        return $this->rowCount;
     }
 }

@@ -22,10 +22,10 @@ class Formatter {
         return date("m/d/Y", $date);
     }
 
-    public function dateStamp($date) {
+    public function dateTime($date) {
         if (!isset($date) || $date == "") {
             return "";
         }
-        return date("Ymd", $date);
+        return date("m/d/Y g:i:s A", $date);
     }
 }

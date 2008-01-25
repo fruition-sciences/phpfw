@@ -12,7 +12,7 @@ require_once("containers/Section.php");
 require_once("ErrorManager.php");
 
 abstract class UI {
-    private $ctx;
+    protected $ctx;
     private $errorManager;
 
     public function __construct($ctx) {
