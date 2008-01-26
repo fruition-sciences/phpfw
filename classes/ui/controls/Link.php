@@ -32,4 +32,8 @@ class Link extends HtmlElement {
     	}
         return parent::__toString();
     }
+
+    public function getHref() {
+        return $this->href;
+    }
 }

@@ -108,7 +108,7 @@ class MenuItem {
     }
 
     public function getHref() {
-        return $this->href;
+        return (string)$this->href;
     }
 
     public function getItems() {

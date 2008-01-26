@@ -28,7 +28,15 @@ abstract class UI {
     }
 
     function link($url, $title = '') {
-        $href = $url ? new Href($url) : null;
+        $href = null;
+        if ($url) {
+            if (get_class($url) == 'Href') {
+                $href = $url;
+            }
+            else {
+                $href = new Href($url);
+            }
+        }
         $link = new Link($href, $title);
         return $link;
     }
