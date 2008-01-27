@@ -6,7 +6,7 @@
  */
 
 class DateConstraint extends Constraint {
-    public function validate($ctx) {
+    public function doValidate($ctx) {
         $value = $ctx->getRequest()->getString($this->getName(), '');
         // Validate only if there is a value
         if (!$value) {

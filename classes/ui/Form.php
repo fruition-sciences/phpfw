@@ -180,12 +180,12 @@ class Form {
         $this->readonly = $readonly;
     }
 
-    public function addConstraint($name, $type) {
-        $constraint = $this->findConstraint($name, $type);
-        if (!$constraint) {
-            $constraint = ConstraintFactory::newConstraint($name, $type);
+    public function addConstraint($name, $type, $forAction=null) {
+        //$constraint = $this->findConstraint($name, $type);
+        //if (!$constraint) {
+            $constraint = ConstraintFactory::newConstraint($name, $type, $forAction);
             $this->constraints[] = $constraint; 
-        }
+        //}
         return $constraint;
     }
 
@@ -207,6 +207,7 @@ class Form {
 
     public function getConstraintsHidden() {
         $hidden = new Hidden("_constraints");
+        // Set the labels on the constraints
         foreach ($this->constraints as $constraint) {
             if ($this->labels[$constraint->getName()]) {
                 $constraint->setLabel($this->labels[$constraint->getName()]);

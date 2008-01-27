@@ -13,7 +13,7 @@ class ConstraintFactory {
     const REQUIRED = "required";
     const DATE = "date";
 
-    public static function newConstraint($name, $type) {
+    public static function newConstraint($name, $type, $forAction=null) {
         if ($type == self::REQUIRED) {
             return new RequiredConstraint($name);
         }

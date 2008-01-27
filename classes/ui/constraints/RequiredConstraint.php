@@ -7,7 +7,7 @@
 
 class RequiredConstraint extends Constraint {
 
-    public function validate($ctx) {
+    public function doValidate($ctx) {
         $value = $ctx->getRequest()->getString($this->getName(), '');
         if ($value == '') {
             $this->addFieldError($ctx, $this->getName(), "The field '" . $this->getLabel() . "' is required");

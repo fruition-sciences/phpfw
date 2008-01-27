@@ -8,8 +8,9 @@
 abstract class Constraint {
     private $name;
     private $label;
+    private $restrictionPair; // name & value
 
-    public function __construct($name) {
+    public function __construct($name, $forAction=null) {
         $this->name = $name;
     }
 
@@ -26,12 +27,45 @@ abstract class Constraint {
     }
 
     /**
-     * Validate that the submission meets this constraint.
+     * Restrict this constraint to be checked only if the URL (or form) contains
+     * a parameter with a given value.
+     *
+     * @param String $paramName parameter name
+     * @param String $paramValue parameter value
+     */
+    public function restrict($paramName, $paramValue) {
+        $this->restrictionPair = array($paramName, $paramValue);
+        return $this;
+    }
+
+    /**
+     * Validate that the submission meets this constraint. 
      * 
      * @param Context ctx the context
      * @return boolean true if validation passed. Otherwise false.
      */
-    public abstract function validate($ctx);
+    public function validate($ctx) {
+        if (!$this->passedRestriction($ctx)) {
+            return false;
+        }
+        return $this->doValidate($ctx);
+    }
+
+    /**
+     * Check if the restriction (if there is one) is met. A restriction consist
+     * of a name-value pair, which are checked against URL (or form) parameters.
+     * If there is no restriction, it is assumed to be met.
+     */
+    private function passedRestriction($ctx) {
+        if (!$this->restrictionPair) {
+            return true;
+        }
+        $paramName = $this->restrictionPair[0];
+        $paramVal = $this->restrictionPair[1];
+        return $ctx->getRequest()->getString($paramName, '') == $paramVal;
+    } 
+
+    public abstract function doValidate($ctx);
 
     /**
      * Get the type of this constraint. The types are defined as constants in
