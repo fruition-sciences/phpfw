@@ -26,6 +26,6 @@ class Formatter {
         if (!isset($date) || $date == "") {
             return "";
         }
-        return date("m/d/Y g:i:s A", $date);
+        return date("m/d/y g:i A", $date);
     }
 }
