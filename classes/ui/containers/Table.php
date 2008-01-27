@@ -106,9 +106,9 @@ class Table extends HtmlElement {
         }
     }
 
-    private function writeNoDataMessage() {
+    protected function writeNoDataMessage() {
         if (isset($this->noDataMessage) && $this->rowCount == 0) {
-            echo "<tr>";
+            echo "<tr class=\"row\">";
             echo "<td colspan=\"20\">$this->noDataMessage</td>";
             echo "</tr>";
         }
