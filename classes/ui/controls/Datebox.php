@@ -40,6 +40,7 @@ class Datebox extends HtmlElement {
         $img->set('id', $buttonName);
         $img->set('class', 'calendarIcon');
         $script = $this->getCalInitScript();
+        $this->getForm()->setCalendarShown();
         return parent::toInput() . "&nbsp;" . $img . $script;
     }
 

@@ -27,6 +27,7 @@ class Form {
     private $constraints = array();
     private $checkboxes = array();
     private $forUpload = false;
+    private $calendarShown = false;
 
     public function textbox($name) {
         $control = new TextBox($name);
@@ -241,5 +242,16 @@ class Form {
 
     public function setForUpload($forUpload) {
         $this->forUpload = $forUpload;
+    }
+
+    /**
+     * Mark that the calendar control is shown.
+     */
+    public function setCalendarShown($calendarShown=true) {
+        $this->calendarShown = $calendarShown;
+    }
+
+    public function isCalendarShown() {
+        return $this->calendarShown;
     }
 }
