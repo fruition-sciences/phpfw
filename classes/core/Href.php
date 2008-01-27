@@ -16,7 +16,8 @@ class Href extends Element {
 
     public static function current() {
         $pathInfo = '/' . Application::getPathInfo();
-        return self::from_url($pathInfo);	
+        $href = self::from_url($pathInfo);
+        return $href;
     }
 
     public static function from_url($url) {
@@ -24,6 +25,7 @@ class Href extends Element {
         if (isset($_SERVER['QUERY_STRING'])) {
             $href->setQuery($_SERVER['QUERY_STRING']);
         }
+        $href->un_set('_ac');
         return $href;
     }
 
