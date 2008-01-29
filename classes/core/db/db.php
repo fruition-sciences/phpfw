@@ -3,12 +3,6 @@
  * Created on Jun 8, 2007
  * Author: Yoni Rosenbaum
  *
- * Copyright � 2007, Zoran Corporation
- * 
- * This software is proprietary to Zoran Corporation and may not be 
- * distributed.
- * 
- * This notice may not be removed or altered from any source distribution.
  */
 
 require_once("SQLException.php");
