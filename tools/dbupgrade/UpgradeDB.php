@@ -36,8 +36,7 @@ class UpgradeDB {
         $db = Transaction::getInstance()->getDB();
         try {
             foreach ($xmlElement->script as $scriptElement) {
-                $scriptFile = "$baseDir/" . $scriptElement['file'];
-                $script = new SQLScript($scriptFile);
+                $script = new SQLScript($baseDir, $scriptElement['file']);
                 if (!$this->scriptWasExecuted($script)) {
                     $this->executeScript($script);
                 }
@@ -56,11 +55,11 @@ class UpgradeDB {
             foreach ($script->getStatements() as $statement) {
                 $db->query($statement->getContent());
             }
-            echo "executed " . $script->getFileName() . "\n";
+            echo "executed " . $script->getFileFullPath() . "\n";
             $this->markScriptExecuted($script);
         }
         catch (SQLException $e) {
-            echo "Error on script " . $script->getFileName() . " in statement starting on line " . $statement->getLineNumber() . "\n";
+            echo "Error on script " . $script->getFileFullPath() . " in statement starting on line " . $statement->getLineNumber() . "\n";
             throw $e;
         }
     }
@@ -72,14 +71,14 @@ class UpgradeDB {
      */
     private function scriptWasExecuted($script) {
         $db = Transaction::getInstance()->getDB();
-        $sql = "select 1 from db_script where path = '" . $script->getFileName() . "'";
+        $sql = "select 1 from db_script where path = '" . $script->getFileRelPath() . "'";
         $db->query($sql);
         return $db->fetch_row() ? true : false; 
     }
 
     private function markScriptExecuted($script) {
         $db = Transaction::getInstance()->getDB();
-        $sql = "insert into db_script (path, create_date) values ('" . $script->getFileName() . "', SYSDATE())";
+        $sql = "insert into db_script (path, create_date) values ('" . $script->getFileRelPath() . "', SYSDATE())";
         $db->query($sql);
     }
 }

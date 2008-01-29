@@ -6,15 +6,21 @@
  */
 
 class SQLScript {
-    private $fileName;
+    private $fileRelPath; // relative path
+    private $fileName; // full path
     private $statements = array(); // list of SQLStatement objects
 
-    public function __construct($fileName) {
-        $this->fileName = $fileName;
+    public function __construct($baseDir, $fileRelPath) {
+        $this->fileName = "$baseDir/" . $fileRelPath;
+        $this->fileRelPath = $fileRelPath;
         $this->readFile();
     }
 
-    public function getFileName() {
+    public function getFileRelPath() {
+        return $this->fileRelPath;
+    }
+
+    public function getFileFullPath() {
         return $this->fileName;
     }
 
