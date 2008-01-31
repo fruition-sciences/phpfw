@@ -53,12 +53,14 @@ class Application {
         } 
         $method = $class->getMethod($methodName);
         $view = $method->invoke($obj, $ctx);
-        $view->init($ctx);
-        if ($ctx->getForm()->hasErrors()) {
-            $ctx->getForm()->setValues($ctx->getAttributes());
+        if (is_a($view, 'View')) {
+            $view->init($ctx);
+            if ($ctx->getForm()->hasErrors()) {
+                $ctx->getForm()->setValues($ctx->getAttributes());
+            }
+            global $form;
+            $view->render($ctx);
         }
-        global $form;
-        $view->render($ctx);
     }
 
     /**
