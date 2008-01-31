@@ -182,11 +182,12 @@ class Form {
     }
 
     public function addConstraint($name, $type, $forAction=null) {
-        //$constraint = $this->findConstraint($name, $type);
-        //if (!$constraint) {
-            $constraint = ConstraintFactory::newConstraint($name, $type, $forAction);
-            $this->constraints[] = $constraint; 
-        //}
+        // Ignore if the form is marked readonly.
+        if ($this->isReadonly()) {
+            return;
+        }
+        $constraint = ConstraintFactory::newConstraint($name, $type, $forAction);
+        $this->constraints[] = $constraint; 
         return $constraint;
     }
 
@@ -196,6 +197,7 @@ class Form {
      *
      * @param String name The field name
      * @param String  type the constraint type
+     * @deprecated seems that we don't really need this method for now... 
      */
     private function findConstraint($name, $type) {
         foreach ($this->constraints as $constraint) {
