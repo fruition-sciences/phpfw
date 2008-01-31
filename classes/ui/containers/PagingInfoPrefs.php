@@ -91,7 +91,7 @@ class PagingInfoPrefs {
     }
 
     /**
-     * Set the provate fields of this object by the values of the given preferences
+     * Set the private fields of this object by the values of the given preferences
      * map.
      * 
      * @param Map $prefs a map containing the preferences.
