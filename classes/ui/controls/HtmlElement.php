@@ -23,6 +23,7 @@ class HtmlElement extends Element {
 
     public function setBody($body) {
         $this->body = $body;
+        return $this;
     }
 
     public function getBody() {
