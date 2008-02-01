@@ -54,7 +54,7 @@ class SqlBuilder {
         $sql = "select " . $this->getColumnsString();
         $sql .= " from " . arrayToString($this->tables, ",");
         if (count($this->conditions) > 0) {
-            $sql .= " where " . arrayToString($this->conditions, " and");
+            $sql .= " where " . arrayToString($this->conditions, " and ");
         }
         if ($this->order) {
             $sql .= " order by " . $this->order;
