@@ -45,4 +45,9 @@ class Checkbox extends HtmlElement {
     	}
         return parent::toInput();
     }
+
+    public function toString() {
+        $this->set('disabled');
+        return $this->toInput();
+    }
 }
