@@ -71,14 +71,23 @@ class HtmlElement extends Element {
 
     public function getElementOpenTag() {
         $html = "<" . $this->type . " ";
-        foreach ($this->atts as $key=>$value) {
-            $html .= $key;
-            if (isset($value)) {
-                $html .= "=\"" . $value . "\" ";
-            }
-        }
+        $html .= $this->getAttributesAsString();
         $html .= ">";
         return $html;
+    }
+
+    private function getAttributesAsString() {
+        $text = "";
+        foreach ($this->atts as $key=>$value) {
+            if ($text) {
+                $text .= " ";
+            }
+            $text .= $key;
+            if (isset($value)) {
+                $text .= "=\"" . $value . "\"";
+            }
+        }
+        return $text;
     }
 
     public function getElementCloseTag() {
