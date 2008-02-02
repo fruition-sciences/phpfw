@@ -53,6 +53,9 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanHomeBase {
 
 <?php } ?>
     public static function create($rs, $alias='') {
+        if (!$rs) {
+            return null;
+        }
         $bean = new <?php echo $descriptor->xml['name'] ?>Bean();
         $prefix = $alias ? "${alias}_" : "";
         self::populate($bean, $rs, $prefix);
