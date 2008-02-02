@@ -21,6 +21,10 @@ class I18nUtil {
         }
         return new LocalizedString($bundle[$stringId]);
     }
+
+    public static function lookupString($stringId) {
+        return self::lookup('strings', $stringId);
+    }
     
     private static function loadResourceBundle($bundleName, $bundlePath) {
         $map = array();
