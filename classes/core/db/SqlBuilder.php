@@ -11,6 +11,7 @@ class SqlBuilder {
     private $conditions = array();
     private $joins = array();
     private $order = "";
+    private $predicate;
 
     public function select($tableName, $alias, $columns) {
         $this->from($tableName, $alias);
@@ -51,7 +52,11 @@ class SqlBuilder {
 
     public function __toString()
     {
-        $sql = "select " . $this->getColumnsString();
+        $sql = "select ";
+        if ($this->predicate) {
+            $sql .= $this->predicate . " ";
+        }
+        $sql .= $this->getColumnsString();
         $sql .= " from " . arrayToString($this->tables, ",");
         if (count($this->conditions) > 0) {
             $sql .= " where " . arrayToString($this->conditions, " and ");
@@ -60,5 +65,23 @@ class SqlBuilder {
             $sql .= " order by " . $this->order;
         }
         return $sql;
+    }
+
+    /**
+     * Set a predicate to be used right after the 'select' statement.
+     * 
+     * @param String $predicate the predicate to use
+     */
+    public function setPredicate($predicate) {
+        $this->predicate = $predicate;
+    }
+
+    /**
+     * Get the predicate that would be used right after the 'select' statemet.
+     * 
+     * @return String the predicate
+     */
+    public function getPredicate() {
+        return $this->predicate;
     }
 }
