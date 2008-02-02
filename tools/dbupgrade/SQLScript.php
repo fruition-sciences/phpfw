@@ -8,12 +8,11 @@
 class SQLScript {
     private $fileRelPath; // relative path
     private $fileName; // full path
-    private $statements = array(); // list of SQLStatement objects
+    private $statements; // list of SQLStatement objects
 
     public function __construct($baseDir, $fileRelPath) {
         $this->fileName = "$baseDir/" . $fileRelPath;
         $this->fileRelPath = $fileRelPath;
-        $this->readFile();
     }
 
     public function getFileRelPath() {
@@ -30,10 +29,17 @@ class SQLScript {
      * @return Array list of SQLStatement objects
      */
     public function getStatements() {
+        if (!$this->statements) {
+            $this->readFile();
+        }
         return $this->statements;
     }
 
     private function readFile() {
+        if (!file_exists($this->fileName)) {
+            throw new FileNotFoundException($this->fileName);
+        }
+        $this->statements = array();
         $content = file_get_contents($this->fileName);
         $statements = split("\\s*;\\s*", $content);
         $i = 0;

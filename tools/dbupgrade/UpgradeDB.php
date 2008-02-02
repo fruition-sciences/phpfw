@@ -9,13 +9,13 @@ require_once("classes/utils/functions.php");
 require_once "SQLScript.php";
 require_once "classes/core/Transaction.php";
 require_once "classes/core/Config.php";
+require_once "classes/exception/FileNotFoundException.php";
 require_once "classes/utils/FileUtils.php";
 
 $upgradeDb = new UpgradeDB();
 if ($upgradeDb->parseArgs()) {
     $upgradeDb->process();
 }
-    
 
 class UpgradeDB {
     private $scriptsXmlFile;
@@ -60,6 +60,10 @@ class UpgradeDB {
         }
         catch (SQLException $e) {
             echo "Error on script " . $script->getFileFullPath() . " in statement starting on line " . $statement->getLineNumber() . "\n";
+            throw $e;
+        }
+        catch (FileNotFoundException $e) {
+            echo "Script file not found: " . $script->getFileFullPath() . "\n";
             throw $e;
         }
     }
