@@ -10,7 +10,7 @@ class Application {
 
     public function service() {
         try {
-            session_name('ipdb');
+            session_name('phpfw');
             session_start();
             $this->includeFiles();
             $this->validate();
