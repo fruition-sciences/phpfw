@@ -39,7 +39,7 @@ class Context {
     }
 
     public function validateConstraints() {
-        $codedConstraints = $this->getRequest()->getString('_constraints', null);
+        $codedConstraints = $this->getRequest()->getString('_constraints', '');
         if (!$codedConstraints) {
             return true;
         }
