@@ -160,9 +160,9 @@ class Form {
         return $this->values[$name];
     }
 
-    public function setValues($map) {
+    public function setValues($map, $prefix="") {
         foreach ($map as $key=>$val) {
-            $this->values[$key] = $val;
+            $this->values[$prefix . $key] = $val;
         }
     }
 
