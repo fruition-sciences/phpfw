@@ -8,6 +8,14 @@
 class Application {
     private $ctx;
 
+    public function init() {
+        $config = Config::getInstance();
+        $errorLog = $config->getString('webapp/logging/errorLog');
+        if ($errorLog) {
+            ini_set('error_log', $errorLog);
+        }
+    }
+
     public function service() {
         try {
             session_name('phpfw');
