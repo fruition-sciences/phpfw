@@ -14,6 +14,7 @@ require_once("classes/core/db/SqlBuilder.php");
 require_once("classes/core/db/SQLUtils.php");
 require_once("classes/exception/IllegalArgumentException.php");
 require_once("classes/exception/FileNotFoundException.php");
+require_once("classes/exception/UndefinedKeyException.php");
 require_once("classes/exception/ConfigurationException.php");
 require_once("classes/core/Transaction.php");
 require_once("classes/core/Context.php");
