@@ -61,6 +61,11 @@ class Button extends HtmlElement {
         return $this;
     }
 
+    public function unsetParam($name) {
+        $this->href->un_set($name);
+        return $this;
+    }
+
     public function __toString()
     {
         $this->setOnClick();
