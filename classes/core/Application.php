@@ -103,8 +103,8 @@ class Application {
 
     private function createContext() {
         $ctx = new Context();
-        if (isset($_SESSION['user'])) {
-            $user = $_SESSION['user'];
+        if ($ctx->getSession()->hasKey('user')) {
+            $user = $ctx->getSession()->get('user');
             $ctx->setUser($user);
         }
         return $ctx;

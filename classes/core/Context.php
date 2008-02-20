@@ -11,11 +11,13 @@ class Context {
     private $controllerAlias;
     private $request;
     private $ui;
+    private $session;
 
     function __construct() {
         $this->form = new Form();
         $this->request = new Request($this);
         $this->ui = $this->newUIManager();
+        $this->session = new DefaultSession();
     }
 
     public function getForm() {
@@ -24,6 +26,10 @@ class Context {
 
     public function getRequest() {
         return $this->request;
+    }
+
+    public function getSession() {
+        return $this->session;
     }
 
     public function getAttributes() {

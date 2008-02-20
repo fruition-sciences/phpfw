@@ -17,6 +17,7 @@ require_once("classes/exception/FileNotFoundException.php");
 require_once("classes/exception/UndefinedKeyException.php");
 require_once("classes/exception/ConfigurationException.php");
 require_once("classes/core/Transaction.php");
+require_once("classes/core/DefaultSession.php");
 require_once("classes/core/Context.php");
 require_once("classes/core/Request.php");
 require_once("classes/core/Controller.php");
