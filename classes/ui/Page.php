@@ -19,6 +19,7 @@ abstract class Page {
     //public $menu;
     public $title;
     public $pageTemplateFile;
+    private $menuItemName;
 
     public function __construct($pageTemplateFile) {
         $this->pageTemplateFile = $pageTemplateFile;
@@ -44,6 +45,7 @@ abstract class Page {
         $this->mode = "begin";
         //$this->menu = new Menu();
         //$this->menu->setMenuSelection($menuItem);
+        $this->menuItemName = $menuItem;
         include($this->getPageTemplate());
     }
 
