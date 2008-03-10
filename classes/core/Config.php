@@ -30,7 +30,7 @@ class Config {
         $xpath = "/config/$name";
         $result = $this->xml->xpath($xpath);
         if (sizeof($result) > 0) {
-            return $result[0];
+            return (string)$result[0];
         }
         if (!isset($defaultVal)) {
             throw new ConfigurationException("Missing configuration value '$name' in " . self::configFile);
