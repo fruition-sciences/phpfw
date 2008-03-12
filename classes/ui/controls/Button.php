@@ -70,6 +70,9 @@ class Button extends HtmlElement {
     {
         $this->setOnClick();
         $this->setBody($this->title);
+        if ($this->getType() != 'button') {
+            $this->set('button', '1');
+        }
         return parent::__toString();
     }
 

@@ -86,6 +86,14 @@ function getFirstButtonChild(element) {
     if (nodes.length > 0) {
         return nodes[0];
     }
+    // Look for 'span' with 'button' attribute.
+    var nodes = element.getElementsByTagName('span');
+    for (var i=0; i<nodes.length; i++) {
+        var node = nodes.item(i);
+        if (node.getAttribute('button')) {
+            return node;
+        }
+    }
     return null;
 }
 
