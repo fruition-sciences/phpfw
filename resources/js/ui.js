@@ -37,7 +37,7 @@ function focusOnFirst() {
 function formKeyPress(e) {
     var key = null;
     var control = null;
-    if (e.which) { // FireFox
+    if (e.target) { // FireFox
         key = e.which;
         control = e.target;
     }
