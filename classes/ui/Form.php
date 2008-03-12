@@ -231,10 +231,11 @@ class Form {
     }
 
     public function begin() {
-    	echo "<form name=\"theForm\" id=\"theForm\"";
+    	echo "<form name=\"theForm\" id=\"theForm\" method=\"post\" action=\".\"" ;
         if ($this->forUpload) {
             echo " enctype=\"multipart/form-data\"";
         }
+        echo " onKeyPress=\"return formKeyPress(event);\"";
         echo ">";
     }
 
