@@ -3,6 +3,8 @@
  * Created on Jul 8, 2007
  * Author: Yoni Rosenbaum
  * 
+ * The main MVC web app.
+ * Loads the controller, executes the proper method, and renders the view.
  */
 
 class Application {
