@@ -13,6 +13,7 @@ abstract class ExecutableApp {
      * @@param Array $args array of arguments.
      */
     public function execute($args) {
+        $this->initLog();
         $this->startTransaction();
         if (!$this->parseArgs($args)) {
             $this->printUsage();
@@ -25,6 +26,16 @@ abstract class ExecutableApp {
     protected abstract function printUsage();
 
     protected abstract function process();
+
+    private function initLog() {
+        $errorLogFileName = get_class($this) . ".log";
+        $config = Config::getInstance();
+        $logDir = $config->getString('logging/logDir'); 
+        if ($logDir) {
+            $logFile = "$logDir/$errorLogFileName";
+            ini_set('error_log', $logFile);
+        }        
+    }
 
     private function startTransaction() {
         $transaction = Transaction::getInstance();

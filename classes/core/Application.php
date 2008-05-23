@@ -12,9 +12,11 @@ class Application {
 
     public function init() {
         $config = Config::getInstance();
-        $errorLog = $config->getString('webapp/logging/errorLog');
-        if ($errorLog) {
-            ini_set('error_log', $errorLog);
+        $logDir = $config->getString('logging/logDir');
+        $errorLogFileName = $config->getString('webapp/logging/errorLogFileName');
+        if ($logDir && $errorLogFileName) {
+            $logFile = "$logDir/$errorLogFileName";
+            ini_set('error_log', $logFile);
         }
     }
 
