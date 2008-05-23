@@ -13,6 +13,7 @@ abstract class ExecutableApp {
      * @@param Array $args array of arguments.
      */
     public function execute($args) {
+        $this->startTransaction();
         if (!$this->parseArgs($args)) {
             $this->printUsage();
         }
@@ -24,4 +25,12 @@ abstract class ExecutableApp {
     protected abstract function printUsage();
 
     protected abstract function process();
+
+    private function startTransaction() {
+        $transaction = Transaction::getInstance();
+        $user = new User();
+        // TODO: set id to root.
+        $user->setId(1);
+        $transaction->setUser($user);
+    }
 }
