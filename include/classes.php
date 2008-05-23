@@ -23,6 +23,7 @@ require_once("classes/core/Request.php");
 require_once("classes/core/Controller.php");
 require_once("classes/core/Config.php");
 require_once("classes/core/Includer.php");
+require_once("classes/core/Logger.php");
 require_once("classes/core/BeanBase.php");
 require_once("classes/ui/BaseView.php");
 require_once("classes/ui/Component.php");
