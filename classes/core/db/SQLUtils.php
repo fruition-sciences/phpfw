@@ -26,21 +26,21 @@ class SQLUtils {
     }
 
     public static function convertLong($val) {
-        if ($val == null) {
+        if ($val === null || $val === "") {
             return "null";
         }
         return $val;
     }
 
     public static function convertDouble($val) {
-        if ($val == null) {
+        if ($val === null || $val === "") {
             return "null";
         }
         return $val;
     }
 
     public static function convertId($val) {
-        if ($val < 0 || $val == null) {
+        if ($val < 0 || $val === null || $val === "") {
             return "null";
         }
         return $val;
