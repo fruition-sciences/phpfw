@@ -13,6 +13,7 @@ require_once("classes/core/db/QueryPager.php");
 require_once("classes/core/db/SqlBuilder.php");
 require_once("classes/core/db/SQLUtils.php");
 require_once("classes/exception/IllegalArgumentException.php");
+require_once("classes/exception/IllegalStateException.php");
 require_once("classes/exception/FileNotFoundException.php");
 require_once("classes/exception/UndefinedKeyException.php");
 require_once("classes/exception/ConfigurationException.php");
