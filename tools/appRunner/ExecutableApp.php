@@ -13,12 +13,15 @@ abstract class ExecutableApp {
      * @@param Array $args array of arguments.
      */
     public function execute($args) {
+        $this->includeFiles();
         $this->initLog();
         $this->startTransaction();
         if (!$this->parseArgs($args)) {
             $this->printUsage();
         }
+        Logger::info("Started");
         $this->process();
+        Logger::info("Completed");
     }
 
     protected abstract function parseArgs();
@@ -43,5 +46,10 @@ abstract class ExecutableApp {
         // TODO: set id to root.
         $user->setId(1);
         $transaction->setUser($user);
+    }
+
+    private function includeFiles() {
+        $includer = new Includer();
+        $includer->includeAll();
     }
 }
