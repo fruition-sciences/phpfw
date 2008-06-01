@@ -57,8 +57,8 @@ abstract class UI {
         return new Table($name, $className, $this->ctx);
     }
 
-    public function newSection($title='') {
-        return new Section($title);
+    public function newSection($title='', $bookmark=null) {
+        return new Section($title, $bookmark);
     }
 }
 

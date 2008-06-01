@@ -8,8 +8,11 @@
 class Section extends HtmlElement {
     private $title;
 
-    public function __construct($title) {
-        parent::__construct("fieldset", "section");
+    public function __construct($title, $bookmark=null) {
+        parent::__construct("fieldset");
+        if ($bookmark) {
+            $this->set("id", $bookmark);
+        }
         $this->title = $title;
     }
 
