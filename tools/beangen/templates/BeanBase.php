@@ -79,10 +79,20 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
 <?php
   foreach ($descriptor->xml->field as $field) {
 ?>
+<?php if ($field["comment"]) { ?>
+    /**
+     * <?php echo wordwrap("Get " . $field["comment"], 73, "\n     * ") ?> 
+     */
+<?php } ?>
     public function <?php echo $descriptor->getterName($field) ?>() {
         return $this-><?php echo $field['name']?>;
     }
 
+<?php if ($field["comment"]) { ?>
+    /**
+     * <?php echo wordwrap("Set " . $field["comment"], 73, "\n     * ") ?> 
+     */
+<?php } ?>
     public function <?php echo $descriptor->setterName($field) ?>($<?php echo $field["name"]?>) {
 <?php
   if ($field["type"] == "Boolean") {
@@ -106,6 +116,7 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
     }
 ?>
     }
+
 <?php
     if (isset($descriptor->oneToOneRelsMap["${fieldName}"])) {
       $rel = $descriptor->oneToOneRelsMap["${fieldName}"];
