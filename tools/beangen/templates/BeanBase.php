@@ -82,6 +82,8 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
 <?php if ($field["comment"]) { ?>
     /**
      * <?php echo wordwrap("Get " . $field["comment"], 73, "\n     * ") ?> 
+     * 
+     * @return <?php echo $field['type']?> 
      */
 <?php } ?>
     public function <?php echo $descriptor->getterName($field) ?>() {
@@ -91,6 +93,8 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
 <?php if ($field["comment"]) { ?>
     /**
      * <?php echo wordwrap("Set " . $field["comment"], 73, "\n     * ") ?> 
+     *
+     * @param <?php echo $field['type']?> $<?php echo $field["name"]?> 
      */
 <?php } ?>
     public function <?php echo $descriptor->setterName($field) ?>($<?php echo $field["name"]?>) {
