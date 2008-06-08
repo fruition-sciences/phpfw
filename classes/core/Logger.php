@@ -16,4 +16,8 @@ class Logger {
         }
         error_log("ERROR: " . $msg);
     }
+
+    public static function debug($msg) {
+        error_log("DEBUG: " . $msg);
+    }
 }
