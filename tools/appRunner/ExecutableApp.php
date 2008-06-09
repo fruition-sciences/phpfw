@@ -20,8 +20,11 @@ abstract class ExecutableApp {
             $this->printUsage();
         }
         Logger::info("Started");
+        $startTime = microtime(true);
         $this->process();
-        Logger::info("Completed");
+        $endTime = microtime(true);
+        $timeDiff = $endTime - $startTime;
+        Logger::info("Completed (" . number_format($timeDiff, 2) . " seconds)");
     }
 
     protected abstract function parseArgs();

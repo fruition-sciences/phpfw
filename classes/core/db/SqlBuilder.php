@@ -12,6 +12,7 @@ class SqlBuilder {
     private $joins = array();
     private $order = "";
     private $predicate;
+    private $limit;
 
     public function select($tableName, $alias, $columns) {
         $this->from($tableName, $alias);
@@ -64,6 +65,9 @@ class SqlBuilder {
         if ($this->order) {
             $sql .= " order by " . $this->order;
         }
+        if ($this->limit) {
+            $sql .= " limit " . $this->limit;
+        }
         return $sql;
     }
 
@@ -83,5 +87,17 @@ class SqlBuilder {
      */
     public function getPredicate() {
         return $this->predicate;
+    }
+
+    /**
+     * Set a limit on the number of returned records (added at the end of the
+     * query).
+     */
+    public function setLimit($limit) {
+        $this->limit = $limit;
+    }
+
+    public function getLimit() {
+        return $this->limit;
     }
 }
