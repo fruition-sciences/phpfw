@@ -49,6 +49,7 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanHomeBase {
         foreach ($beans as $bean) {
             self::$cache[$bean->getId()] = $bean;
         }
+        return array_values(self::$cache);
     }
 
 <?php } ?>
