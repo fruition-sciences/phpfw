@@ -98,4 +98,8 @@ abstract class BaseView implements View {
         $ui = $this->ctx->getUIManager();
         return $ui->newPage();
     }
+    
+    public function __toString() {
+        return get_class($this);
+    }
 }
