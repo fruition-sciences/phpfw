@@ -115,4 +115,15 @@ class StringUtils {
         $first = strtoupper($str[0]);
         return $first . substr($str, 1);
     }
+
+    /**
+     * Tests if a text starts with an given string.
+     *
+     * @param String $haystack text to search within
+     * @param String $needle string to look for
+     * @return bool
+     */
+    public static function startsWith($haystack, $needle){
+        return strpos($haystack, $needle) === 0;
+    }
 }
