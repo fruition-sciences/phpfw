@@ -120,7 +120,7 @@ abstract class ExecutableApp {
                     return false;
                 }
                 Logger::warning("Deleted old lock file from " . date("Y-m-d g:i A", $ctime));
-                echo "Deleted old lock file from " . date("Y-m-d g:i A", $ctime . "\n");
+                echo "Deleted old lock file from " . date("Y-m-d g:i A", $ctime) . "\n";
                 // Try locking again
                 $this->lockFp = @fopen($lockFile, "x");
                 if (!$this->lockFp) {
