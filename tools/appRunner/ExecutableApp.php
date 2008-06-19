@@ -4,9 +4,13 @@
  * Author: Yoni Rosenbaum
  * 
  * Each standalone executable needs to extend this abstract class.
+ * By default, only one ExecutableApp of a kind can be executed at a time. This
+ * concurrency checking is based on lock files.
+ * To allow multiple instances, call setSingleProcess(false).
  */
 
 abstract class ExecutableApp {
+    const LOCK_LENGTH_SECONGS = 60; // 1 hour
     private $singleProcess = true; // boolean. If true, only one instance will be permitted.
     private $lockFp;
 
@@ -103,7 +107,26 @@ abstract class ExecutableApp {
         $lockFile = $this->getLockFile();
         $this->lockFp = @fopen($lockFile, "x");
         if (!$this->lockFp) {
-            return false;
+            // Check if the file is too old
+            $ctime = filectime($lockFile);
+            // If file is older than 2 hours
+            if (time() - $ctime > self::LOCK_LENGTH_SECONGS) {
+                // Try deleting file
+                if (!@unlink($lockFile)) {
+                    // Delete failed.
+                    Logger::warning("Lock file has been locked since " . date("Y-m-d g:i A", $ctime) . " an cannot be removed. Lock file: $lockFile");
+                    return false;
+                }
+                Logger::warning("Deleted old lock file from " . date("Y-m-d g:i A", $ctime));
+                // Try locking again
+                $this->lockFp = @fopen($lockFile, "x");
+                if (!$this->lockFp) {
+                    return false;
+                }
+            }
+            else { // File is not old
+                return false;
+            }
         }
         return true;
     }
