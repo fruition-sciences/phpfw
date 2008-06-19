@@ -157,7 +157,7 @@ abstract class ExecutableApp {
         $lockFile = $this->getLockFile();
         fclose($this->lockFp);
         if (!@unlink($lockFile)) {
-            Logger::wraning("Could not delete lock file $lockFile");
+            Logger::warning("Could not delete lock file $lockFile");
         }
     }
 }
