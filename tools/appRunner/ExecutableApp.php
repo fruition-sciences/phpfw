@@ -10,7 +10,7 @@
  */
 
 abstract class ExecutableApp {
-    const LOCK_LENGTH_SECONGS = 600; // 10 minutes.
+    const LOCK_LENGTH_SECONGS = 7200; // 2 hours.
     private $singleProcess = true; // boolean. If true, only one instance will be permitted.
     private $lockFp;
 
