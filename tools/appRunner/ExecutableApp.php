@@ -10,7 +10,7 @@
  */
 
 abstract class ExecutableApp {
-    const LOCK_LENGTH_SECONGS = 60; // 1 hour
+    const LOCK_LENGTH_SECONGS = 600; // 10 minutes.
     private $singleProcess = true; // boolean. If true, only one instance will be permitted.
     private $lockFp;
 
@@ -29,6 +29,7 @@ abstract class ExecutableApp {
         }
         if (!$this->lockProcess()) {
             Logger::warning("Process locked. Quitting");
+            echo "Process locked. Quitting";
             return;
         }
         Logger::info("Started");
@@ -109,15 +110,17 @@ abstract class ExecutableApp {
         if (!$this->lockFp) {
             // Check if the file is too old
             $ctime = filectime($lockFile);
-            // If file is older than 2 hours
+            // If file is old
             if (time() - $ctime > self::LOCK_LENGTH_SECONGS) {
-                // Try deleting file
+                // Try deleting file. This will fail if the lock is still in use
                 if (!@unlink($lockFile)) {
                     // Delete failed.
                     Logger::warning("Lock file has been locked since " . date("Y-m-d g:i A", $ctime) . " an cannot be removed. Lock file: $lockFile");
+                    echo "Lock file has been locked since " . date("Y-m-d g:i A", $ctime) . " an cannot be removed. Lock file: $lockFile";
                     return false;
                 }
                 Logger::warning("Deleted old lock file from " . date("Y-m-d g:i A", $ctime));
+                echo "Deleted old lock file from " . date("Y-m-d g:i A", $ctime);
                 // Try locking again
                 $this->lockFp = @fopen($lockFile, "x");
                 if (!$this->lockFp) {
@@ -153,6 +156,8 @@ abstract class ExecutableApp {
     private function unlockProcess() {
         $lockFile = $this->getLockFile();
         fclose($this->lockFp);
-        unlink($lockFile);
+        if (!@unlink($lockFile)) {
+            Logger::wraning("Could not delete lock file $lockFile");
+        }
     }
 }
