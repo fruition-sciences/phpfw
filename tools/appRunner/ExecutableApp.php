@@ -29,7 +29,6 @@ abstract class ExecutableApp {
         }
         if (!$this->lockProcess()) {
             Logger::warning("Process locked. Quitting");
-            echo "Process locked. Quitting\n";
             return;
         }
         Logger::info("Started");
@@ -116,11 +115,9 @@ abstract class ExecutableApp {
                 if (!@unlink($lockFile)) {
                     // Delete failed.
                     Logger::warning("Lock file has been locked since " . date("Y-m-d g:i A", $ctime) . " an cannot be removed. Lock file: $lockFile");
-                    echo "Lock file has been locked since " . date("Y-m-d g:i A", $ctime) . " an cannot be removed. Lock file: $lockFile\n";
                     return false;
                 }
                 Logger::warning("Deleted old lock file from " . date("Y-m-d g:i A", $ctime));
-                echo "Deleted old lock file from " . date("Y-m-d g:i A", $ctime) . "\n";
                 // Try locking again
                 $this->lockFp = @fopen($lockFile, "x");
                 if (!$this->lockFp) {
