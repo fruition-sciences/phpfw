@@ -20,4 +20,8 @@ class Logger {
     public static function debug($msg) {
         error_log("DEBUG: " . $msg);
     }
+
+    public static function warning($msg) {
+        error_log("WARNING: " . $msg);
+    }
 }

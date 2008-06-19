@@ -7,10 +7,13 @@
  */
 
 abstract class ExecutableApp {
+    private $singleProcess = true; // boolean. If true, only one instance will be permitted.
+    private $lockFp;
+
     /**
      * Execute this application using the given arguments.
      * 
-     * @@param Array $args array of arguments.
+     * @param Array $args array of arguments.
      */
     public function execute($args) {
         $this->includeFiles();
@@ -18,16 +21,34 @@ abstract class ExecutableApp {
         $this->startTransaction();
         if (!$this->parseArgs($args)) {
             $this->printUsage();
+            return;
+        }
+        if (!$this->lockProcess()) {
+            Logger::warning("Process locked. Quitting");
+            return;
         }
         Logger::info("Started");
         $startTime = microtime(true);
-        $this->process();
+        try {
+            $this->process();
+        }
+        catch (Exception $e) {
+            Logger::error("Exception caught.", $e);
+        }
         $endTime = microtime(true);
         $timeDiff = $endTime - $startTime;
+        $this->unlockProcess();
+        
         Logger::info("Completed (" . number_format($timeDiff, 2) . " seconds)");
     }
 
-    protected abstract function parseArgs();
+    /**
+     * Parse arguments.
+     * 
+     * @param Array $args Array of command line arguments
+     * @return boolean true if the arguements are fine. False otherwise.
+     */
+    protected abstract function parseArgs($args);
 
     protected abstract function printUsage();
 
@@ -54,5 +75,61 @@ abstract class ExecutableApp {
     private function includeFiles() {
         $includer = new Includer();
         $includer->includeAll();
+    }
+
+    /**
+     * Set weather only one process of this script can be executed at a time.
+     * 
+     * @param boolean $singleProcess
+     */
+    public function setSingleProcess($singleProcess) {
+        $this->singleProcess = $singleProcess;
+    }
+
+    /**
+     * If this ExecutableApp requires locking ($sigleProcess=true), the process
+     * will be locked by writing a 'lock' file to the disk. If a lock file
+     * already exists, returns false.
+     * 
+     * @return boolean true if this application doesn't require locking or if
+     *         locking was successful. If locking failed, returns false.
+     */
+    private function lockProcess() {
+        // If this process doesn't require locking, return true.
+        if (!$this->singleProcess) {
+            return true;
+        }
+
+        $lockFile = $this->getLockFile();
+        $this->lockFp = @fopen($lockFile, "x");
+        if (!$this->lockFp) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Get the full path to the lock file. (the file may not exist).
+     * If the directory doesn't exist, this method will create it.
+     * 
+     * @return resource a file handle
+     */
+    private function getLockFile() {
+        $lockDir = Config::getInstance()->getString("properties/storageDir") . "/locks";
+        if (!is_dir($lockDir)) {
+            mkdir($lockDir);
+        } 
+        $lockFileName = get_class($this) . ".lock";
+        $lockFile = "$lockDir/$lockFileName";
+        return $lockFile;
+    }
+
+    /**
+     * Removes the lock file, if one exists. 
+     */
+    private function unlockProcess() {
+        $lockFile = $this->getLockFile();
+        fclose($this->lockFp);
+        unlink($lockFile);
     }
 }
