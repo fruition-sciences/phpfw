@@ -114,7 +114,7 @@ abstract class ExecutableApp {
                 // Try deleting file. This will fail if the lock is still in use
                 if (!@unlink($lockFile)) {
                     // Delete failed.
-                    Logger::warning("Lock file has been locked since " . date("Y-m-d g:i A", $ctime) . " an cannot be removed. Lock file: $lockFile");
+                    Logger::warning("Lock file has been locked since " . date("Y-m-d g:i A", $ctime) . " and cannot be removed. Lock file: $lockFile");
                     return false;
                 }
                 Logger::warning("Deleted old lock file from " . date("Y-m-d g:i A", $ctime));
