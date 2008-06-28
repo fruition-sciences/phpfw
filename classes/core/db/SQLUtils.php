@@ -15,6 +15,7 @@ class SQLUtils {
 
     /**
      * Convert a date (number) to a database date representation (string).
+     * TODO: TIMEZONE
      * 
      * @param long dateTime The date (number)
      */
