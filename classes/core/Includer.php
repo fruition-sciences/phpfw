@@ -34,5 +34,6 @@ class Includer {
                 require_once($path);
             }
         }
+        closedir($dirHandle);
     }
 }
