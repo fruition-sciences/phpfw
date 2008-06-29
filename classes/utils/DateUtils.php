@@ -18,4 +18,35 @@ class DateUtils {
         $hour = $a['hours'];
         return $hour;
     }
+
+    /**
+     * Get a unix timestamp representing 12AM of the given date in the given
+     * timezone.
+     * 
+     * @param long $date unix timestamp.
+     * @param String $timezone time zone code.
+     * @return long unix timestamp
+     */
+    public static function getBeginningOfDay($timestamp, $timezone) {
+        // TODO: TIMEZONE: Use timezone
+        $date = new DateTime(date('c', $timestamp));
+        $date->setTime(0, 0, 0);
+        return $date->format('U');
+    }
+
+    /**
+     * Get a unix timestamp representing 12AM of the next date in the given
+     * timezone.
+     * 
+     * @param long $date unix timestamp.
+     * @param String $timezone time zone code.
+     * @return long unix timestamp
+     */
+    public static function getBeginningOfYesterday($timestamp, $timezone) {
+        // TODO: TIMEZONE: Use timezone
+        $date = new DateTime(date('c', $timestamp));
+        $date->modify('-1 day');
+        $date->setTime(0, 0, 0);
+        return $date->format('U');
+    }
 }

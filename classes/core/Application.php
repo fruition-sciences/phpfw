@@ -21,6 +21,7 @@ class Application {
             $logFile = "$logDir/$errorLogFileName";
             ini_set('error_log', $logFile);
         }
+        //date_default_timezone_set('UTC');
     }
 
     public function service() {
