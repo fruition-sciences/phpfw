@@ -28,4 +28,8 @@ class Formatter {
         }
         return date("m/d/y g:i A", $date);
     }
+
+    public function number($val, $digits) {
+        return sprintf("%.$digits" . "f", $val);
+    }
 }
