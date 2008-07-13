@@ -26,7 +26,7 @@ class PagingInfo {
         return $this->pageNumber;
     }
 
-    public function setRecordsPerPage ($recordsPerPage) {
+    public function setRecordsPerPage($recordsPerPage) {
 	    $this->recordsPerPage = $recordsPerPage;
 	}
 

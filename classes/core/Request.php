@@ -72,10 +72,11 @@ class Request {
     public function getDate($key, $defaultValue=null) { 
         try {
             $str = $this->getString($key);
-            return strtotime($str);
+            $converter = DataConverter::getInstance();
+            return $converter->parseDate($str);
         }
         catch (UndefinedKeyException $e) {
-            if ($defaultValue) {
+            if ($defaultValue !== null) {
                 return $defaultValue;
             }
             throw $e;

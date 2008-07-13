@@ -24,7 +24,7 @@ class Button extends HtmlElement {
         return $this;
     }
 
-    public function set_action($action) {
+    public function setAction($action) {
         $this->href->set("_ac", $action);
         return $this;
     }

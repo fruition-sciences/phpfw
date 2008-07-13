@@ -20,6 +20,7 @@ abstract class ExecutableApp {
      * @param Array $args array of arguments.
      */
     public function execute($args) {
+        date_default_timezone_set('UTC');
         $this->includeFiles();
         $this->initLog();
         $this->startTransaction();
@@ -71,6 +72,8 @@ abstract class ExecutableApp {
     private function startTransaction() {
         $transaction = Transaction::getInstance();
         $user = new User();
+        $timezone = Config::getInstance()->getString("properties/anonymousUserTimezone"); 
+        $user->setTimezone($timezone);
         // TODO: set id to root.
         $user->setId(1);
         $transaction->setUser($user);
@@ -140,7 +143,8 @@ abstract class ExecutableApp {
     private function getLockFile() {
         $lockDir = Config::getInstance()->getString("properties/storageDir") . "/locks";
         if (!is_dir($lockDir)) {
-            mkdir($lockDir);
+            echo "creating $lockDir\n";
+            mkdir($lockDir, true);
         } 
         $lockFileName = get_class($this) . ".lock";
         $lockFile = "$lockDir/$lockFileName";

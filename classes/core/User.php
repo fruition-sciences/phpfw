@@ -6,11 +6,12 @@
  */
 
 class User {
-    private $id; // UserBean.id
+    private $id = -1; // UserBean.id
     private $alias;
     private $name;
     private $isAdmin;
     private $groupId;
+    private $timezone; // String. For example: 'America/Los_Angeles'
 
     public function setId($id) {
         $this->id = $id;
@@ -50,5 +51,17 @@ class User {
 
     public function getGroupId() {
         return $this->groupId;
+    }
+
+    public function setTimezone($timezone) {
+        $this->timezone = $timezone;
+    }
+
+    public function getTimezone() {
+        return $this->timezone;
+    }
+
+    public function isAnonymous() {
+        return $this->id < 0;
     }
 }

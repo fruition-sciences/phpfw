@@ -25,6 +25,7 @@ class ResultSet {
     }
 
     public function getDate($key) {
+        // Assumes that DB and PHP are both in UTC
         return strtotime($this->map[$key]);
     }
 

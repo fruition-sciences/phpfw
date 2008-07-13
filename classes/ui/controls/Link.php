@@ -26,6 +26,11 @@ class Link extends HtmlElement {
         return $this;
     }
 
+    public function setAction($action) {
+        $this->href->set("_ac", $action);
+        return $this;
+    }
+
     public function __toString() {
     	if ($this->href) {
     	    $this->set("href", Context::normalizePath($this->href->__toString()));

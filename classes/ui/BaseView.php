@@ -13,6 +13,7 @@ require_once("classes/ui/Form.php");
 require_once("classes/core/Href.php");
 require_once("classes/ui/controls/Link.php");
 require_once("classes/ui/Formatter.php");
+require_once("classes/ui/DataConverter.php");
 
 abstract class BaseView implements View {
     protected $template;
@@ -35,7 +36,8 @@ abstract class BaseView implements View {
         $path = "application/templates/controller/" . $ctx->getControllerAlias() . "/" . $templateName;
         global $form, $format;
         $form = $ctx->getForm();
-        $format = new Formatter();
+        $timezone = $ctx->getUser()->getTimezone();
+        $format = new Formatter($timezone);
         // Make $page and $ui globals, so they can be accessed by the view template.
         global $page, $ui;
         $page = $this->getPage(); 

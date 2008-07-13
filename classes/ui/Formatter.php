@@ -7,29 +7,70 @@
 
 class Formatter {
     private static $theInstance;
-    
+    private static $timezone; // DateTimeZone object
+
+    /**
+     * Create a new Formatter, for the given time zone.
+     *
+     * @param String $timezoneName For example: 'America/Los_Angeles'
+     */
+    public function Formatter($timezoneName) {
+        $this->timezone = new DateTimeZone($timezoneName);
+    }
+
+    /**
+     * Returns the formatter instance. Creates a new one if doesn't exist yet.
+     * Uses the timezone of the user of the current transaction.
+     */
     public static function getInstance() {
         if (!self::$theInstance) {
-            self::$theInstance = new Formatter();
+            $timezone = Transaction::getInstance()->getUser()->getTimezone();
+            self::$theInstance = new Formatter($timezone);
         }
         return self::$theInstance;
     }
-    
-    public function date($date) {
-        if (!isset($date) || $date == "") {
-            return "";
-        }
-        return date("m/d/Y", $date);
+
+    /**
+     * Format the given timestamp as date.
+     * 
+     * @param long $timestamp unix timestamp
+     * @return String formatted date, of the given timestamp in the timezone set
+     *         for this Formatter object.
+     */
+    public function date($timestamp) {
+        return $this->dateFormat($timestamp, "m/d/y");
     }
 
-    public function dateTime($date) {
-        if (!isset($date) || $date == "") {
+    /**
+     * Format the given timestamp as date & time.
+     * 
+     * @return String formatted date and time, of the given timestamp in the
+     *         timezone set for this Formatter object.
+     */
+    public function dateTime($timestamp) {
+        return $this->dateFormat($timestamp, "m/d/y g:i A");
+    }
+
+    /**
+     * Format the given timestamp using the given format string.
+     * 
+     * @return String formatted date of the given timestamp in the timezone set
+     *         for this Formatter object.
+     */
+    public function dateFormat($timestamp, $formatString) {
+        if (!isset($timestamp) || $timestamp == "") {
             return "";
         }
-        return date("m/d/y g:i A", $date);
+        $date = new DateTime(date('c', $timestamp));
+        $date->setTimezone($this->timezone);
+        return $date->format($formatString);
     }
 
     public function number($val, $digits) {
         return sprintf("%.$digits" . "f", $val);
+    }
+
+    public function getTimeZoneName() {
+        return $this->timezone->getName();
     }
 }

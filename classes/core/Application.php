@@ -21,12 +21,13 @@ class Application {
             $logFile = "$logDir/$errorLogFileName";
             ini_set('error_log', $logFile);
         }
-        //date_default_timezone_set('UTC');
+        date_default_timezone_set('UTC');
     }
 
     public function service() {
         try {
-            session_name('phpfw');
+            $sessionName = 'phpfw' . Config::getInstance()->getString('appRoot');
+            session_name($sessionName);
             session_start();
             $this->includeFiles();
             $this->validate();
@@ -115,7 +116,17 @@ class Application {
             $user = $ctx->getSession()->get('user');
             $ctx->setUser($user);
         }
+        else {
+            $ctx->setUser($this->createAnonymousUser());
+        }
         return $ctx;
+    }
+
+    private function createAnonymousUser() {
+        $user = new User();
+        $timezone = Config::getInstance()->getString("properties/anonymousUserTimezone"); 
+        $user->setTimezone($timezone);
+        return $user;
     }
 
     /**

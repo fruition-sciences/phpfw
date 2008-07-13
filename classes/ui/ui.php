@@ -22,7 +22,7 @@ abstract class UI {
     function button($title, $action=null) {
         $button = new Button($title);
         if (isset($action)) {
-            $button->set_action($action);
+            $button->setAction($action);
         }
         return $button;
     }

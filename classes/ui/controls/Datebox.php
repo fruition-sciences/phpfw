@@ -6,8 +6,8 @@
  */
 
 class Datebox extends HtmlElement {
-    private static $dateFormat = "%m/%d/%Y";
-    private static $dateTimeFormat = "%m/%d/%Y  %I:%M %P";
+    private static $dateFormat = "%m/%d/%y";
+    private static $dateTimeFormat = "%m/%d/%y  %I:%M %P";
 
     private $showTime = false;
 

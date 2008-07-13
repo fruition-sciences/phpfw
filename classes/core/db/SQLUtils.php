@@ -14,8 +14,7 @@ class SQLUtils {
     }
 
     /**
-     * Convert a date (number) to a database date representation (string).
-     * TODO: TIMEZONE
+     * Convert a date (number) to a database date representation (string). 
      * 
      * @param long dateTime The date (number)
      */
@@ -23,6 +22,7 @@ class SQLUtils {
         if ($dateTime == null) {
             return "null";
         }
+        // Note: Assumes that the timezone of PHP is UTC and that the database is in UTC.
         return "'" . date("Y-m-d H:i:s", $dateTime) . "'";
     }
 
