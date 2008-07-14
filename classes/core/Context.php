@@ -97,7 +97,7 @@ class Context {
 
     public function isUserLoggedIn() {
         $user = $this->getUser();
-        return isset($user);
+        return isset($user) && !$user->isAnonymous();
     }
     
 
