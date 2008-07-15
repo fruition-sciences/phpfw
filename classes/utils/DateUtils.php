@@ -78,4 +78,34 @@ class DateUtils {
     public static function getBeginningOfYesterday($timestamp, $timezone) {
         return self::addDays($timestamp, -1, 0, 0, 0, $timezone);
     }
+
+    /**
+     * Calculate time difference between 2 time stamps.
+     * 
+     * @param long $startTime unix timestamp
+     * @param long $endTime (optional) unix timestamp. Default is current time.
+     * @return String string containing hours minutes and seconds.
+     */
+	public static function timeDiff($startTime, $endTime = null) {
+	    $endTime = $endTime ? $endTime : time();
+
+	    if ($endTime > $startTime)
+	    {
+	        $diff = $endTime - $startTime;
+	
+	        $hours = floor($diff/3600);
+	        $diff = $diff % 3600;
+	
+	        $minutes = floor($diff/60);
+	        $diff = $diff % 60;
+	
+	        $seconds = $diff;
+	
+	        return str_pad($hours, 2, '0', STR_PAD_LEFT) . ':' . str_pad($minutes, 2, '0', STR_PAD_LEFT) . ':' . str_pad($seconds, 2, '0', STR_PAD_LEFT);
+	    }
+	    else
+	    {
+	        throw new IllegalArgumentException("Start time should be less than end time");
+	    }
+	}
 }
