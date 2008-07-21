@@ -17,7 +17,7 @@ class DateUtils {
         $date = new DateTime(date('c', $timestamp));
         $tz = new DateTimeZone($timezone);
         $date->setTimezone($tz);
-        return $date->format("g");
+        return $date->format("G");
     }
 
     /**
