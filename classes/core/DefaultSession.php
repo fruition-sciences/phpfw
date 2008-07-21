@@ -25,4 +25,10 @@ class DefaultSession implements Session {
     public function get($key, $defaultValue=null) {
         return $this->hasKey($key) ? $_SESSION[$key] : $defaultValue;
     }
+
+    public function clear() {
+        foreach ($_SESSION as $key=>$value) {
+            $this->un_set($key);
+        } 
+    }
 }

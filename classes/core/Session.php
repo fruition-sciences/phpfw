@@ -36,4 +36,9 @@ interface Session {
      *         is not defined.
      */
     public function get($key, $defaultValue=null);
+
+    /**
+     * Remove all keys/value pairs from the session. 
+     */
+    public function clear();
 }
