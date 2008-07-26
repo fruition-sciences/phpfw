@@ -30,6 +30,7 @@ abstract class ExecutableApp {
         }
         if (!$this->lockProcess()) {
             Logger::warning("Process locked. Quitting");
+            echo "Process locked. Quitting";
             return;
         }
         Logger::info("Started");
@@ -45,6 +46,8 @@ abstract class ExecutableApp {
         $this->unlockProcess();
         
         Logger::info("Completed (" . number_format($timeDiff, 2) . " seconds)");
+        $transaction = Transaction::getInstance();        
+        $transaction->end();
     }
 
     /**

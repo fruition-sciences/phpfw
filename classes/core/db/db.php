@@ -24,20 +24,18 @@ class TheDB {
 
     function sql_connect($sqlserver, $sqluser, $sqlpassword, $database){
         $this->connect_id = mysql_connect($sqlserver, $sqluser, $sqlpassword);
-        if($this->connect_id){
-            if (mysql_select_db($database)){
-                return $this->connect_id;
-            }else{
-                return $this->error();
-            }
-        }else{
+        if (!$this->connect_id) {
             return $this->error();
         }
+        if (mysql_select_db($database)) {
+            return $this->connect_id;
+        }
+        return $this->error();
     }
 
     function error(){
-        if(mysql_error() != ''){
-            echo '<b>MySQL Error</b>: '.mysql_error().'<br/>';
+        if (mysql_error() != '') {
+            Logger::error('MySQL Error:' . mysql_error());
         }
     }
 

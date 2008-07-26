@@ -35,4 +35,8 @@ class Transaction {
     public function setUser($user) {
         $this->user = $user;
     }
+
+    public function end() {
+        $this->db->sql_close();
+    }
 }
