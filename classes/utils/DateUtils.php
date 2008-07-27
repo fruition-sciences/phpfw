@@ -68,14 +68,14 @@ class DateUtils {
     }
 
     /**
-     * Get a unix timestamp representing 12AM of the next date in the given
+     * Get a unix timestamp representing 12AM of the previous date in the given
      * timezone.
      * 
      * @param long $date unix timestamp.
      * @param String $timezone time zone code.
      * @return long unix timestamp
      */
-    public static function getBeginningOfYesterday($timestamp, $timezone) {
+    public static function getBeginningOfPreviousDay($timestamp, $timezone) {
         return self::addDays($timestamp, -1, 0, 0, 0, $timezone);
     }
 
