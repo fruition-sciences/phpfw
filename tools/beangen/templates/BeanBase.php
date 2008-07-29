@@ -274,11 +274,12 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
     }
 
     public function setAttributes($map, $prefix='') {
+        $converter = DataConverter::getInstance();
 <?php
   foreach ($descriptor->xml->field as $field) {
         $constant = "\$map[\$prefix . self::" . $descriptor->fieldConstant($field) . "]";
         if ($field['type'] == 'Date') {
-            $parsedConstant = "strtotime($constant)";
+            $parsedConstant = "\$converter->parseDate($constant)";
         }
         else {
             $parsedConstant = $constant;
