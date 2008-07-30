@@ -106,5 +106,10 @@ class HtmlElement extends Element {
 
     public function getType() {
         return $this->type;
-    } 
+    }
+
+    public function confirm($msg) {
+        $this->set("onclick", "if (!confirm('$msg')) return false");
+        return $this;
+    }
 }

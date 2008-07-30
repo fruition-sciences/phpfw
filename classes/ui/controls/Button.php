@@ -34,11 +34,6 @@ class Button extends HtmlElement {
         return $this;
     }
 
-    public function confirm($msg) {
-        $this->set("onclick", "if (!confirm('$msg')) return false");
-        return $this;
-    }
-
     /**
      * Override to deal with known events, such as 'onclick', so that they are
      * concatenated and not overwritten.
