@@ -112,4 +112,9 @@ class HtmlElement extends Element {
         $this->set("onclick", "if (!confirm('$msg')) return false");
         return $this;
     }
+
+    public function setTooltip($text) {
+        $this->set('title', $text);
+        return $this;
+    }
 }
