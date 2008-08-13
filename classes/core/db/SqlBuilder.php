@@ -11,6 +11,7 @@ class SqlBuilder {
     private $conditions = array();
     private $joins = array();
     private $order = "";
+    private $group = "";
     private $predicate;
     private $limit;
 
@@ -47,6 +48,10 @@ class SqlBuilder {
         $this->order = $order;
     }
 
+    public function groupBy($group) {
+        $this->group = $group;
+    }
+
     public function getColumnsString() {
         return arrayToString($this->columns, ",");
     }
@@ -61,6 +66,9 @@ class SqlBuilder {
         $sql .= " from " . arrayToString($this->tables, ",");
         if (count($this->conditions) > 0) {
             $sql .= " where " . arrayToString($this->conditions, " and ");
+        }
+        if ($this->group) {
+            $sql .= " group by " . $this->group;
         }
         if ($this->order) {
             $sql .= " order by " . $this->order;
