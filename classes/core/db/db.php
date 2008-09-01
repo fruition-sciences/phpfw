@@ -12,6 +12,7 @@ require_once("QueryPager.php");
 class TheDB {
     private $connect_id;
     private $paging;
+    private $debugOn;
 
     function __construct() {
         $dbHost = Config::getInstance()->getString("database/host");
@@ -19,6 +20,7 @@ class TheDB {
         $dbPassword = Config::getInstance()->getString("database/password");
         $dbDatabaseName = Config::getInstance()->getString("database/dbName");
         $this->sql_connect($dbHost, $dbUserName, $dbPassword, $dbDatabaseName);
+        $this->debugOn = Config::getInstance()->getBoolean('database/debug', false);
     }
 
 
@@ -43,10 +45,16 @@ class TheDB {
         $this->paging = $paging;
         if ($query != NULL) {
             $queryPager = new QueryPager($query, $paging);
+            $startTime = microtime(true);
             $this->query_result = mysql_query($queryPager->getQuery(), $this->connect_id);
+            $endTime = microtime(true);
             if(!$this->query_result){
                 throw new SQLException(mysql_error() . "\nSQL: " . $query . "\n");
             } else{
+                if ($this->debugOn) {
+                    $timeDiff = $endTime - $startTime;
+                    Logger::debug("SQL: $query\nCompleted in " . number_format($timeDiff, 2) . " seconds.");
+                }
                 return $this->query_result;
             }
         }else{
