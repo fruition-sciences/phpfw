@@ -33,6 +33,7 @@ abstract class ExecutableApp {
             echo "Process locked. Quitting";
             return;
         }
+        $this->init();
         Logger::info("Started");
         $startTime = microtime(true);
         try {
@@ -59,6 +60,12 @@ abstract class ExecutableApp {
     protected abstract function parseArgs($args);
 
     protected abstract function printUsage();
+
+    /**
+     * Overwrite to put any initialization code.
+     */
+    protected function init() {
+    }
 
     protected abstract function process();
 
