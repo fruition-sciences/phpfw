@@ -21,6 +21,7 @@ abstract class Page {
     public $title;
     public $pageTemplateFile;
     private $menuItemName;
+    private $attributes = array();
 
     public function __construct($pageTemplateFile) {
         $this->pageTemplateFile = $pageTemplateFile;
@@ -42,7 +43,7 @@ abstract class Page {
         $this->pageTemplateFile = $pageTemplateFile;
     }
 
-    function begin($menuItem="") { 
+    function begin($menuItem="") {
         $this->mode = "begin";
         //$this->menu = new Menu();
         //$this->menu->setMenuSelection($menuItem);
@@ -85,6 +86,17 @@ abstract class Page {
 
     public function getTitle() {
         return $this->title;
+    }
+
+    public function set($key, $value) {
+        $this->attributes[$key] = $value;
+    }
+
+    public function get($key) {
+        if (isset($this->attributes[$key])) {
+            return $this->attributes[$key];
+        }
+        return null;
     }
 }
 
