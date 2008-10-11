@@ -2,7 +2,7 @@
 /*
  * Created on Jun 22, 2007
  * Author: Yoni Rosenbaum
- * 
+ *
  */
 
 require_once("controls/Checkbox.php");
@@ -80,7 +80,7 @@ class Form {
         $control = new FileUpload($name);
         $this->registerControl($control);
         return $control;
-    }   
+    }
 
     public function registerControl($control) {
         $control->setForm($this);
@@ -89,7 +89,7 @@ class Form {
 
     public function label($name, $title) {
         $this->labels[$name] = $this->removeEndColon($title);
-        $span = new HtmlElement("span");
+        $span = new HtmlElement("label");
         $span->setBody($title);
         if (isset($this->field_errors[$name])) {
             $styleClass = "error";
@@ -132,7 +132,7 @@ class Form {
     public function getError($index) {
         $errorCode = $this->errors[$index];
         $errorStr = $this->errorCodes[$errorCode];
-        return $errorStr; 
+        return $errorStr;
     }
 
     /**
@@ -187,7 +187,7 @@ class Form {
             return;
         }
         $constraint = ConstraintFactory::newConstraint($name, $type, $forAction);
-        $this->constraints[] = $constraint; 
+        $this->constraints[] = $constraint;
         return $constraint;
     }
 
@@ -197,7 +197,7 @@ class Form {
      *
      * @param String name The field name
      * @param String  type the constraint type
-     * @deprecated seems that we don't really need this method for now... 
+     * @deprecated seems that we don't really need this method for now...
      */
     private function findConstraint($name, $type) {
         foreach ($this->constraints as $constraint) {
