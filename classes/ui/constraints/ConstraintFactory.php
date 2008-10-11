@@ -2,7 +2,7 @@
 /*
  * Created on Oct 12, 2007
  * Author: Yoni Rosenbaum
- * 
+ *
  */
 
 require_once("Constraint.php");
@@ -15,10 +15,10 @@ class ConstraintFactory {
 
     public static function newConstraint($name, $type, $forAction=null) {
         if ($type == self::REQUIRED) {
-            return new RequiredConstraint($name);
+            return new RequiredConstraint($name, $forAction);
         }
         if ($type == self::DATE) {
-            return new DateConstraint($name);
+            return new DateConstraint($name, $forAction);
         }
         throw new Exception("Unknown constraint type: " . $type);
     }

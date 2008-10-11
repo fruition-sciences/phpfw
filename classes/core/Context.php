@@ -2,7 +2,7 @@
 /*
  * Created on Jul 8, 2007
  * Author: Yoni Rosenbaum
- * 
+ *
  */
 
 class Context {
@@ -36,10 +36,16 @@ class Context {
         return $this->request->getAttributes();
     }
 
-    public function actionIs($actionName) {
+    /**
+     * Check if the given action is the action of the context.
+     *
+     * @param String $actionName the action name to check
+     * @param boolean $allowErrors if false (default), returns false if there are any errors.
+     */
+    public function actionIs($actionName, $allowErrors=false) {
         $action = $this->getRequest()->getString('_ac', '');
         if ($action === $actionName) {
-            return !$this->form->hasErrors();
+            return $allowErrors ? true : !$this->form->hasErrors();
         }
         return false;
     }
@@ -53,7 +59,7 @@ class Context {
         $ok = true;
         foreach ($constraints as $constraint) {
             $ok = $constraint->validate($this) && $ok;
-        } 
+        }
         return $ok;
     }
 
@@ -99,7 +105,7 @@ class Context {
         $user = $this->getUser();
         return isset($user) && !$user->isAnonymous();
     }
-    
+
 
     private function newUIManager() {
         $config = Config::getInstance();
