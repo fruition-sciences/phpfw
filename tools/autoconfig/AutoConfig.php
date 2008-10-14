@@ -2,7 +2,7 @@
 /*
  * Created on Jan 18, 2008
  * Author: Yoni Rosenbaum
- * 
+ *
  */
 
 class AutoConfig {
@@ -35,6 +35,7 @@ class AutoConfig {
 // Main
 if ($argc != 4) {
     echo "missing params\n";
+    exit(1);
 }
 
 $autoconfig = new AutoConfig($argv[1]);
