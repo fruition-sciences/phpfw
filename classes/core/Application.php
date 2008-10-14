@@ -2,7 +2,7 @@
 /*
  * Created on Jul 8, 2007
  * Author: Yoni Rosenbaum
- * 
+ *
  * The main MVC web app.
  * Loads the controller, executes the proper method, and renders the view.
  */
@@ -14,7 +14,7 @@ class Application {
         $config = Config::getInstance();
         $logDir = $config->getString('logging/logDir');
         if (!is_dir($logDir)) {
-            mkdir($logDir);
+            mkdir($logDir, null, true);
         }
         $errorLogFileName = $config->getString('webapp/logging/errorLogFileName');
         if ($logDir && $errorLogFileName) {
@@ -54,7 +54,7 @@ class Application {
         $ctx = $this->getContext();
         $transaction = Transaction::getInstance();
         $transaction->setUser($ctx->getUser());
-        $pathInfo = self::getPathInfo(); 
+        $pathInfo = self::getPathInfo();
         $tokens = explode('/', $pathInfo);
         if (sizeof($tokens) < 2 || $tokens[1] === '') {
             $defaultUrl = $this->getDefaultUrl();
@@ -67,7 +67,7 @@ class Application {
         $obj = $class->newInstance();
         if (!$this->checkAccess($class, $obj, $ctx)) {
             return;
-        } 
+        }
         $method = $class->getMethod($methodName);
         $view = $method->invoke($obj, $ctx);
         if (is_a($view, 'View')) {
@@ -124,7 +124,7 @@ class Application {
 
     private function createAnonymousUser() {
         $user = new User();
-        $timezone = Config::getInstance()->getString("properties/anonymousUserTimezone"); 
+        $timezone = Config::getInstance()->getString("properties/anonymousUserTimezone");
         $user->setTimezone($timezone);
         return $user;
     }
@@ -154,7 +154,7 @@ class Application {
             if ($alias == $controllerEntry['alias']) {
                 $className = (string)$controllerEntry['class'];
                 return $className;
-            } 
+            }
         }
         throw new IllegalArgumentException("Unknown alias - " . $alias);
     }
