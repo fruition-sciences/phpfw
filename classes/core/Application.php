@@ -87,7 +87,7 @@ class Application {
      */
     public static function getPathInfo() {
         $appRoot = self::getAppRoot();
-        $path = $_SERVER['PHP_SELF'];
+        $path = isset($_SERVER['SCRIPT_URL']) ? $_SERVER['SCRIPT_URL'] : $_SERVER['PHP_SELF'];
         $pathInfo = substr($path, strlen($appRoot));
         if (beginsWith($pathInfo, '/')) {
             $pathInfo = substr($pathInfo, 1);
