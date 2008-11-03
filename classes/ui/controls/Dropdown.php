@@ -2,7 +2,7 @@
 /*
  * Created on Jun 22, 2007
  * Author: Yoni Rosenbaum
- * 
+ *
  */
 
 class Dropdown extends HtmlElement {
@@ -24,7 +24,7 @@ class Dropdown extends HtmlElement {
     /**
      * Set a link to be shown instead of the regular title in readonly mode.
      * The title to this link will be set as the option name.
-     * 
+     *
      * @param Link $readonlyLink the link to show in readonly mode.
      */
     public function setReadonlyLink($readonlyLink) {
@@ -36,7 +36,7 @@ class Dropdown extends HtmlElement {
         $this->setBody($this->options_as_string());
         return parent::__toString();
     }
-    
+
     public function toString() {
     	for ($i = 0; $i < sizeof($this->options); $i++) {
     		if ($this->options[$i]->get("value") == $this->value) {
@@ -68,6 +68,7 @@ class Dropdown extends HtmlElement {
      */
     public function setValue($value) {
         $this->value = $value;
+        return $this;
     }
 }
 
@@ -89,6 +90,9 @@ class Dropdown_Option extends HtmlElement {
         $v = $this->get('value');
         if ($v == $value) {
             $this->set('selected');
+        }
+        else {
+            $this->un_set('selected');
         }
         return $this->__toString();
     }
