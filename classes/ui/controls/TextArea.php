@@ -2,7 +2,7 @@
 /*
  * Created on Jul 14, 2007
  * Author: Yoni Rosenbaum
- * 
+ *
  */
 
 class TextArea extends HTMLElement {
@@ -14,6 +14,7 @@ class TextArea extends HTMLElement {
 
     public function setValue($value) {
         $this->setBody($value);
+        return $this;
     }
 
     public function toString() {
