@@ -154,7 +154,7 @@ abstract class ExecutableApp {
         $lockDir = Config::getInstance()->getString("properties/storageDir") . "/locks";
         if (!is_dir($lockDir)) {
             echo "creating $lockDir\n";
-            mkdir($lockDir, 755, true);
+            mkdir($lockDir, 0777, true);
         }
         $lockFileName = get_class($this) . ".lock";
         $lockFile = "$lockDir/$lockFileName";
