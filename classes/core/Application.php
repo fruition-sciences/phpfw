@@ -14,7 +14,7 @@ class Application {
         $config = Config::getInstance();
         $logDir = $config->getString('logging/logDir');
         if (!is_dir($logDir)) {
-            mkdir($logDir, null, true);
+            mkdir($logDir, 755, true);
         }
         $errorLogFileName = $config->getString('webapp/logging/errorLogFileName');
         if ($logDir && $errorLogFileName) {

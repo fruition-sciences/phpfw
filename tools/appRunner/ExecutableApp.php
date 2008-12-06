@@ -2,7 +2,7 @@
 /*
  * Created on May 21, 2008
  * Author: Yoni Rosenbaum
- * 
+ *
  * Each standalone executable needs to extend this abstract class.
  * By default, only one ExecutableApp of a kind can be executed at a time. This
  * concurrency checking is based on lock files.
@@ -16,7 +16,7 @@ abstract class ExecutableApp {
 
     /**
      * Execute this application using the given arguments.
-     * 
+     *
      * @param Array $args array of arguments.
      */
     public function execute($args) {
@@ -45,15 +45,15 @@ abstract class ExecutableApp {
         $endTime = microtime(true);
         $timeDiff = $endTime - $startTime;
         $this->unlockProcess();
-        
+
         Logger::info("Completed (" . number_format($timeDiff, 2) . " seconds)");
-        $transaction = Transaction::getInstance();        
+        $transaction = Transaction::getInstance();
         $transaction->end();
     }
 
     /**
      * Parse arguments.
-     * 
+     *
      * @param Array $args Array of command line arguments
      * @return boolean true if the arguements are fine. False otherwise.
      */
@@ -72,17 +72,17 @@ abstract class ExecutableApp {
     private function initLog() {
         $errorLogFileName = get_class($this) . ".log";
         $config = Config::getInstance();
-        $logDir = $config->getString('logging/logDir'); 
+        $logDir = $config->getString('logging/logDir');
         if ($logDir) {
             $logFile = "$logDir/$errorLogFileName";
             ini_set('error_log', $logFile);
-        }        
+        }
     }
 
     private function startTransaction() {
         $transaction = Transaction::getInstance();
         $user = new User();
-        $timezone = Config::getInstance()->getString("properties/anonymousUserTimezone"); 
+        $timezone = Config::getInstance()->getString("properties/anonymousUserTimezone");
         $user->setTimezone($timezone);
         // TODO: set id to root.
         $user->setId(1);
@@ -96,7 +96,7 @@ abstract class ExecutableApp {
 
     /**
      * Set weather only one process of this script can be executed at a time.
-     * 
+     *
      * @param boolean $singleProcess
      */
     public function setSingleProcess($singleProcess) {
@@ -107,7 +107,7 @@ abstract class ExecutableApp {
      * If this ExecutableApp requires locking ($sigleProcess=true), the process
      * will be locked by writing a 'lock' file to the disk. If a lock file
      * already exists, returns false.
-     * 
+     *
      * @return boolean true if this application doesn't require locking or if
      *         locking was successful. If locking failed, returns false.
      */
@@ -147,22 +147,22 @@ abstract class ExecutableApp {
     /**
      * Get the full path to the lock file. (the file may not exist).
      * If the directory doesn't exist, this method will create it.
-     * 
+     *
      * @return resource a file handle
      */
     private function getLockFile() {
         $lockDir = Config::getInstance()->getString("properties/storageDir") . "/locks";
         if (!is_dir($lockDir)) {
             echo "creating $lockDir\n";
-            mkdir($lockDir, true);
-        } 
+            mkdir($lockDir, 755, true);
+        }
         $lockFileName = get_class($this) . ".lock";
         $lockFile = "$lockDir/$lockFileName";
         return $lockFile;
     }
 
     /**
-     * Removes the lock file, if one exists. 
+     * Removes the lock file, if one exists.
      */
     private function unlockProcess() {
         $lockFile = $this->getLockFile();
