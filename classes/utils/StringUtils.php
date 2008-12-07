@@ -2,13 +2,14 @@
 /*
  * Created on Jul 21, 2007
  * Author: Yoni Rosenbaum
- * 
+ *
  */
 
 class StringUtils {
     /**
      * Construct a string containing the elements of the given array, dilimited
      * by the given delimiter.
+     * Note: The php function implode can be used instead.
      *
      * @param array $a array
      * @param String $delimiter the delimiter to use between each 2 items
@@ -55,7 +56,7 @@ class StringUtils {
             if ($proposedNewPath != "") {
                 $proposedNewPath = $delimiter . $proposedNewPath;
             }
-            $proposedNewPath = $tokens[$i] . $proposedNewPath; 
+            $proposedNewPath = $tokens[$i] . $proposedNewPath;
             if (strlen($proposedNewPath) <= $permittedLength) {
                 // Adding the token did not exceed the limit
                 $newPath = $proposedNewPath;
@@ -97,16 +98,16 @@ class StringUtils {
         $defaultFormat = '%01d %s';
         if (strlen($format) == 0)
             $format = $defaultFormat;
- 
+
         $bytes = max(0, (int) $bytes);
- 
+
         $units = array('B', 'KB', 'MB', 'GB', 'TB', 'PB');
- 
+
         $power = array_search($force, $units);
- 
+
         if ($power === false)
             $power = $bytes > 0 ? floor(log($bytes, 1024)) : 0;
- 
+
         return sprintf($format, $bytes / pow(1024, $power), $units[$power]);
     }
 
