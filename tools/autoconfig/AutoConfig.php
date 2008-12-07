@@ -48,22 +48,60 @@ class AutoConfig {
                 return $this->printUsage("Invalid argument: $arg");
             }
         }
+        return $this->validateVars();
+    }
+
+    private function validateVars() {
+        if (!$this->templateFile && !$this->templateDir) {
+            return $this->printUsage("Either -tf or -td must be used");
+        }
+        if (!$this->outputDir) {
+            return $this->printUsage("The -o flag is missing");
+        }
+        if (!$this->outputDir) {
+            return $this->propertiesFile("The -p flag is missing");
+        }
         return true;
     }
 
     public function process() {
+        // Include the properties file, to make $props available as a global var
         require($this->propertiesFile);
-        $template = 'global $props; ?>' . file_get_contents($this->templateFile);
-        $processedTemplate = $this->processTemplate($template);
+        if ($this->templateFile) {
+            $this->processTemplateFile($this->templateFile);
+        }
+        else {
+            $this->processTemplateDir($this->templateDir);
+        }
+    }
+
+    private function processTemplateDir($templateDir) {
+        $dirHandle = @opendir($templateDir);
+        if (!$dirHandle) {
+            return;
+        }
+        while (false !== ($file = readdir($dirHandle))) {
+            $path = "$templateDir/$file";
+            if (!is_file($path)) {
+                continue;
+            }
+            $this->processTemplateFile($path);
+        }
+        closedir($dirHandle);
+    }
+
+    private function processTemplateFile($templateFile) {
+        $template = 'global $props; ?>' . file_get_contents($templateFile);
+        $processedTemplate = $this->processTemplateContent($template);
         if (!file_exists($this->outputDir)) {
             mkdir($this->outputDir, 0777, true);
         }
-        $outFile = $this->outputDir . "/" . basename($this->templateFile);
+        $outFile = $this->outputDir . "/" . basename($templateFile);
         file_put_contents($outFile, $processedTemplate);
         print "Wrote file " . $outFile . "\n";
     }
 
-    private function processTemplate($template) {
+    private function processTemplateContent($template) {
         ob_start();
         eval($template);
         $buffer = ob_get_contents();
