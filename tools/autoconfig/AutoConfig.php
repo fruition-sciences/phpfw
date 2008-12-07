@@ -52,7 +52,7 @@ class AutoConfig {
     }
 
     public function process() {
-        include($this->propertiesFile);
+        require($this->propertiesFile);
         $template = 'global $props; ?>' . file_get_contents($this->templateFile);
         $processedTemplate = $this->processTemplate($template);
         if (!file_exists($this->outputDir)) {
