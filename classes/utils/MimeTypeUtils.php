@@ -266,7 +266,7 @@ class MimeTypeUtils {
         "map" => "application/x-navimap",
         "mar" => "text/plain",
         "mbd" => "application/mbedlet",
-        "mc$" => "application/x-magic-cap-package-1.0",
+#        "mc$" => "application/x-magic-cap-package-1.0",
         "mcd" => "application/mcad",
         "mcd" => "application/x-mathcad",
         "mcf" => "image/vasa",
