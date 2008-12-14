@@ -2,7 +2,7 @@
 /*
  * Created on Jul 8, 2007
  * Author: Yoni Rosenbaum
- * 
+ *
  */
 
 require_once("classes/ui/View.php");
@@ -12,6 +12,7 @@ require_once("classes/ui/ui.php");
 require_once("classes/ui/Form.php");
 require_once("classes/core/Href.php");
 require_once("classes/ui/controls/Link.php");
+require_once("classes/ui/DateTime.php");
 require_once("classes/ui/Formatter.php");
 require_once("classes/ui/DataConverter.php");
 
@@ -32,7 +33,7 @@ abstract class BaseView implements View {
 
     public function render($ctx) {
         $this->ctx = $ctx;
-        $templateName = get_class($this) . ".php"; 
+        $templateName = get_class($this) . ".php";
         $path = "application/templates/controller/" . $ctx->getControllerAlias() . "/" . $templateName;
         global $form, $format;
         $form = $ctx->getForm();
@@ -40,8 +41,8 @@ abstract class BaseView implements View {
         $format = new Formatter($timezone);
         // Make $page and $ui globals, so they can be accessed by the view template.
         global $page, $ui;
-        $page = $this->getPage(); 
-        $ui = $this->ctx->getUIManager(); 
+        $page = $this->getPage();
+        $ui = $this->ctx->getUIManager();
         include($path);
     }
 
@@ -100,7 +101,7 @@ abstract class BaseView implements View {
         $ui = $this->ctx->getUIManager();
         return $ui->newPage();
     }
-    
+
     public function __toString() {
         return get_class($this);
     }
