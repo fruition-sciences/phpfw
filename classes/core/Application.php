@@ -9,6 +9,7 @@
 
 class Application {
     private $ctx;
+    private $sessionName;
 
     public function init() {
         $config = Config::getInstance();
@@ -22,12 +23,12 @@ class Application {
             ini_set('error_log', $logFile);
         }
         date_default_timezone_set('UTC');
+        $this->sessionName = 'phpfw' . Config::getInstance()->getString('appRoot');
     }
 
     public function service() {
         try {
-            $sessionName = 'phpfw' . Config::getInstance()->getString('appRoot');
-            session_name($sessionName);
+            session_name($this->sessionName);
             session_start();
             $this->includeFiles();
             $this->validate();
@@ -172,5 +173,15 @@ class Application {
     private function includeFiles() {
         $includer = new Includer();
         $includer->includeAll();
+    }
+
+    /**
+     * Allow overwriting the session name. If not called, session name is
+     * constructed based on the application name (taken from config).
+     *
+     * @param String $sessionName session name to use
+     */
+    public function setSessionName($sessionName) {
+        $this->sessionName = $sessionName;
     }
 }
