@@ -14,7 +14,14 @@ class Dropdown extends HtmlElement {
         parent::__construct("select", $name);
     }
 
+    /**
+     * @deprecated use addOption
+     */
     public function add_option($name, $value=null) {
+        return $this->addOption($name, $value);
+    }
+
+    public function addOption($name, $value=null) {
         $option = new Dropdown_Option($name, $value);
         $option->setForm($this->getForm());
         $this->options[] = $option;
