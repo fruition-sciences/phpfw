@@ -2,7 +2,7 @@
 /*
  * Created on Jun 22, 2007
  * Author: Yoni Rosenbaum
- * 
+ *
  */
 
 require_once("HtmlElement.php");
@@ -20,7 +20,12 @@ class Button extends HtmlElement {
     }
 
     public function setUrl($url) {
-        $this->href = new Href($url);
+        if (get_class($url) == 'Href') {
+            $this->href = $url;
+        }
+        else {
+            $this->href = new Href($url);
+        }
         return $this;
     }
 
