@@ -28,6 +28,22 @@ class StringUtils {
     }
 
     /**
+     * Join array elements with a string. Ignores null elements.
+     *
+     * @param String $glue the delimiter
+     * @param Array $pieces the array
+     */
+    public static function implodeIgnoreNull($glue, $pieces) {
+        $newArray = array();
+        foreach ($pieces as $item) {
+            if ($item !== null) {
+                $newArray[] = $item;
+            }
+        }
+        return implode($glue, $newArray);
+    }
+
+    /**
      * Truncate the given file path (for presentation purposes) so that it's no
      * longer than the given length.
      * Current implementation truncates the beginning of the path, replacing it
