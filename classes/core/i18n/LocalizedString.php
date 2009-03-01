@@ -2,7 +2,7 @@
 /*
  * Created on Jul 14, 2007
  * Author: Yoni Rosenbaum
- * 
+ *
  */
 
 class LocalizedString {
@@ -22,6 +22,21 @@ class LocalizedString {
     }
 
     public function __toString() {
-        return $this->msg;
+        return $this->substituteVars();
+    }
+
+    /**
+     * Substitute variables within the 'msg' with values of the 'attributes' map.
+     * Variable exmaple: ${test}.
+     *
+     * @return String the message, where matching were replaced with their values.
+     */
+    private function substituteVars() {
+        $resultMsg = $this->msg;
+        foreach ($this->attributes as $key => $val) {
+            $search = '${'. $key . '}';
+            $resultMsg = str_replace($search, $val, $resultMsg);
+        }
+        return $resultMsg;
     }
 }
