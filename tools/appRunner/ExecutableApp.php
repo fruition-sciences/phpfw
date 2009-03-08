@@ -118,6 +118,9 @@ abstract class ExecutableApp {
         }
 
         $lockFile = $this->getLockFile();
+        if (!$lockFile) {
+            return false;
+        }
         $this->lockFp = @fopen($lockFile, "x");
         if (!$this->lockFp) {
             // Check if the file is too old
@@ -154,7 +157,12 @@ abstract class ExecutableApp {
         $lockDir = Config::getInstance()->getString("properties/storageDir") . "/locks";
         if (!is_dir($lockDir)) {
             echo "creating $lockDir\n";
-            mkdir($lockDir, 0777, true);
+            $result = mkdir($lockDir, 0777, true);
+            if (!$result) {
+                Logger::error("Failed to create locks dir $lockDir");
+                echo "Lock dir creation failed. See log for details.\n";
+                return null;
+            }
         }
         $lockFileName = get_class($this) . ".lock";
         $lockFile = "$lockDir/$lockFileName";

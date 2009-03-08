@@ -38,4 +38,11 @@ function arrayToString($a, $delimiter) {
     }
     return $str;
 }
+
+function log_pre($message) {
+		echo "<pre>";
+		var_dump($message);
+		echo "</pre>";
+}
+
 ?>

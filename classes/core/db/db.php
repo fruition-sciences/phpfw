@@ -46,6 +46,9 @@ class TheDB {
         if ($query != NULL) {
             $queryPager = new QueryPager($query, $paging);
             $startTime = microtime(true);
+            if ($this->debugOn) {
+                Logger::debug("SQL: $query");
+            }
             $this->query_result = mysql_query($queryPager->getQuery(), $this->connect_id);
             $endTime = microtime(true);
             if(!$this->query_result){
@@ -53,7 +56,7 @@ class TheDB {
             } else{
                 if ($this->debugOn) {
                     $timeDiff = $endTime - $startTime;
-                    Logger::debug("SQL: $query\nCompleted in " . number_format($timeDiff, 2) . " seconds.");
+                    Logger::debug("Query completed in " . number_format($timeDiff, 2) . " seconds.");
                 }
                 return $this->query_result;
             }
@@ -91,7 +94,7 @@ class TheDB {
      * Get the number of rows in the previous query that got executed.
      * This returns the total number of rows even if the query included
      * a 'limit' and thus retreived only a subset of the totel rows.
-     * 
+     *
      * @return long the total number of rows in the previous query that was
      *         executed.
      */
@@ -114,7 +117,7 @@ class TheDB {
             return new ResultSet($return);
         }
     }
-        
+
     function get_last_id() {
         return mysql_insert_id();
     }
@@ -136,6 +139,6 @@ class TheDB {
         if($this->connect_id){
             return mysql_close($this->connect_id);
         }
-    }   
+    }
 }
 ?>

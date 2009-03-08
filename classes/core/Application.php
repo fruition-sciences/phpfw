@@ -58,7 +58,7 @@ class Application {
         $pathInfo = self::getPathInfo();
         $tokens = explode('/', $pathInfo);
         if (sizeof($tokens) < 2 || $tokens[1] === '') {
-            $defaultUrl = $this->getDefaultUrl();
+            $defaultUrl = $ctx->getUIManager()->getDefaultURL();
             $ctx->redirect($defaultUrl);
         }
         $controllerName = $this->controllerNameFromAlias($tokens[0]);
@@ -158,16 +158,6 @@ class Application {
             }
         }
         throw new IllegalArgumentException("Unknown alias - " . $alias);
-    }
-
-    private function getDefaultUrl() {
-        $config = Config::getInstance();
-        $result = $config->get('webapp/defaultURL');
-        if (sizeof($result) != 1) {
-            throw new ConfigurationException("The entry webapp/defaultURL is missing in configuration file.");
-        }
-        $url = $result[0];
-        return $url;
     }
 
     private function includeFiles() {

@@ -2,7 +2,7 @@
 /*
  * Created on Jun 16, 2007
  * Author: Yoni Rosenbaum
- * 
+ *
  */
 
 require_once("controls/Button.php");
@@ -17,7 +17,7 @@ abstract class UI {
 
     public function __construct($ctx) {
         $this->ctx = $ctx;
-    }   
+    }
 
     function button($title, $action=null) {
         $button = new Button($title);
@@ -59,6 +59,16 @@ abstract class UI {
 
     public function newSection($title='', $bookmark=null) {
         return new Section($title, $bookmark);
+    }
+
+    public function getDefaultURL() {
+        $config = Config::getInstance();
+        $result = $config->get('webapp/defaultURL');
+        if (sizeof($result) != 1) {
+            throw new ConfigurationException("The entry webapp/defaultURL is missing in configuration file.");
+        }
+        $url = $result[0];
+        return $url;
     }
 }
 

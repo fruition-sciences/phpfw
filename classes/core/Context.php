@@ -77,7 +77,7 @@ class Context {
     }
 
     public static function normalizePath($path) {
-    	return beginsWith($path, "/") ? Application::getAppRoot() . substr($path, 1) : $path;
+        return beginsWith($path, "/") ? Application::getAppRoot() . substr($path, 1) : $path;
     }
 
     public function getUIManager() {
@@ -108,7 +108,6 @@ class Context {
         $user = $this->getUser();
         return isset($user) && !$user->isAnonymous();
     }
-
 
     private function newUIManager() {
         $config = Config::getInstance();

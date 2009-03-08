@@ -2,10 +2,10 @@
 /*
  * Created on May 21, 2008
  * Author: Yoni Rosenbaum
- * 
+ *
  * Runs a class that extends ExecutableApp.
  * This script is called by the run.php script, which defines the proper include
- * path. 
+ * path.
  */
 
 require_once("include/classes.php");
@@ -64,10 +64,9 @@ class AppRunner {
         if (endsWith($arg, "/")) {
             throw new IllegalArgumentException("Invalid class name: $arg");
         }
-        if (endsWith($arg, ".php")) {
-            $arg = substr($arg, 0, sizeof($this->appFile) - 4);
-        }
-        
+        // Remove file extension
+        $arg = preg_replace('/.php$/', '', $arg);
+
         $pos = strrpos($arg, '/');
         if ($pos === false) {
             $this->appClass = $arg;

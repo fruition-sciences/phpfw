@@ -2,7 +2,7 @@
 /*
  * Created on Jul 20, 2007
  * Author: Yoni Rosenbaum
- * 
+ *
  */
 
 
@@ -12,12 +12,12 @@ class Transaction {
     static private $theInstance;
     private $db;
     private $user;
-    
+
     private function __construct() {
         $this->db = new TheDB();
     }
 
-    public function getInstance() {
+    public static function getInstance() {
         if (!isset(self::$theInstance)) {
             self::$theInstance = new Transaction();
         }

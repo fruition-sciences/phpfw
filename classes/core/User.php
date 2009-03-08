@@ -53,6 +53,7 @@ class User {
         return $this->groupId;
     }
 
+
     public function setTimezone($timezone) {
         $this->timezone = $timezone;
     }
@@ -64,4 +65,5 @@ class User {
     public function isAnonymous() {
         return $this->id < 0;
     }
+
 }

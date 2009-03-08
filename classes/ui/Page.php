@@ -9,6 +9,7 @@ require_once("BreadCrumbs.php");
 require_once("classes/utils/StringUtils.php");
 require_once("classes/utils/DateUtils.php");
 require_once("classes/utils/FileUtils.php");
+require_once("classes/utils/BeanUtils.php");
 require_once("classes/ui/Menu.php");
 
 abstract class Page {
@@ -17,6 +18,7 @@ abstract class Page {
     private $noMenu = false;
     public $ctx;
     public $onload = array();
+    public $onunload = array();
     //public $menu;
     public $title;
     public $pageTemplateFile;
@@ -75,8 +77,17 @@ abstract class Page {
         $this->onload[] = $event;
     }
 
+    public function addOnUnLoad($event) {
+        $this->onunload[] = $event;
+    }
+
     public function getOnloadValue() {
         $text = StringUtils::arrayToString($this->onload, ";", true);
+        return $text;
+    }
+
+    public function getOnUnloadValue() {
+        $text = StringUtils::arrayToString($this->onunload, ";", true);
         return $text;
     }
 
