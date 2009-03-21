@@ -25,7 +25,7 @@ class BeanDescriptor {
     public function fieldConstant($field) {
         if (isset($field["primaryKey"])) {
             return "ID";
-        } 
+        }
         return strtoupper($field["column"]);
     }
 
@@ -53,6 +53,10 @@ class BeanDescriptor {
 
     public function setterName($field) {
         return "set" . $this->capitalizeFirstLetter($field["name"]);
+    }
+
+    public function loaderName($field) {
+        return "load" . $this->capitalizeFirstLetter($field["name"]);
     }
 
     public function escapedField($field) {
@@ -127,14 +131,14 @@ class BeanDescriptor {
     private function addRequiredDefaultValues() {
     	foreach ($this->xml->field as $field) {
     		if ($field['type'] == "Boolean" && !isset($field['defaultValue'])) {
-    			$field['defaultValue'] = "false"; 
+    			$field['defaultValue'] = "false";
     		}
     	}
     }
 
     /**
      * Current implementation marks the first field as the 'primaryKey'.
-     * This means that the constant for this field will be named ID. 
+     * This means that the constant for this field will be named ID.
      */
     private function markPrimaryKeyField() {
         $primaryKeyField = $this->getPrimaryKeyField();

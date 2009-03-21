@@ -125,23 +125,34 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
     if (isset($descriptor->oneToOneRelsMap["${fieldName}"])) {
       $rel = $descriptor->oneToOneRelsMap["${fieldName}"];
 ?>
-
     /**
-	 * Get the relationship field <?php echo $rel["name"]?>.
-	 */
+     * Get the relationship field '<?php echo $rel["name"]?>'.
+     */
     public function <?php echo $descriptor->getterName($rel) ?>() {
         return $this-><?php echo $rel["name"]?>;
     }
 
     /**
-	 * Set the relationship field <?php echo $rel["name"]?>.
-	 * This also sets the field <?php echo $rel["foreignKey"]?> according to its primary key.
-	 *
-	 * @param <?php echo $rel["name"]?> <?php echo $rel["refType"]?> 
-	 */
+     * Set the relationship field '<?php echo $rel["name"]?>'.
+     * This also sets the field <?php echo $rel["foreignKey"]?> according to its primary key.
+     *
+     * @param <?php echo $rel["refType"]?> 
+     */
     public function <?php echo $descriptor->setterName($rel) ?>($<?php echo $rel["name"]?>) {
         $this-><?php echo $rel["name"]?> = $<?php echo $rel["name"]?>;
         $this-><?php echo $rel["foreignKey"]?> = $<?php echo $rel["name"]?>->getId();
+    }
+
+    /**
+     * Load the relationship field '<?php echo $rel["name"]?>' if it's not loaded yet.
+     *
+     * @return <?php echo $rel["refType"]?> 
+     */
+    public function <?php echo $descriptor->loaderName($rel) ?>() {
+        if (!$this-><?php echo $rel["name"]?> && $this-><?php echo $rel["foreignKey"]?> > 0) {
+            $this-><?php echo $rel["name"]?> = <?php echo $rel["refType"]?>Home::find($this-><?php echo $rel["foreignKey"]?>);
+        }
+        return $this-><?php echo $rel["name"]?>;
     }
 
 <?php
