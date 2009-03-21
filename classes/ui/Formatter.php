@@ -2,7 +2,7 @@
 /*
  * Created on Oct 5, 2007
  * Author: Yoni Rosenbaum
- * 
+ *
  */
 
 class Formatter {
@@ -32,7 +32,7 @@ class Formatter {
 
     /**
      * Format the given timestamp as date.
-     * 
+     *
      * @param long $timestamp unix timestamp
      * @return String formatted date, of the given timestamp in the timezone set
      *         for this Formatter object.
@@ -43,17 +43,17 @@ class Formatter {
 
     /**
      * Format the given timestamp as date & time.
-     * 
+     *
      * @return String formatted date and time, of the given timestamp in the
      *         timezone set for this Formatter object.
      */
     public function dateTime($timestamp) {
-        return $this->dateFormat($timestamp, "m/d/y g:i A");
+        return $this->dateFormat($timestamp, "m/d/y g:i a");
     }
 
     /**
      * Format the given timestamp using the given format string.
-     * 
+     *
      * @return String formatted date of the given timestamp in the timezone set
      *         for this Formatter object.
      */

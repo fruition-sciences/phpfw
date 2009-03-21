@@ -2,12 +2,12 @@
 /*
  * Created on Oct 5, 2007
  * Author: Yoni Rosenbaum
- * 
+ *
  */
 
 class Datebox extends HtmlElement {
     private static $dateFormat = "%m/%d/%y";
-    private static $dateTimeFormat = "%m/%d/%y  %I:%M %P";
+    private static $dateTimeFormat = "%m/%d/%y %l:%M %P";
 
     private $showTime = false;
 
