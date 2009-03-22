@@ -2,14 +2,13 @@
 /*
  * Created on Jul 7, 2007
  * Author: Yoni Rosenbaum
- * 
+ *
  */
 
 class SqlBuilder {
     private $tables = array();
     private $columns = array();
     private $conditions = array();
-    private $joins = array();
     private $order = "";
     private $group = "";
     private $predicate;
@@ -33,7 +32,7 @@ class SqlBuilder {
     }
 
     public function from($tableName, $alias) {
-        $this->tables[] = "${tableName} ${alias}";
+        $this->tables[$alias] = new SQLJoin($tableName, $alias);
     }
 
     public function filter($condition) {
@@ -41,7 +40,7 @@ class SqlBuilder {
     }
 
     public function leftJoin($tableName, $alias, $condition) {
-        $this->joins[] = " left join " . $tableName . " " . $alias . " on ($condition)";
+        $this->tables[$alias] = new SQLJoin($tableName, $alias, $condition);
     }
 
     public function orderBy($order) {
@@ -63,7 +62,7 @@ class SqlBuilder {
             $sql .= $this->predicate . " ";
         }
         $sql .= $this->getColumnsString();
-        $sql .= " from " . arrayToString($this->tables, ",");
+        $sql .= " from " . $this->tablesToString();
         if (count($this->conditions) > 0) {
             $sql .= " where " . arrayToString($this->conditions, " and ");
         }
@@ -81,7 +80,7 @@ class SqlBuilder {
 
     /**
      * Set a predicate to be used right after the 'select' statement.
-     * 
+     *
      * @param String $predicate the predicate to use
      */
     public function setPredicate($predicate) {
@@ -90,7 +89,7 @@ class SqlBuilder {
 
     /**
      * Get the predicate that would be used right after the 'select' statemet.
-     * 
+     *
      * @return String the predicate
      */
     public function getPredicate() {
@@ -107,5 +106,53 @@ class SqlBuilder {
 
     public function getLimit() {
         return $this->limit;
+    }
+
+    private function tablesToString() {
+        $sql = "";
+        foreach ($this->tables as $sqlJoin) {
+            if ($sql) {
+                $delimiter = $sqlJoin->getCondition() ? " " : ", ";
+                $sql .= $delimiter;
+            }
+            $sql .= $sqlJoin;
+        }
+        return $sql;
+    }
+}
+
+/**
+ * Holds either a regular table join, or a left join (in which case a condition
+ * will be populated).
+ */
+class SQLJoin {
+    private $table;
+    private $alias;
+    private $condition; // Used for left joins only
+
+    public function __construct($table, $alias, $condition=null) {
+        $this->table = $table;
+        $this->alias = $alias;
+        $this->condition = $condition;
+    }
+
+    public function getTable() {
+        return $this->table;
+    }
+
+    public function getAlias() {
+        return $this->alias;
+    }
+
+    public function getCondition() {
+        return $this->condition;
+    }
+
+    public function __toString() {
+        $sql = "$this->table $this->alias";
+        if ($this->condition) {
+            $sql = "left join $sql on $this->condition";
+        }
+        return $sql;
     }
 }
