@@ -19,7 +19,7 @@ require_once("constraints/ConstraintFactory.php");
 class Form {
     private $controls = array(); // control name -> Control
     private $labels = array(); // control name -> Label (field title)
-    private $field_errors = array(); // field name -> Error
+    private $field_errors = array(); // field name -> Error (Currently used as a Set. Values don't matter)
     private $errors = array(); // Currently list of codes. Later on, list of Localized strings?
     private $values = array();
     private $errorCodes = array(); // code -> String
