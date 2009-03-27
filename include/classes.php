@@ -2,7 +2,7 @@
 /*
  * Created on Dec 28, 2007
  * Author: Yoni Rosenbaum
- * 
+ *
  */
 
 require_once("classes/utils/functions.php");
@@ -27,6 +27,7 @@ require_once("classes/core/Includer.php");
 require_once("classes/core/Logger.php");
 require_once("classes/core/BeanBase.php");
 require_once("classes/ui/BaseView.php");
+require_once("classes/ui/JSONView.php");
 require_once("classes/ui/Component.php");
 require_once("classes/core/User.php");
 require_once("classes/core/i18n/I18nUtil.php");
