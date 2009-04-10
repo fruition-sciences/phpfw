@@ -8,6 +8,7 @@
 class Formatter {
     private static $theInstance;
     private static $timezone; // DateTimeZone object
+    private static $utcTimeZone;
 
     /**
      * Create a new Formatter, for the given time zone.
@@ -66,11 +67,29 @@ class Formatter {
         return $date->format($formatString);
     }
 
+    /**
+     * Format the given timestamp in UTC (GMT).
+     *
+     * @return String the formatted date/time.
+     */
+    public static function dateTimeUTC($timestamp) {
+        $date = new DateTime(date('c', $timestamp));
+        $date->setTimezone(self::getUTCTimeZone());
+        return $date->format("Y-m-d H:i:s T");
+    }
+
     public function number($val, $digits) {
         return sprintf("%.$digits" . "f", $val);
     }
 
     public function getTimeZoneName() {
         return $this->timezone->getName();
+    }
+
+    private static function getUTCTimeZone() {
+        if (!self::$utcTimeZone) {
+            self::$utcTimeZone = new DateTimeZone('UTC');
+        }
+        return self::$utcTimeZone;
     }
 }
