@@ -2,7 +2,7 @@
 /*
  * Created on Oct 14, 2007
  * Author: Yoni Rosenbaum
- * 
+ *
  */
 
 class DateConstraint extends Constraint {
@@ -14,7 +14,9 @@ class DateConstraint extends Constraint {
         }
         $dateValue = strtotime($value);
         if (!$dateValue) {
-            $this->addFieldError($ctx, $this->getName(), "The field '" . $this->getLabel() . "' must be a valid date");
+            $msg = I18nUtil::lookupString('DATE_CONSTRAINT_MSG');
+            $msg->set('fieldName', $this->getLabel());
+            $this->addFieldError($ctx, $this->getName(), $msg->__toString());
             return false;
         }
         return true;
