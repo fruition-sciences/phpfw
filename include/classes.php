@@ -33,3 +33,4 @@ require_once("classes/core/User.php");
 require_once("classes/core/i18n/I18nUtil.php");
 require_once("classes/core/Application.php");
 require_once("classes/ui/DataConverter.php");
+require_once("classes/utils/BeanMap.php");
