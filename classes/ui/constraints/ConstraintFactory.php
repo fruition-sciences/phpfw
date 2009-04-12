@@ -8,10 +8,12 @@
 require_once("Constraint.php");
 require_once("DateConstraint.php");
 require_once("RequiredConstraint.php");
+require_once("NumberConstraint.php");
 
 class ConstraintFactory {
     const REQUIRED = "required";
     const DATE = "date";
+    const NUMBER = "number";
 
     public static function newConstraint($name, $type, $forAction=null) {
         if ($type == self::REQUIRED) {
@@ -19,6 +21,9 @@ class ConstraintFactory {
         }
         if ($type == self::DATE) {
             return new DateConstraint($name, $forAction);
+        }
+        if ($type == self::NUMBER) {
+            return new NumberConstraint($name, $forAction);
         }
         throw new Exception("Unknown constraint type: " . $type);
     }
