@@ -182,12 +182,11 @@ class Form {
     }
 
     public function addConstraint($name, $type, $forAction=null) {
-        // Ignore if the form is marked readonly.
-        if ($this->isReadonly()) {
-            return;
-        }
         $constraint = ConstraintFactory::newConstraint($name, $type, $forAction);
-        $this->constraints[] = $constraint;
+        // If is readonly, constraint will not be in form (and thus, ignored)
+        if (!$this->isReadonly()) {
+            $this->constraints[] = $constraint;
+        }
         return $constraint;
     }
 
