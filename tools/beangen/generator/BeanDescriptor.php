@@ -26,7 +26,7 @@ class BeanDescriptor {
         if (isset($field["primaryKey"])) {
             return "ID";
         }
-        return strtoupper($field["column"]);
+        return self::constantFromFieldName($field["name"]);
     }
 
     public function getterName($field) {
@@ -143,5 +143,43 @@ class BeanDescriptor {
     private function markPrimaryKeyField() {
         $primaryKeyField = $this->getPrimaryKeyField();
         $primaryKeyField['primaryKey'] = 1;
+    }
+
+    /**
+     * Given a field name, generate a constant name for this field.
+     * This transoforms a mixed case word to an upper case delimited with
+     * underscores.
+     *
+     * @param String $fieldName
+     * @return String constant name
+     */
+    private static function constantFromFieldName($fieldName) {
+        $items = preg_split("/([A-Z])/", $fieldName, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+        $elements = array();
+        $accumulativeSingleChars = '';
+        $lastSingleChar = '';
+        foreach ($items as $item) {
+            if (strlen($item) == 1) {
+                if ($lastSingleChar) {
+                    $accumulativeSingleChars .= $lastSingleChar;
+                }
+                $lastSingleChar = $item;
+                continue;
+            }
+            if ($accumulativeSingleChars) {
+                $elements[] = $accumulativeSingleChars;
+                $accumulativeSingleChars = '';
+            }
+            $elements[] = $lastSingleChar . $item;
+            $lastSingleChar = '';
+        }
+        if ($lastSingleChar) {
+            $accumulativeSingleChars .= $lastSingleChar;
+        }
+        if ($accumulativeSingleChars) {
+            $elements[] = $accumulativeSingleChars;
+        }
+        $text = implode('_', $elements);
+        return strtoupper($text);
     }
 }
