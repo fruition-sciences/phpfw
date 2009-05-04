@@ -14,6 +14,9 @@ class Application {
     public function init() {
         $config = Config::getInstance();
         $logDir = $config->getString('logging/logDir');
+        if (!$logDir) {
+            throw new ConfigurationException("Configuration value 'logging/logDir' is empty");
+        }
         if (!is_dir($logDir)) {
             mkdir($logDir, 0777, true);
         }

@@ -19,7 +19,10 @@ class TheDB {
         $dbUserName = Config::getInstance()->getString("database/userName");
         $dbPassword = Config::getInstance()->getString("database/password");
         $dbDatabaseName = Config::getInstance()->getString("database/dbName");
-        $this->sql_connect($dbHost, $dbUserName, $dbPassword, $dbDatabaseName);
+        if (!$this->sql_connect($dbHost, $dbUserName, $dbPassword, $dbDatabaseName)) {
+            echo $this->error();
+            throw new Exception("Failed to connect to database");
+        }
         $this->debugOn = Config::getInstance()->getBoolean('database/debug', false);
     }
 
@@ -27,12 +30,12 @@ class TheDB {
     function sql_connect($sqlserver, $sqluser, $sqlpassword, $database){
         $this->connect_id = mysql_connect($sqlserver, $sqluser, $sqlpassword);
         if (!$this->connect_id) {
-            return $this->error();
+            return null;
         }
         if (mysql_select_db($database)) {
             return $this->connect_id;
         }
-        return $this->error();
+        return null;
     }
 
     function error(){
