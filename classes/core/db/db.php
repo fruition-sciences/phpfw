@@ -14,20 +14,17 @@ class TheDB {
     private $paging;
     private $debugOn;
 
-    function __construct() {
+    public function __construct() {
         $dbHost = Config::getInstance()->getString("database/host");
         $dbUserName = Config::getInstance()->getString("database/userName");
         $dbPassword = Config::getInstance()->getString("database/password");
         $dbDatabaseName = Config::getInstance()->getString("database/dbName");
-        if (!$this->sql_connect($dbHost, $dbUserName, $dbPassword, $dbDatabaseName)) {
-            echo $this->error();
-            throw new Exception("Failed to connect to database");
-        }
+        $this->sql_connect($dbHost, $dbUserName, $dbPassword, $dbDatabaseName);
         $this->debugOn = Config::getInstance()->getBoolean('database/debug', false);
     }
 
 
-    function sql_connect($sqlserver, $sqluser, $sqlpassword, $database){
+    private function sql_connect($sqlserver, $sqluser, $sqlpassword, $database){
         $this->connect_id = mysql_connect($sqlserver, $sqluser, $sqlpassword);
         if (!$this->connect_id) {
             return null;
@@ -38,13 +35,13 @@ class TheDB {
         return null;
     }
 
-    function error(){
+    private function error(){
         if (mysql_error() != '') {
             Logger::error('MySQL Error:' . mysql_error());
         }
     }
 
-    function query($query, $paging=null) {
+    public function query($query, $paging=null) {
         $this->paging = $paging;
         if ($query != NULL) {
             $queryPager = new QueryPager($query, $paging);
@@ -74,13 +71,13 @@ class TheDB {
      * when the query was using a PagingInfo object, so that the PagingInfo will
      * contain the total number of rows.
      */
-    function disposeQuery() {
+    public function disposeQuery() {
         if ($this->paging) {
             $this->paging->setTotalRows($this->getFoundRows());
         }
     }
 
-    function get_num_rows($query_id = ""){
+    public function get_num_rows($query_id = ""){
         if($query_id == NULL){
             $return = mysql_num_rows($this->query_result);
         }else{
@@ -101,14 +98,14 @@ class TheDB {
      * @return long the total number of rows in the previous query that was
      *         executed.
      */
-    function getFoundRows() {
+    private function getFoundRows() {
         $this->query("select found_rows()");
         $rs = $this->fetch_row();
         return $rs->getLong(0);
     }
 
 
-    function fetch_row($query_id = ""){
+    public function fetch_row($query_id = ""){
         if($query_id == NULL){
             $return = mysql_fetch_array($this->query_result);
         }else{
@@ -121,11 +118,11 @@ class TheDB {
         }
     }
 
-    function get_last_id() {
+    public function get_last_id() {
         return mysql_insert_id();
     }
 
-    function get_affected_rows($query_id = ""){
+    public function get_affected_rows($query_id = ""){
         if($query_id == NULL){
             $return = mysql_affected_rows($this->query_result);
         }else{
@@ -138,7 +135,7 @@ class TheDB {
         }
     }
 
-    function sql_close(){
+    public function sql_close(){
         if($this->connect_id){
             return mysql_close($this->connect_id);
         }
