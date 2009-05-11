@@ -21,6 +21,14 @@ class LocalizedString {
         $this->attributes[$key] = $val;
     }
 
+    public function get($key) {
+        return $this->attributes[$key];
+    }
+
+    public function hasKey($key) {
+        return isset($this->attributes[$key]);
+    }
+
     public function __toString() {
         return $this->substituteVars();
     }
@@ -34,6 +42,10 @@ class LocalizedString {
     private function substituteVars() {
         $resultMsg = $this->msg;
         foreach ($this->attributes as $key => $val) {
+            // Skip this pair if value cannot be converted to string
+            if (is_object($val) && !method_exists($val, '__toString')) {
+                continue;
+            }
             $search = '${'. $key . '}';
             $resultMsg = str_replace($search, $val, $resultMsg);
         }

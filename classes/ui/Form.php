@@ -157,6 +157,9 @@ class Form {
     }
 
     public function getValue($name) {
+        if (!isset($this->values[$name])) {
+            return null;
+        }
         return $this->values[$name];
     }
 
