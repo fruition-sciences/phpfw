@@ -88,14 +88,15 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanHomeBase {
 ?>
     }
 
-    public static function findAll() {
+    public static function findAll($paging=null) {
         $db = Transaction::getInstance()->getDB();
         $beans = array();
         $sql = "select * from " . <?php echo $descriptor->xml['name'] ?>Bean::TABLE_NAME;
-        $db->query($sql);
+        $db->query($sql, $paging);
         while ($row = $db->fetch_row()) {
             $beans[] = self::create($row);
         }
+        $db->disposeQuery();
         return $beans;
     }
 }
