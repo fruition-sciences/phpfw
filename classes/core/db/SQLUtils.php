@@ -2,20 +2,20 @@
 /*
  * Created on Jul 20, 2007
  * Author: Yoni Rosenbaum
- * 
+ *
  */
 
 class SQLUtils {
     public static function escapeString($str) {
-        if ($str == null) {
+        if ($str === null) {
             return "null";
         }
         return "'" . mysql_escape_string($str) . "'";
     }
 
     /**
-     * Convert a date (number) to a database date representation (string). 
-     * 
+     * Convert a date (number) to a database date representation (string).
+     *
      * @param long dateTime The date (number)
      */
     public static function convertDate($dateTime) {
