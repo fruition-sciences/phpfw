@@ -2,7 +2,7 @@
 /*
  * Created on Oct 12, 2007
  * Author: Yoni Rosenbaum
- * 
+ *
  */
 
 class ResultSet {
@@ -20,19 +20,19 @@ class ResultSet {
         $this->map[$key] = $value;
     }
 
-    public function getLong($key) { 
+    public function getLong($key) {
         return $this->map[$key];
     }
 
-    public function setLong($key, $value) { 
+    public function setLong($key, $value) {
         $this->map[$key] = $value;
     }
 
-    public function getDouble($key) { 
+    public function getDouble($key) {
         return $this->map[$key];
     }
 
-    public function setDouble($key, $value) { 
+    public function setDouble($key, $value) {
         $this->map[$key] = $value;
     }
 
@@ -47,5 +47,14 @@ class ResultSet {
 
     public function containsKey($key) {
         return isset($this->map[$key]);
+    }
+
+    /**
+     * Return the entire map of attributes.
+     *
+     * @return Map the attributes
+     */
+    public function getAttributes() {
+        return $this->map;
     }
 }
