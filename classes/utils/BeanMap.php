@@ -40,4 +40,11 @@ class BeanMap {
         }
         return null;
     }
+
+    public function getById($id) {
+        if (isset($this->map[$id])) {
+            return $this->map[$id];
+        }
+        return null;
+    }
 }
