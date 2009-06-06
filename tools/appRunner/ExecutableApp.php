@@ -53,11 +53,34 @@ abstract class ExecutableApp {
 
     /**
      * Parse arguments.
+     * Override this if the program's argument do not consist of simple name=val
+     * tokens. Otherwise, simply override parseArgKeyValuePair().
      *
      * @param Array $args Array of command line arguments
      * @return boolean true if the arguements are fine. False otherwise.
      */
-    protected abstract function parseArgs($args);
+    protected function parseArgs($args) {
+        $argsMap = $this->getKeyValueArgs($args);
+        foreach ($argsMap as $key=>$val) {
+            if (!$this->parseArgKeyValuePair($key, $val)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Parse a key value pair (came from command line in the format of key=value).
+     * Override this method to validate that all arguments are fine and set
+     * values into the class' fields.
+     *
+     * @param String $key
+     * @param String $val
+     * @return boolean true if key & value are fine.
+     */
+    protected function parseArgKeyValuePair($key, $val) {
+        return true;
+    }
 
     protected abstract function printUsage();
 
@@ -178,5 +201,26 @@ abstract class ExecutableApp {
         if (!@unlink($lockFile)) {
             Logger::warning("Could not delete lock file $lockFile");
         }
+    }
+
+    /**
+     * Parse each of the input arguments as key value pairs (format is: "name=value").
+     * Or a single value.
+     * Note: Current implementation does not support multiple args with
+     *       the same name.
+     *
+     * @param Array $args the array of arguments.
+     * @return Map a map containing the arguments. Keys are the argument name
+     *         and value is the argument's value.
+     */
+    protected function getKeyValueArgs($args) {
+        $map = array();
+        foreach ($args as $arg) {
+            $tokens = split("=", $arg);
+            $key = $tokens[0];
+            $val = count($tokens) > 1 ? $tokens[1] : "";
+            $map[$key] = $val;
+        }
+        return $map;
     }
 }
