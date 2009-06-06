@@ -10,6 +10,12 @@
 class BeanMap {
     private $map = array(); // id -> Bean
 
+    public function __construct($beansArray=null) {
+        if ($beansArray) {
+            $this->setAll($beansArray);
+        }
+    }
+
     /**
      * If $forceSet=true, this method behaves as a common 'set' method - it sets
      * the given bean into the map (key is id), and returns it.
@@ -27,6 +33,12 @@ class BeanMap {
             $existingBean = $bean;
         }
         return $existingBean;
+    }
+
+    public function setAll($beansArray, $forceSet=false) {
+        foreach ($beansArray as $bean) {
+            $this->set($bean, $forceSet);
+        }
     }
 
     /**
