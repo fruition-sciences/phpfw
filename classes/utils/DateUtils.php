@@ -90,23 +90,20 @@ class DateUtils {
 	public static function timeDiff($startTime, $endTime = null) {
 	    $endTime = $endTime ? $endTime : time();
 
-	    if ($endTime > $startTime)
-	    {
-	        $diff = $endTime - $startTime;
+        $diff = $endTime - $startTime;
+        $sign = "";
+        if ($diff < 0) {
+            $sign = "-";
+            $diff = -$diff;
+        }
+        $hours = floor($diff/3600);
+        $diff = $diff % 3600;
 
-	        $hours = floor($diff/3600);
-	        $diff = $diff % 3600;
+        $minutes = floor($diff/60);
+        $diff = $diff % 60;
 
-	        $minutes = floor($diff/60);
-	        $diff = $diff % 60;
+        $seconds = $diff;
 
-	        $seconds = $diff;
-
-	        return str_pad($hours, 2, '0', STR_PAD_LEFT) . ':' . str_pad($minutes, 2, '0', STR_PAD_LEFT) . ':' . str_pad($seconds, 2, '0', STR_PAD_LEFT);
-	    }
-	    else
-	    {
-	        throw new IllegalArgumentException("Start time should be less than end time");
-	    }
+        return $sign . str_pad($hours, 2, '0', STR_PAD_LEFT) . ':' . str_pad($minutes, 2, '0', STR_PAD_LEFT) . ':' . str_pad($seconds, 2, '0', STR_PAD_LEFT);
 	}
 }
