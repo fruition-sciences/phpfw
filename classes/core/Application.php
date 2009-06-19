@@ -18,7 +18,9 @@ class Application {
             throw new ConfigurationException("Configuration value 'logging/logDir' is empty");
         }
         if (!is_dir($logDir)) {
-            mkdir($logDir, 0777, true);
+            if (!mkdir($logDir, 0777, true)) {
+                echo "Failed to create dir: $logDir";
+            }
         }
         $errorLogFileName = $config->getString('webapp/logging/errorLogFileName');
         if ($logDir && $errorLogFileName) {
