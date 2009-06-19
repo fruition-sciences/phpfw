@@ -127,6 +127,7 @@ class AutoConfig {
 $autoconfig = new AutoConfig();
 if ($autoconfig->parseArgs($argv)) {
     $autoconfig->process();
+    exit(0); // For some reason, under ubuntu exit code is 255 without this line...
 }
 else {
     exit(1);
