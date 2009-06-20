@@ -19,6 +19,7 @@ class LocalizedString {
 
     public function set($key, $val) {
         $this->attributes[$key] = $val;
+        return $this;
     }
 
     public function get($key) {
