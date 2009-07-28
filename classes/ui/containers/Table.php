@@ -157,7 +157,7 @@ class Table extends HtmlElement {
             echo "&nbsp;|&nbsp;";
         }
         if ($this->pagingInfo->getPageNumber() > 0) {
-            echo $arrowLink->setTitle("Prevous")->setParam($pageNumParamName, $this->pagingInfo->getPageNumber() - 1);
+            echo $arrowLink->setTitle("Previous")->setParam($pageNumParamName, $this->pagingInfo->getPageNumber() - 1);
             echo " ";
         }
         if (!$firstLinkIsShown) {
