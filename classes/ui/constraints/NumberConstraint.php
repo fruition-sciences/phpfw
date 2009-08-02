@@ -12,7 +12,7 @@ class NumberConstraint extends Constraint {
     public function doValidate($ctx) {
         $value = $ctx->getRequest()->getString($this->getName(), null);
         // Validate only if there is a value
-        if ($value === null) {
+        if ($value === null || $value === '') {
             return true;
         }
         if (!is_numeric($value)) {
