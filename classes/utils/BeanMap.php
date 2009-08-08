@@ -4,7 +4,7 @@
  * Author: Yoni Rosenbaum
  *
  * Map of Beans (assumed to be of the same type). Keys are IDs.
- * Allows lookup by the bean itself.
+ * Allows lookup by the bean itself or by id.
  */
 
 class BeanMap {
