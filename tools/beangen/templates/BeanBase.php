@@ -117,8 +117,9 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
     if (isset($descriptor->oneToOneRelsMap["${fieldName}"])) {
       $rel = $descriptor->oneToOneRelsMap["${fieldName}"];
 ?>
+        // If id doesn't match the id of '<?php echo $rel["name"]?>', set '<?php echo $rel["name"]?>' to null
         if (isset($this-><?php echo $rel['name']?>) && $this-><?php echo $rel['name']?>->getId() != $<?php echo $field["name"]?>) {
-            $<?php echo $field["name"]?> = -1;
+            $this-><?php echo $rel["name"]?> = null;
         }
 <?php
     }
