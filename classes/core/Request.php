@@ -42,7 +42,7 @@ class Request {
         $map = $this->getAttributes();
         if (!isset($map[$key])) {
             if ($defaultVal === self::UNDEFINED) {
-                throw new UndefinedKeyException('Undefined Request key: ' . $key);
+                throw new UndefinedKeyException('Missing argument: ' . $key);
             }
             else {
                 return $defaultVal;
