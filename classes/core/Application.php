@@ -10,8 +10,10 @@
 class Application {
     private $ctx;
     private $sessionName;
+    private $timeLogger;
 
     public function init() {
+        $this->timeLogger = new TimeLogger('phpfw-timer.log');
         $config = Config::getInstance();
         $logDir = $config->getString('logging/logDir');
         if (!$logDir) {
@@ -46,6 +48,10 @@ class Application {
             echo $e;
             echo "</pre>";
         }
+        $logTimeEnabled = Config::getInstance()->getBoolean('webapp/logging/timeLog/enabled', false);
+        if ($logTimeEnabled) {
+            $this->timeLogger->end();
+        }
     }
 
     private function validate() {
@@ -61,6 +67,7 @@ class Application {
         $transaction = Transaction::getInstance();
         $transaction->setUser($ctx->getUser());
         $pathInfo = self::getPathInfo();
+        $this->timeLogger->setText($pathInfo);
         $tokens = explode('/', $pathInfo);
         if (sizeof($tokens) < 2 || $tokens[1] === '') {
             $defaultUrl = $ctx->getUIManager()->getDefaultURL();
