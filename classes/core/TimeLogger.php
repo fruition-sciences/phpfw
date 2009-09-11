@@ -9,7 +9,7 @@
 class TimeLogger {
     private $startTime;
     private $endTime;
-    private $text = "-";
+    private $text = "";
     private $logFileName;
 
     /**
@@ -49,9 +49,10 @@ class TimeLogger {
         $logFile = "$logDir/" . $this->logFileName;
         $fDate = Formatter::dateTimeUTC($this->endTime); 
         $diff = $this->endTime - $this->startTime;
+        $text = $this->text ? $this->text : "-"; // If text is empty, set it to '-'.
 
         $fd = fopen($logFile, "a");
-        fwrite($fd, "$fDate\t$this->text\t$diff\n");
+        fwrite($fd, "$fDate\t$text\t$diff\n");
         fclose($fd);
     }
 }
