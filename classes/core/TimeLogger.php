@@ -9,7 +9,7 @@
 class TimeLogger {
     private $startTime;
     private $endTime;
-    private $text = "";
+    private $text = "-";
     private $logFileName;
 
     /**
