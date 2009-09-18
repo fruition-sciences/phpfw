@@ -92,11 +92,8 @@ class Form {
         $span = new HtmlElement("label");
         $span->setBody($title);
         if (isset($this->field_errors[$name])) {
-            $styleClass = "error";
-            $span->set("class", "error");
-        }
-        else {
-            $styleClass = "";
+            $styleClass = Config::getInstance()->getString("webapp/ui/errorCssClass", "error");
+            $span->set("class", $styleClass);
         }
         return $span;
     }
