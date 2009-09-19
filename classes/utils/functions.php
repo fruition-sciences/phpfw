@@ -40,9 +40,9 @@ function arrayToString($a, $delimiter) {
 }
 
 function log_pre($message) {
-		echo "<pre>";
-		var_dump($message);
-		echo "</pre>";
+    echo "<pre>";
+    var_dump($message);
+    echo "</pre>";
 }
 
 ?>
