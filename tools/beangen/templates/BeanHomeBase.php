@@ -52,6 +52,14 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanHomeBase {
     }
 
 <?php } ?>
+    /**
+     * Create a new <?php echo $descriptor->xml['name'] ?>Bean from a result set.
+     *
+     * @param $rs ResultSet
+     * @param $alias String (optional) alias, if fields in the result set have
+     *        a predefined prefix (followed by '_').
+     * @return <?php echo $descriptor->xml['name'] ?>Bean
+     */
     public static function create($rs, $alias='') {
         if (!$rs) {
             return null;
