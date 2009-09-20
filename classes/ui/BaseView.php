@@ -40,7 +40,7 @@ abstract class BaseView implements View {
 		if(!$timezone) {
         	$timezone = Config::getInstance()->getString("properties/anonymousUserTimezone");
 		}
-        $format = new Formatter($timezone);
+        $format = $ctx->getUIManager()->getFormatter();
         // Make $page and $ui globals, so they can be accessed by the view template.
         global $page, $ui;
         $page = $this->getPage();

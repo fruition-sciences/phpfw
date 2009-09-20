@@ -70,6 +70,10 @@ abstract class UI {
         $url = $result[0];
         return $url;
     }
+
+    public function getFormatter() {
+        return Formatter::getInstance();
+    }
 }
 
 ?>
