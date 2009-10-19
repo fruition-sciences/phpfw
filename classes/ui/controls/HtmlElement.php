@@ -134,7 +134,8 @@ class HtmlElement extends Element {
     }
 
     public function confirm($msg) {
-        $this->set("onclick", "if (!confirm('$msg')) return false");
+        $text = str_replace("'", "\\'", $msg->__toString());
+    	$this->set("onclick", "if (!confirm('$text')) return false");
         return $this;
     }
 
