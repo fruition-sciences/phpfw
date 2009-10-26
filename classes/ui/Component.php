@@ -16,6 +16,10 @@ abstract class Component extends BaseView {
         $this->parentView = $parentView;
     }
 
+    public function getParentView() {
+        return $this->parentView;
+    }
+
     public function getPage() {
         return $this->parentView->getPage();
     }
