@@ -47,6 +47,7 @@ class TimeLogger {
     private function log() {
         $logDir = Config::getInstance()->getString('logging/logDir');
         $logFile = "$logDir/" . $this->logFileName;
+        $this->ensureDirExists($logFile);
         $fDate = Formatter::dateTimeUTC($this->endTime); 
         $diff = $this->endTime - $this->startTime;
         $text = $this->text ? $this->text : "-"; // If text is empty, set it to '-'.
@@ -54,5 +55,12 @@ class TimeLogger {
         $fd = fopen($logFile, "a");
         fwrite($fd, "$fDate\t$text\t$diff\n");
         fclose($fd);
+    }
+
+    private function ensureDirExists($file) {
+        $dir = dirname($file);
+        if (!is_dir($dir)) {
+            mkdir($dir);
+        }
     }
 }

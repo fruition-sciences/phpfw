@@ -13,7 +13,7 @@ class Application {
     private $timeLogger;
 
     public function init() {
-        $this->timeLogger = new TimeLogger('phpfw-timer.log');
+        $this->timeLogger = new TimeLogger('php-timer/phpfw-timer.log');
         $config = Config::getInstance();
         $logDir = $config->getString('logging/logDir');
         if (!$logDir) {
