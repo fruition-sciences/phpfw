@@ -53,10 +53,10 @@ class UpgradeDB {
     private function executeScript($script) {
         $db = Transaction::getInstance()->getDB();
         try {
+            echo "executing " . $script->getFileFullPath() . "\n";
             foreach ($script->getStatements() as $statement) {
                 $db->query($statement->getContent());
             }
-            echo "executed " . $script->getFileFullPath() . "\n";
             $this->markScriptExecuted($script);
         }
         catch (SQLException $e) {
