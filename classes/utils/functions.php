@@ -134,4 +134,85 @@ if (!function_exists('money_format')) {
     } 
 }
 
+ /**
+ * Private helper function for displaying the contents of a given variable.
+ * This function is only intended to be used for internal development.
+ * The ppd stands for Pre Print Die.
+ */
+function _ppd($mixed){
+    echo "\n<pre>\n";
+    print_r($mixed);
+
+    echo "";
+    $stack  = debug_backtrace();
+    if (!empty($stack) && isset($stack[0]['file']) && $stack[0]['line']) {
+        echo "\n\n _ppd caller, file: " . $stack[0]['file']. ' line#: ' .$stack[0]['line'];
+    }
+    die();
+    echo "\n</pre>\n";
+}
+
+
+/**
+ * Private helper function for displaying the contents of a given variable.
+ * This function is only intended to be used for internal development.
+ * The pp stands for Pre Print.
+ */
+function _pp($mixed)
+{
+    echo "\n<pre>\n";
+    print_r($mixed);
+
+    echo "";
+    $stack  = debug_backtrace();
+    if (!empty($stack) && isset($stack[0]['file']) && $stack[0]['line']) {
+        echo "\n\n _pp caller, file: " . $stack[0]['file']. ' line#: ' .$stack[0]['line'];
+    }
+    echo "\n</pre>\n";
+}
+
+/**
+ * Private helper function for displaying the contents of a given variable.
+ * This function is only intended to be used for internal development.
+ * The pp stands for Pre Print.
+ */
+function _pstack_trace($mixed=NULL)
+{
+    echo "\n<pre>\n_pstack_trace: '";
+    if(!empty($mixed))
+    print_r($mixed);
+
+    echo "'<BR>\n";
+    debug_print_backtrace();
+
+    echo "\n</pre>\n";
+}
+
+/**
+ * Private helper function for displaying the contents of a given variable.
+ * This function is only intended to be used for internal development.
+ * The pp stands for Pre Print Trace.
+ */
+function _ppt($mixed, $textOnly=false)
+{
+    echo "\n<pre>\n";
+    print_r($mixed);
+    echo "\n</pre>\n";
+    display_stack_trace($textOnly);
+}
+
+/**
+ * Private helper function for displaying the contents of a given variable.
+ * This function is only intended to be used for internal development.
+ * The pp stands for Pre Print Trace Die.
+ */
+function _pptd($mixed)
+{
+    echo "\n<pre>\n";
+    print_r($mixed);
+    echo "\n</pre>\n";
+    display_stack_trace();
+    die();
+}
+
 ?>

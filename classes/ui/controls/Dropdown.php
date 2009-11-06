@@ -7,6 +7,7 @@
 
 class Dropdown extends HtmlElement {
     private $options = array();
+    private $optgroups = array();
     private $value;
     private $readonlyLink;
 
@@ -27,6 +28,19 @@ class Dropdown extends HtmlElement {
         $this->options[] = $option;
         return $this;
     }
+    
+    public function addOptgroup($label) {
+        $optgroup = new Dropdown_Optgroup($label);
+        $optgroup->setForm($this->getForm());
+        $this->optgroups[] = $optgroup;
+        return $this;
+    }
+    
+    public function addOptgroupObject($optgroup) {
+        $optgroup->setForm($this->getForm());
+        $this->optgroups[] = $optgroup;
+        return $this;
+    }
 
     /**
      * Set a link to be shown instead of the regular title in readonly mode.
@@ -45,23 +59,31 @@ class Dropdown extends HtmlElement {
     }
 
     public function toString() {
-    	for ($i = 0; $i < sizeof($this->options); $i++) {
-    		if ($this->options[$i]->get("value") == $this->value) {
-    			if ($this->readonlyLink) {
-    			    return $this->readonlyLink->setTitle($this->options[$i]->__toString())->__toString();
-    			}
-    			else {
-    			    return $this->options[$i]->__toString();
-    			}
-    		}
-    	}
+        $options = $this->options;
+        foreach ($this->optgroups as $optgroup) {
+            array_merge($options,$optgroup->getOptions());
+            
+        }
+        foreach($options as $option) {
+            if ($option->get("value") == $this->value) {
+                if ($this->readonlyLink) {
+                    return $this->readonlyLink->setTitle($option->__toString())->__toString();
+                }
+                else {
+                    return $option->__toString();
+                }
+            }
+        }
         return "";
     }
 
     private function options_as_string() {
         $html = "";
+        for ($i = 0; $i < sizeof($this->optgroups); $i++) {
+            $html .= $this->optgroups[$i]->asString($this->value);
+        }
         for ($i = 0; $i < sizeof($this->options); $i++) {
-        	$html .= $this->options[$i]->asString($this->value);
+            $html .= $this->options[$i]->asString($this->value);
         }
         return $html;
     }
@@ -105,6 +127,42 @@ class Dropdown_Option extends HtmlElement {
     }
 
     public function toString() {
-    	return $this->getBody();
+        return $this->getBody();
+    }
+}
+
+class Dropdown_Optgroup extends HtmlElement {
+    private $options = array();
+    
+    public function __construct($label) {
+        parent::__construct("optgroup");
+        $this->set("label", $label);
+    }
+    
+    public function addOption($name, $value=null) {
+        $option = new Dropdown_Option($name, $value);
+        $option->setForm($this->getForm());
+        $this->options[] = $option;
+        return $this;
+    }
+    
+    public function asString($value){
+        $this->setBody($this->options_as_string($value));
+        return parent::__toString();
+    }
+
+    public function toString() {
+        return $this->get('label');
+    }
+    
+    private function options_as_string($value) {
+        $html = "";
+        for ($i = 0; $i < sizeof($this->options); $i++) {
+            $html .= $this->options[$i]->asString($value);
+        }
+        return $html;
+    }
+    public function getOptions(){
+        return $this->options;
     }
 }

@@ -112,3 +112,78 @@ function findContainer(element) {
     }
     return null;
 }
+
+/**
+ * Function use by the DateBox field when it it a time only field.
+ * Update the hidden field with the data from the dropdowns.
+ * @param fieldName
+ * @return
+ */
+function updateHiddenTimeField(fieldName){
+    document.getElementById(fieldName).value = document.getElementById("_"+fieldName+"_hour").value +":"+ document.getElementById("_"+fieldName+"_minute").value +" "+ document.getElementById("_"+fieldName+"_pm").value;
+}
+
+/**
+ * Function use by the DateBox field when it is a time only field.
+ * Update the dropdown fields with the data from the hidden field.
+ * @param fieldName
+ * @return
+ */
+function updateSelectTimeFields(fieldName){
+	if(document.getElementById(fieldName)){
+		var time = document.getElementById(fieldName).value;
+		if(time == ""){
+			updateHiddenTimeField(fieldName);
+		}else{
+			var temp = new Array();
+			var temp2 = new Array();
+			temp = time.split(":");
+			temp2 = temp[1].split(" ");
+			if(temp2[0]<8){
+				temp2[0]="00";
+			}else if(temp2[0]<23){
+				temp2[0]="15";
+			}else if(temp2[0]<38){
+				temp2[0]="30";
+			}else{
+				temp2[0]="45";
+			}
+			document.getElementById("_"+fieldName+"_hour").value = temp[0];
+			document.getElementById("_"+fieldName+"_minute").value = temp2[0];
+			document.getElementById("_"+fieldName+"_pm").value= temp2[1];
+		}
+	}
+}
+
+/**
+ * This function return a date object after accepting 
+ * a date string and a dateseparator as arguments
+ * @param dateString (MM/DD/YY)
+ * @param dateSeperator (/)
+ * @return Date object
+ */
+function getDateObject(dateString,dateSeperator){
+	var curValue=dateString;
+	var sepChar=dateSeperator;
+	var curPos=0;
+	var cDate,cMonth,cYear;
+
+	//extract month portion
+	curPos=dateString.indexOf(sepChar);
+	cMonth=dateString.substring(0,curPos);
+	
+	//extract day portion				
+	endPos=dateString.indexOf(sepChar,curPos+1);			
+	cDate=dateString.substring(curPos+1,endPos);
+
+	//extract year portion				
+	curPos=endPos;
+	endPos=curPos+3;			
+	cYear=curValue.substring(curPos+1,endPos);
+	if(cYear.length == 2){
+		cYear = "20" + cYear;
+	}
+	//Create Date Object
+	dtObject=new Date(cYear,cMonth-1,cDate);	
+	return dtObject;
+}

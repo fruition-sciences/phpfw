@@ -37,4 +37,18 @@ class I18nUtil {
         }
         self::$bundles[$bundlePath] = $map;
     }
+    
+    public static function stringExist($bundleName, $stringId) {
+        if(empty($stringId))
+            return false;
+        $stringId = (string)$stringId;
+        $bundlePath = "application/i18n/en/" . $bundleName . ".xml";
+        if (!isset(self::$bundles[$bundlePath])) {
+            self::loadResourceBundle($bundleName, $bundlePath);
+        }
+        $bundle = self::$bundles[$bundlePath];
+        if (empty($bundle) || !isset($bundle[$stringId]))
+            return false;
+        return true;
+    }
 }

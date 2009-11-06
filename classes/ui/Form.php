@@ -6,6 +6,7 @@
  */
 
 require_once("controls/Checkbox.php");
+require_once("controls/Radio.php");
 require_once("controls/Dropdown.php");
 require_once("controls/Password.php");
 require_once("controls/TextArea.php");
@@ -64,6 +65,12 @@ class Form {
         $control = new Checkbox($name);
         $this->registerControl($control);
         $this->checkboxes[] = $control;
+        return $control;
+    }
+    
+    public function radio($name, $value) {
+        $control = new Radio($name, $value);
+        $this->registerControl($control);
         return $control;
     }
 

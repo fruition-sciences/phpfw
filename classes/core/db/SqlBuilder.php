@@ -14,10 +14,14 @@ class SqlBuilder {
     private $predicate;
     private $limit;
 
-    public function select($tableName, $alias, $columns) {
+    public function select($tableName, $alias, $columns, $function=null) {
         $this->from($tableName, $alias);
-        foreach ($columns as $column) {
-            $this->columns[] = "${alias}.${column} ${alias}_${column}";
+        foreach ($columns as $k=>$column) {
+            if($function[$k]){
+                $this->columns[] = "{$function[$k]}(${alias}.${column}) {$function[$k]}_${alias}_${column}";
+            }else{
+                $this->columns[] = "${alias}.${column} ${alias}_${column}";
+            }
         }
     }
 

@@ -79,6 +79,24 @@ class DateUtils {
     public static function getBeginningOfPreviousDay($timestamp, $timezone) {
         return self::addDays($timestamp, -1, 0, 0, 0, $timezone);
     }
+    
+     /**
+     * Get a unix timestamp representing 12AM of the first day of the date's week in the given
+     * timezone.
+     * Assume that the first day of the week is Monday.
+     *
+     * @param long $date unix timestamp.
+     * @param String $timezone time zone code.
+     * @return long unix timestamp
+     */
+    public static function getBeginningOfWeek($timestamp, $timezone){
+        date_default_timezone_set($timezone);
+        if(date("l",$timestamp) == "Monday"){
+            return DateUtils::getBeginningOfDay($timestamp, $timezone);
+        }else{
+            return DateUtils::getBeginningOfDay(strtotime("last monday", $timestamp), $timezone);
+        }
+    }
 
     /**
      * Calculate time difference between 2 time stamps.
@@ -106,4 +124,32 @@ class DateUtils {
 
         return $sign . str_pad($hours, 2, '0', STR_PAD_LEFT) . ':' . str_pad($minutes, 2, '0', STR_PAD_LEFT) . ':' . str_pad($seconds, 2, '0', STR_PAD_LEFT);
 	}
+	
+   /**
+     * Modify a timestamp using strtotime() textual datetime description.
+     * @param $timestamp Timestamp to modify
+     * @param $modifier String in a relative format accepted by strtotime(). ex : "+1 day", "+1 week 2 days 4 hours 2 seconds", "next Thursday"
+     * @return Long modified Timestamp
+     */
+    public static function modifyTimestamp($timestamp, $modifier, $timezone){
+        $dateTime = new DateTime(date('c', $timestamp));
+        $tz = new DateTimeZone($timezone);
+        $dateTime->setTimezone($tz);
+        $dateTime->modify($modifier);
+        return $dateTime->format("U");
+    }
+    
+    /**
+     * Return an array containing all the months
+     * The key is the month number and the value is the formatted month
+     * @param string $format : F or m or M or n or t
+     * @return array
+     */
+    public static function getMonthsArray($format){
+        $months = array();
+        for ($i = 1; $i <= 12; $i++){
+            $months[$i] = date($format, mktime(0, 0, 0, $i+1, 0, 0, 0));
+        }
+        return $months;
+    }
 }

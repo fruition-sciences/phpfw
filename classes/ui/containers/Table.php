@@ -44,7 +44,7 @@ class Table extends HtmlElement {
      *        this column will be sorted in descending order. (false by default). 
      */
     public function columnHeader($title, $column=null, $descendByDefault=false) {
-        $td = new HTMLElement("td");
+        $td = new HTMLElement("th");
         // If this column is sortable
         if ($column) {
             $href = Href::current();
