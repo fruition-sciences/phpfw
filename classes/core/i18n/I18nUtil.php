@@ -8,22 +8,43 @@
 require_once("classes/core/i18n/LocalizedString.php");
 
 class I18nUtil {
+    const UNDEFINED = "___UNDEFINED___";
     private static $bundles = array(); // map bundlePath -> Map(string->string)
-
-    public static function lookup($bundleName, $stringId) {
+    
+    /**
+     * Retrieve the string corresponding to the given stringId and bundleName.
+     * If stringId is not available but $defaultVal is pass return the default value.
+     * @param string $bundleName
+     * @param string $stringId
+     * @param string $defaultVal (optional and prevent exception)
+     * @return LocalizedString
+     */
+    public static function lookup($bundleName, $stringId, $defaultVal=self::UNDEFINED) {
         $bundlePath = "application/i18n/en/" . $bundleName . ".xml";
         if (!isset(self::$bundles[$bundlePath])) {
             self::loadResourceBundle($bundleName, $bundlePath);
         }
         $bundle = self::$bundles[$bundlePath];
         if (!isset($bundle[$stringId])) {
-            throw new IllegalArgumentException("Undefined string " . $stringId . " in resource bundle " . $bundlePath);
+            if ($defaultVal === self::UNDEFINED) {
+                throw new IllegalArgumentException("Undefined string " . $stringId . " in resource bundle " . $bundlePath);
+            } else {
+                return new LocalizedString((string)$defaultVal);
+            }
         }
         return new LocalizedString($bundle[$stringId]);
     }
 
-    public static function lookupString($stringId) {
-        return self::lookup('strings', $stringId);
+    /**
+     * Retrieve the string corresponding to the given stringId in strings bundle.
+     * If stringId is not available but $defaultVal is pass return the default value.
+     * @param string $bundleName
+     * @param string $stringId
+     * @param string $defaultVal (optional and prevent exception)
+     * @return LocalizedString
+     */
+    public static function lookupString($stringId, $defaultVal=self::UNDEFINED) {
+        return self::lookup('strings', $stringId, $defaultVal);
     }
     
     private static function loadResourceBundle($bundleName, $bundlePath) {
@@ -38,17 +59,19 @@ class I18nUtil {
         self::$bundles[$bundlePath] = $map;
     }
     
+    /**
+     * Check if a stringId is available in the given bundle.
+     * @param string $bundleName
+     * @param string $stringId
+     * @return boolean true on success
+     */
     public static function stringExist($bundleName, $stringId) {
         if(empty($stringId))
             return false;
-        $stringId = (string)$stringId;
-        $bundlePath = "application/i18n/en/" . $bundleName . ".xml";
-        if (!isset(self::$bundles[$bundlePath])) {
-            self::loadResourceBundle($bundleName, $bundlePath);
-        }
-        $bundle = self::$bundles[$bundlePath];
-        if (empty($bundle) || !isset($bundle[$stringId]))
+        $string = self::lookup($bundleName, $stringId, "stringExist" . self::UNDEFINED);
+        if(strval($string) == "stringExist" . self::UNDEFINED){
             return false;
+        }
         return true;
     }
 }

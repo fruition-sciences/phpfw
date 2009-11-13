@@ -14,11 +14,21 @@ class SqlBuilder {
     private $predicate;
     private $limit;
 
-    public function select($tableName, $alias, $columns, $function=null) {
+    /**
+     * Add a select for the given column and apply the given functions on the column
+     * @param $tableName
+     * @param $alias the alias for this column.
+     * @param $columns
+     * @param $functions null or array of the same size than $columns which contain 
+     *                   functions (max, avg, min...) or null if no function should be apply to the 
+     *                   column of the same index.
+     */
+    public function select($tableName, $alias, $columns, $functions=null) {
         $this->from($tableName, $alias);
+        $useFunction = is_array($functions) && count($columns) == count($functions);
         foreach ($columns as $k=>$column) {
-            if($function[$k]){
-                $this->columns[] = "{$function[$k]}(${alias}.${column}) {$function[$k]}_${alias}_${column}";
+            if($useFunction && !empty($functions[$k])){
+                $this->columns[] = "{$functions[$k]}(${alias}.${column}) {$functions[$k]}_${alias}_${column}";
             }else{
                 $this->columns[] = "${alias}.${column} ${alias}_${column}";
             }
