@@ -43,6 +43,10 @@ class Checkbox extends HtmlElement {
         if ($this->value == $this->getValue()) {
             $this->set("checked");
     	}
+    	// Also respect array value (for multiple checkboxes with same name)
+    	if (is_array($this->value) && in_array($this->getValue(), $this->value)) {
+    	    $this->set("checked");
+    	}
         return parent::toInput();
     }
 

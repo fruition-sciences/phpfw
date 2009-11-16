@@ -157,6 +157,11 @@ class Form {
     }
 
     public function setValue($name, $value) {
+        if (is_array($value)) {
+            if (!endsWith($name, '[]')) {
+                $name = $name . '[]';
+            }
+        }
         $this->values[$name] = $value;
     }
 
@@ -169,7 +174,7 @@ class Form {
 
     public function setValues($map, $prefix="") {
         foreach ($map as $key=>$val) {
-            $this->values[$prefix . $key] = $val;
+            $this->setValue($prefix . $key, $val);
         }
     }
 

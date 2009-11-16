@@ -24,7 +24,8 @@ class Request {
         if (isset($_REQUEST['_checkboxes'])) {
             $names = split(';', $_REQUEST['_checkboxes']);
             foreach ($names as $name) {
-                if ($name != '') {
+                // Ignore if name ends with []. This are being handled properly as array by PHP.
+                if ($name != '' && !endsWith($name, '[]')) {
                     if (!isset($map[$name])) {
                         $map[$name] = "0";
                     }
