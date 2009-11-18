@@ -118,7 +118,7 @@ class Dropdown_Option extends HtmlElement {
     public function asString($value) {
         $v = $this->get('value');
         if ($v == $value) {
-            $this->set('selected');
+            $this->set('selected','selected');
         }
         else {
             $this->un_set('selected');

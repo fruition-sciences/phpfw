@@ -182,7 +182,7 @@ function _pstack_trace($mixed=NULL)
     if(!empty($mixed))
     print_r($mixed);
 
-    echo "'<BR>\n";
+    echo "'<br />\n";
     debug_print_backtrace();
 
     echo "\n</pre>\n";

@@ -246,7 +246,7 @@ class Form {
         if ($this->forUpload) {
             echo " enctype=\"multipart/form-data\"";
         }
-        echo " onKeyPress=\"return formKeyPress(event);\"";
+        echo " onkeypress=\"return formKeyPress(event);\"";
         echo ">";
     }
 

@@ -131,10 +131,12 @@ class DateUtils {
      * @param $modifier String in a relative format accepted by strtotime(). ex : "+1 day", "+1 week 2 days 4 hours 2 seconds", "next Thursday"
      * @return Long modified Timestamp
      */
-    public static function modifyTimestamp($timestamp, $modifier, $timezone){
+    public static function modifyTimestamp($timestamp, $modifier, $timezone=null){
         $dateTime = new DateTime(date('c', $timestamp));
-        $tz = new DateTimeZone($timezone);
-        $dateTime->setTimezone($tz);
+        if($timezone){
+            $tz = new DateTimeZone($timezone);
+            $dateTime->setTimezone($tz);
+        }
         $dateTime->modify($modifier);
         return $dateTime->format("U");
     }
