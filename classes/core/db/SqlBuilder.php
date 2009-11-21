@@ -19,9 +19,10 @@ class SqlBuilder {
      * @param $tableName
      * @param $alias the alias for this column.
      * @param $columns
-     * @param $functions null or array of the same size than $columns which contain 
-     *                   functions (max, avg, min...) or null if no function should be apply to the 
-     *                   column of the same index.
+     * @param $functions (optional) Array of the same size as $columns which
+     *        contains SQL functions (such as max, avg, min) to apply on the
+     *        corresponding column. A null entry in the array means no function
+     *        should be apply on corresponding column.
      */
     public function select($tableName, $alias, $columns, $functions=null) {
         $this->from($tableName, $alias);
