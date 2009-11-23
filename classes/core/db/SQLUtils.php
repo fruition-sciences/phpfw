@@ -18,12 +18,12 @@ class SQLUtils {
      *
      * @param long dateTime The date (number)
      */
-    public static function convertDate($dateTime) {
+    public static function convertDate($dateTime, $timeZone='GMT') {
         if ($dateTime == null) {
             return "null";
         }
-        // Note: Assumes that the timezone of PHP is UTC and that the database is in UTC.
-        return "'" . date("Y-m-d H:i:s", $dateTime) . "'";
+        $format = new Formatter($timeZone);
+        return "'" . $format->dateFormat($dateTime, "Y-m-d H:i:s") . "'";
     }
 
     public static function convertLong($val) {

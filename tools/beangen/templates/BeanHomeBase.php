@@ -73,6 +73,7 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanHomeBase {
     public static function populate($bean, $rs, $prefix='') {
 <?php
   foreach ($descriptor->xml->field as $field) {
+        $extraParams = "";
         switch ($field['type']) {
             case 'id': case 'long': case 'Boolean':
                 $rsMethod = "getLong";
@@ -85,12 +86,15 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanHomeBase {
                 break;
             case 'Date':
                 $rsMethod = "getDate";
+                if (isset($field['timezone'])) {
+                    $extraParams = ", '" . $field['timezone'] . "'";
+                }
                 break;
             default:
                 throw new Exception("Unrecognized data type (in BeanHomeBase.php): " . $field['type']);
         }
 ?>
-        $bean-><?php echo $descriptor->setterName($field) ?>($rs-><?php echo $rsMethod ?>($prefix . <?php echo $descriptor->xml['name'] . "Bean::" . $descriptor->fieldConstant($field) ?>));
+        $bean-><?php echo $descriptor->setterName($field) ?>($rs-><?php echo $rsMethod ?>($prefix . <?php echo $descriptor->xml['name'] . "Bean::" . $descriptor->fieldConstant($field) . $extraParams ?>));
 <?php
   }
 ?>

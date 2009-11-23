@@ -36,9 +36,9 @@ class ResultSet {
         $this->map[$key] = $value;
     }
 
-    public function getDate($key) {
-        // Assumes that DB and PHP are both in UTC
-        return strtotime($this->map[$key]);
+    public function getDate($key, $timeZone='GMT') {
+        $converter = new DataConverter($timeZone);
+        return $converter->parseDate($this->map[$key]);
     }
     public function setDate($key, $value) {
         // Assumes that DB and PHP are both in UTC

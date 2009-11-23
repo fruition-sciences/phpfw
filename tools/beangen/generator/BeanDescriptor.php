@@ -71,7 +71,11 @@ class BeanDescriptor {
             case "double":
                 return "SQLUtils::convertDouble(\$this->${field['name']})";
             case "Date":
-                return "SQLUtils::convertDate(\$this->${field['name']})";
+                $extraParam = "";
+                if ($field['timezone']) {
+                    $extraParam = ", '" . $field['timezone'] . "'";
+                }
+                return "SQLUtils::convertDate(\$this->${field['name']}$extraParam)";
                 //return "\"'\" . mysql_escape_string(\$this->${field['name']}) . \"'\"";
             case "Boolean":
                  return "SQLUtils::convertBoolean(\$this->${field['name']})";
