@@ -20,14 +20,23 @@ class Context {
         $this->session = new DefaultSession();
     }
 
+    /**
+     * @return Form
+     */
     public function getForm() {
         return $this->form;
     }
 
+    /**
+     * @return Request
+     */
     public function getRequest() {
         return $this->request;
     }
 
+    /** 
+     * @return Session
+     */
     public function getSession() {
         return $this->session;
     }
