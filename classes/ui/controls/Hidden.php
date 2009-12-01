@@ -10,4 +10,11 @@ class Hidden extends HtmlElement {
         parent::__construct("input", $name);
         $this->set("type", "hidden");
     }
+    /**
+     * An hidden field will not be display as text in readonly mode.
+     * @see classes/ui/controls/HtmlElement#toString()
+     */
+    public function toString() {
+        return "";
+    }
 }
