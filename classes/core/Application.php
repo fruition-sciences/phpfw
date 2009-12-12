@@ -42,6 +42,7 @@ class Application {
             $this->invokeControllerMethod();
         }
         catch (Exception $e) {
+            Logger::error($e);
             include("www/templates/error.php");
             echo "<p><b>Error details:</b></p>";
             echo "<pre>";
