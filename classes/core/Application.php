@@ -116,6 +116,21 @@ class Application {
         }
         return $appRoot;
     }
+    /**
+     * Build the page URL (http + serverName + port) from the $_SERVER
+     * php variable. There is no / at the end.
+     * the app root is not appended.
+     * @return String page URL
+     */
+    public static function getPageURL() {
+        $pageURL = 'http';
+        if (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on")$pageURL .= "s";
+        $pageURL .= "://";
+        if ($_SERVER["SERVER_PORT"] != "80") {
+            $pageURL .= $_SERVER["SERVER_NAME"].":".$_SERVER["SERVER_PORT"];
+        }
+        return $pageURL;
+    }
 
     private function getContext() {
         if (!$this->ctx) {

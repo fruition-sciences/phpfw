@@ -6,8 +6,17 @@
  */
 
 class Formatter {
+    /**
+     * @var Formatter
+     */
     private static $theInstance;
-    private static $timezone; // DateTimeZone object
+    /**
+     * @var DateTimeZone
+     */
+    private static $timezone;
+    /**
+     * @var DateTimeZone
+     */
     private static $utcTimeZone;
 
     /**
@@ -22,6 +31,8 @@ class Formatter {
     /**
      * Returns the formatter instance. Creates a new one if doesn't exist yet.
      * Uses the timezone of the user of the current transaction.
+     * 
+     * @return Formatter
      */
     public static function getInstance() {
         if (!self::$theInstance) {

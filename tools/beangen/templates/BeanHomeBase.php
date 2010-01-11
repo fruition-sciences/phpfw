@@ -14,6 +14,12 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanHomeBase {
     private static $cache; // Maps id -> <?php echo $descriptor->xml['name'] ?>Bean
 
 <?php } ?>
+    /**
+     * Retrieve a <?php echo $descriptor->xml['name'] ?>Bean from the id
+     * 
+     * @param integer $id
+     * @return <?php echo $descriptor->xml['name'] ?>Bean
+     */
     public static function find($id) {
         $db = Transaction::getInstance()->getDB();
         $sql = "select * from " . <?php echo $descriptor->xml['name'] ?>Bean::TABLE_NAME .

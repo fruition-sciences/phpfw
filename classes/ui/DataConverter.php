@@ -20,6 +20,7 @@ class DataConverter {
     /**
      * Returns the DataConverter instance. Creates a new one if doesn't exist yet.
      * Uses the timezone of the user of the current transaction.
+     * @return DataConverter
      */
     public static function getInstance() {
         if (!self::$theInstance) {

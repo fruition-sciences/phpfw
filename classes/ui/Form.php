@@ -93,16 +93,29 @@ class Form {
         $control->setForm($this);
         $this->addControl($control->getName(), $control);
     }
-
-    public function label($name, $title) {
+    /**
+     * Dispaly a label for a field
+     * @param $name string
+     * @param $title string
+     * @param $displayStar Boolean Display a star if the field is required
+     * @param $forceRequired Boolean Set the label as if the field was required (even if it is not)
+     * @return HtmlElement
+     */
+    public function label($name, $title, $displayStar=true, $forceRequired=false) {
         $this->labels[$name] = $this->removeEndColon($title);
-        $span = new HtmlElement("label");
-        $span->setBody($title);
+        $label = new HtmlElement("label");
+        if (($this->findConstraint($name, ConstraintFactory::REQUIRED) || $forceRequired) && $displayStar){
+            $span = new HtmlElement("span");
+            $span->set("class","required");
+            $span->setBody("*");
+            $title .= " " . $span;
+        }
+        $label->setBody($title);
         if (isset($this->field_errors[$name])) {
             $styleClass = Config::getInstance()->getString("webapp/ui/errorCssClass", "error");
-            $span->set("class", $styleClass);
+            $label->set("class", $styleClass);
         }
-        return $span;
+        return $label;
     }
 
     private function removeEndColon($label) {

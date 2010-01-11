@@ -6,6 +6,9 @@
  */
 
 class Menu {
+    /**
+     * @var SimpleXMLElement
+     */
     private $xml;
     private $mainMenuId;
     private $subMenuId;
@@ -82,7 +85,14 @@ class MenuItem {
     private $adminOnly; // Can be seen only by admin users
     private $items = array();
     private $selected = false;
-    private $menu; // Points to menu object.
+    /**
+     * @var Menu
+     */
+    private $menu;
+    /**
+     * @var SimpleXMLElement
+     */
+    private $xmlElement;
 
     public function __construct($menu, $xmlElement) {        
         $this->menu = $menu;
@@ -90,6 +100,7 @@ class MenuItem {
         $this->adminOnly = $xmlElement['adminOnly'];
         $this->name = $xmlElement->name;
         $this->href = $xmlElement->href;
+        $this->xmlElement = $xmlElement;
         foreach ($xmlElement->item as $childItem) {
             $item = new MenuItem($this->menu, $childItem);
             if ($item->getId() == $menu->getSubMenuId()) {
@@ -125,5 +136,9 @@ class MenuItem {
 
     public function isAdminOnly() {
     	return $this->adminOnly;
+    }
+    
+    public function getXmlElement() {
+        return $this->xmlElement;
     }
 }
