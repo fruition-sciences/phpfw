@@ -125,9 +125,9 @@ class Application {
     public static function getPageURL() {
         $pageURL = 'http';
         if (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on")$pageURL .= "s";
-        $pageURL .= "://";
+        $pageURL .= "://".$_SERVER["SERVER_NAME"];
         if ($_SERVER["SERVER_PORT"] != "80") {
-            $pageURL .= $_SERVER["SERVER_NAME"].":".$_SERVER["SERVER_PORT"];
+            $pageURL .= ":".$_SERVER["SERVER_PORT"];
         }
         return $pageURL;
     }
