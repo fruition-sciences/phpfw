@@ -196,7 +196,11 @@ abstract class ExecutableApp {
      * Removes the lock file, if one exists.
      */
     private function unlockProcess() {
-        $lockFile = $this->getLockFile();
+        // If this process doesn't require locking, don't do anything
+        if (!$this->singleProcess) {
+            return;
+        }
+    	$lockFile = $this->getLockFile();
         fclose($this->lockFp);
         if (!@unlink($lockFile)) {
             Logger::warning("Could not delete lock file $lockFile");
