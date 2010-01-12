@@ -85,7 +85,7 @@ abstract class BaseView implements View {
      * @param String $name the component's name
      */
     public function component($name) {
-        $this->components[$name]->render($this->ctx);
+        $this->components[$name]->show();
     }
 
     public function getComponent($name) {
