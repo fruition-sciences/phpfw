@@ -93,29 +93,32 @@ class Form {
         $control->setForm($this);
         $this->addControl($control->getName(), $control);
     }
+
     /**
-     * Dispaly a label for a field
-     * @param $name string
-     * @param $title string
-     * @param $displayStar Boolean Display a star if the field is required
-     * @param $forceRequired Boolean Set the label as if the field was required (even if it is not)
+     * Dispaly a label for a field.
+     * If the field is required, the css class 'required' will be added to
+     * the label's element.
+     * 
+     * @param $name string the field name
+     * @param $title string the title to display.
      * @return HtmlElement
      */
-    public function label($name, $title, $displayStar=true, $forceRequired=false) {
+    public function label($name, $title) {
+        $cssClasses = array();
         $this->labels[$name] = $this->removeEndColon($title);
-        $label = new HtmlElement("label");
-        if (($this->findConstraint($name, ConstraintFactory::REQUIRED) || $forceRequired) && $displayStar){
-            $span = new HtmlElement("span");
-            $span->set("class","required");
-            $span->setBody("*");
-            $title .= " " . $span;
+        $span = new HtmlElement("label");
+        $span->setBody($title);
+        if (($this->findConstraint($name, ConstraintFactory::REQUIRED))) {
+            $cssClasses[] = 'required';
         }
-        $label->setBody($title);
         if (isset($this->field_errors[$name])) {
             $styleClass = Config::getInstance()->getString("webapp/ui/errorCssClass", "error");
-            $label->set("class", $styleClass);
+            $cssClasses[] = $styleClass;
         }
-        return $label;
+        if (count($cssClasses) > 0) {
+            $span->set("class", implode(' ', $cssClasses));
+        }
+        return $span;
     }
 
     private function removeEndColon($label) {
