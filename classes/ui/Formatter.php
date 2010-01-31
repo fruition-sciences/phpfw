@@ -13,7 +13,7 @@ class Formatter {
     /**
      * @var DateTimeZone
      */
-    private static $timezone;
+    private $timezone;
     /**
      * @var DateTimeZone
      */
