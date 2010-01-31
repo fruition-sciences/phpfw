@@ -68,7 +68,7 @@ abstract class UI {
             throw new ConfigurationException("The entry webapp/defaultURL is missing in configuration file.");
         }
         $url = $result[0];
-        return $url;
+        return (string)$url;
     }
 
     public function getFormatter() {
