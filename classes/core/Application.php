@@ -13,6 +13,10 @@ class Application {
     private $timeLogger;
 
     public function init() {
+        // Register error handler
+        set_error_handler(array($this, 'errorHandler'));
+        // Register shutdown function - allow detecting more errors
+        register_shutdown_function(array($this, 'shutdown'));
         $this->timeLogger = new TimeLogger('phpfw-timer/phpfw-timer.log');
         $config = Config::getInstance();
         $logDir = $config->getString('logging/logDir');
@@ -42,17 +46,38 @@ class Application {
             $this->invokeControllerMethod();
         }
         catch (Exception $e) {
-            Logger::error($e);
-            include("www/templates/error.php");
-            echo "<p><b>Error details:</b></p>";
-            echo "<pre>";
-            echo $e;
-            echo "</pre>";
+            $this->handleException($e);
         }
         $logTimeEnabled = Config::getInstance()->getBoolean('webapp/logging/timeLog/enabled', false);
         if ($logTimeEnabled) {
             $this->timeLogger->end();
         }
+    }
+
+    /**
+     * Final handling of the exception.
+     * Logs the error and renders the error page.
+     * 
+     * Note: All PHP errors are being caught by the Application and then
+     * being passed as exceptions to this method.
+     * 
+     * @param $e
+     */
+    private function handleException($e) {
+        // Variables set in this method can be accessed by the template.
+        if ($e instanceof ErrorException) {
+            $severety = $e->getSeverity();
+        }
+        $showErrorDetails = Config::getInstance()->getBoolean('webapp/errorHandling/showDetails', true);
+        // Page not found
+        if ($e instanceof PageNotFoundException) {
+            header("HTTP/1.0 404 Not Found");
+            include("www/templates/page_not_found.php");
+            return;
+        }
+        // For all other errors - show error page.
+        Logger::error($e);
+        include("www/templates/error.php");
     }
 
     private function validate() {
@@ -73,8 +98,14 @@ class Application {
         if (sizeof($tokens) < 2 || $tokens[1] === '') {
             $defaultUrl = $ctx->getUIManager()->getDefaultURL();
             $ctx->redirect($defaultUrl);
+            return;
         }
-        $controllerName = $this->controllerNameFromAlias($tokens[0]);
+        try {
+            $controllerName = $this->controllerNameFromAlias($tokens[0]);
+        }
+        catch (IllegalArgumentException $e) {
+            throw new PageNotFoundException($e->getMessage(), 0, $e);
+        }
         $ctx->setControllerAlias($tokens[0]);
         $methodName = $tokens[1];
         $class = new ReflectionClass($controllerName);
@@ -82,9 +113,14 @@ class Application {
         if (!$this->checkAccess($class, $obj, $ctx)) {
             return;
         }
-        $method = $class->getMethod($methodName);
+        try {
+            $method = $class->getMethod($methodName);
+        }
+        catch (ReflectionException $e) {
+            throw new PageNotFoundException($e->getMessage(), 0, $e);
+        }
         $view = $method->invoke($obj, $ctx);
-        if (is_a($view, 'View')) {
+        if ($view instanceof View) {
             $view->init($ctx);
             if ($ctx->getForm()->hasErrors()) {
                 $ctx->getForm()->setValues($ctx->getAttributes());
@@ -201,5 +237,72 @@ class Application {
      */
     public function setSessionName($sessionName) {
         $this->sessionName = $sessionName;
+    }
+
+    /**
+     * Catch errors that would normally not throw and exception.
+     * This does not catch all errors, just some of them.
+     * Examples of error that gets caught here:
+     *   - Accessing undefined index in array.
+     *   - Warnings
+     *
+     * @param $errno the level of the error, as defined in: http://www.php.net/manual/en/errorfunc.constants.php
+     * @param $errstr
+     * @param $errfile
+     * @param $errline
+     * @return unknown_type
+     */
+    public function errorHandler($errno, $errstr, $errfile, $errline) {
+        $errorLevel = $this->getConfigStopErrorLevel();
+        if ($errno & $errorLevel) {
+            throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
+        }
+        // Log warning if necessary
+        $reportLevel = $this->getConfigReportErrorLevel();
+        if ($errno & $reportLevel) {
+            Logger::warning($errstr . " in $errfile:$errline");
+        }
+    }
+
+    /**
+     * A way to detects errors that cannot be caught using the set_error_handler
+     * method.
+     * This method is called at the end of each php request. If there was an
+     * error, it calls the error handler.
+     */
+    public function shutdown() {
+        $error = error_get_last();
+        if ($error) {
+            // We cannot throw exception from here. Pass it to our exception handler method.
+            $e = new ErrorException($error['message'], 0, $error['type'], $error['file'], $error['line']);
+            $this->handleException($e); 
+        }
+    }
+
+    /**
+     * Get the 'stop' error level from configuration.
+     * This is the biwise combination of error levels upon which the application
+     * should stop.
+     *  
+     * @return long
+     */
+    private function getConfigStopErrorLevel() {
+        $exp = Config::getInstance()->getString('webapp/errorHandling/stopLevel', 'E_ALL');
+        eval("\$level = $exp;");
+        return $level;
+    }
+
+    /**
+     * Get the 'report' error level from configuration.
+     * This is the biwise combination of error levels that the application
+     * should log.
+     * All other errors will be ignored.
+     *  
+     * @return long
+     */
+    private function getConfigReportErrorLevel() {
+        $exp = Config::getInstance()->getString('webapp/errorHandling/reportLevel', 'E_ALL | E_STRICT');
+        eval("\$level = $exp;");
+        return $level;
     }
 }

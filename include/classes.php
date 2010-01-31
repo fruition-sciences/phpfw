@@ -16,6 +16,7 @@ require_once("classes/exception/IllegalArgumentException.php");
 require_once("classes/exception/IllegalStateException.php");
 require_once("classes/exception/IllegalOperationException.php");
 require_once("classes/exception/FileNotFoundException.php");
+require_once("classes/exception/PageNotFoundException.php");
 require_once("classes/exception/UndefinedKeyException.php");
 require_once("classes/exception/ConfigurationException.php");
 require_once("classes/core/Transaction.php");
