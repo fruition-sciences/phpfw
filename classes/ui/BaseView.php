@@ -20,6 +20,7 @@ abstract class BaseView implements View {
     private $components = array(); // Map component_name -> component
     private $ctx;
     private $page;
+    private $rendered = false;
 
     public function init($ctx) {
         $this->ctx = $ctx;
@@ -46,6 +47,7 @@ abstract class BaseView implements View {
         $page = $this->getPage();
         $ui = $this->ctx->getUIManager();
         include($path);
+        $this->setRendered(true);
     }
 
     public function getTemplateName() {
@@ -114,5 +116,21 @@ abstract class BaseView implements View {
 
     public function __toString() {
         return get_class($this);
+    }
+
+    /**
+     * Find out if this view has already been rendered.
+     *
+     * @return boolean
+     */
+    public function wasRendered() {
+        return $this->rendered;
+    }
+
+    /**
+     * Mark that this view has already been rendered.
+     */
+    public function setRendered($rendered) {
+        $this->rendered = $rendered;
     }
 }
