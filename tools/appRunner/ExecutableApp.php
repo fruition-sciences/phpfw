@@ -92,6 +92,19 @@ abstract class ExecutableApp {
 
     protected abstract function process();
 
+    /**
+     * Get the timeout length of the lock file. The lockfile prevents multiple
+     * instances of this class to be executed simultaniously. However, the lock
+     * file will stop functioning after this number of seconds have passed.
+     * The current default number is 120 seconds. Override this method to change
+     * it.
+     *  
+     * @return int number of seconds.
+     */
+    protected function getLockTimeoutSeconds() {
+        return self::LOCK_LENGTH_SECONGS;
+    }
+
     private function initLog() {
         $errorLogFileName = get_class($this) . ".log";
         $config = Config::getInstance();
@@ -149,7 +162,7 @@ abstract class ExecutableApp {
             // Check if the file is too old
             $ctime = filectime($lockFile);
             // If file is old
-            if (time() - $ctime > self::LOCK_LENGTH_SECONGS) {
+            if (time() - $ctime > $this->getLockTimeoutSeconds()) {
                 // Try deleting file. This will fail if the lock is still in use
                 if (!@unlink($lockFile)) {
                     // Delete failed.
