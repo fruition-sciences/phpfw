@@ -37,7 +37,7 @@ class Menu {
      * The sub menu id is optional.
      */
     public function setMenuSelection($menuSelectionStr) {
-        $parts = split("->", $menuSelectionStr);
+        $parts = explode("->", $menuSelectionStr);
         if (count($parts) > 0) {
             $this->mainMenuId = $parts[0];
         }

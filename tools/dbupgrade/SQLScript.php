@@ -41,7 +41,7 @@ class SQLScript {
         }
         $this->statements = array();
         $content = file_get_contents($this->fileName);
-        $statements = split("\\s*;\\s*", $content);
+        $statements = preg_split("\\s*;\\s*", $content);
         $i = 0;
         foreach ($statements as $statementContent) {
             $i++;

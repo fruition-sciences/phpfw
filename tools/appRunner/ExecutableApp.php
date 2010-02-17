@@ -233,7 +233,7 @@ abstract class ExecutableApp {
     protected function getKeyValueArgs($args) {
         $map = array();
         foreach ($args as $arg) {
-            $tokens = split("=", $arg);
+            $tokens = explode("=", $arg);
             $key = $tokens[0];
             $val = count($tokens) > 1 ? $tokens[1] : "";
             $map[$key] = $val;

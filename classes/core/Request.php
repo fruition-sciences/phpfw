@@ -22,7 +22,7 @@ class Request {
         }
         // Add unchecked checkboxes to the map
         if (isset($_REQUEST['_checkboxes'])) {
-            $names = split(';', $_REQUEST['_checkboxes']);
+            $names = explode(';', $_REQUEST['_checkboxes']);
             foreach ($names as $name) {
                 // Ignore if name ends with []. This are being handled properly as array by PHP.
                 if ($name != '' && !endsWith($name, '[]')) {

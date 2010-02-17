@@ -29,7 +29,7 @@ class ConstraintFactory {
     }
 
     public static function deserialize($text) {
-        $tokens = split(':', $text);
+        $tokens = explode(':', $text);
         $type = $tokens[0];
         if ($type == self::REQUIRED) {
             $constraint = new RequiredConstraint();

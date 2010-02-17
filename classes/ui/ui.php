@@ -30,7 +30,7 @@ abstract class UI {
     function link($url, $title = '') {
         $href = null;
         if ($url) {
-            if (get_class($url) == 'Href') {
+            if (is_object($url) && get_class($url) == 'Href') {
                 $href = $url;
             }
             else {

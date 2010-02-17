@@ -20,7 +20,7 @@ class Button extends HtmlElement {
     }
 
     public function setUrl($url) {
-        if (get_class($url) == 'Href') {
+        if (is_object($url) && get_class($url) == 'Href') {
             $this->href = $url;
         }
         else {

@@ -36,10 +36,10 @@ class Href extends Element {
      * @param String query new query string to apply.
      */
     public function setQuery($query) {
-        $pairs = split("&", $query);
+        $pairs = explode("&", $query);
         for ($i = 0; $i < sizeof($pairs); $i++) {
         	$pair = $pairs[$i];
-        	$nameVal = split("=", $pair);
+        	$nameVal = explode("=", $pair);
         	if (sizeof($nameVal) == 2) {
         	    // Call set on parent, so values are not encoded (they are already encoded)
         	    parent::set($nameVal[0], $nameVal[1]);
