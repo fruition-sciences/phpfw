@@ -8,10 +8,10 @@
 require_once("Element.php");
 
 class Href extends Element {
-    private $path;
+    private $path; // The url, without the parameters
 
     public function __construct($path='') {
-        $this->path = $path;
+        $this->parse($path);
     }
 
     public static function current() {
@@ -38,12 +38,12 @@ class Href extends Element {
     public function setQuery($query) {
         $pairs = explode("&", $query);
         for ($i = 0; $i < sizeof($pairs); $i++) {
-        	$pair = $pairs[$i];
-        	$nameVal = explode("=", $pair);
-        	if (sizeof($nameVal) == 2) {
-        	    // Call set on parent, so values are not encoded (they are already encoded)
-        	    parent::set($nameVal[0], $nameVal[1]);
-        	}
+            $pair = $pairs[$i];
+            $nameVal = explode("=", $pair);
+            if (sizeof($nameVal) == 2) {
+                // Call set on parent, so values are not encoded (they are already encoded)
+                parent::set($nameVal[0], $nameVal[1]);
+            }
         }
     }
 
@@ -64,5 +64,14 @@ class Href extends Element {
 
     public function get($key) {
         return urldecode(parent::get($key));
+    }
+
+    private function parse($path) {
+        $parts = explode('?', $path);
+        $this->path = $parts[0];
+        if (count($parts) == 1) {
+            return;
+        }
+        $this->setQuery($parts[1]);
     }
 }
