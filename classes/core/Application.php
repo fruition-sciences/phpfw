@@ -14,9 +14,9 @@ class Application {
 
     public function init() {
         // Register error handler
-        set_error_handler(array($this, 'errorHandler'));
+        //set_error_handler(array($this, 'errorHandler'));
         // Register shutdown function - allow detecting more errors
-        register_shutdown_function(array($this, 'shutdown'));
+        //register_shutdown_function(array($this, 'shutdown'));
         $this->timeLogger = new TimeLogger('phpfw-timer/phpfw-timer.log');
         $config = Config::getInstance();
         $logDir = $config->getString('logging/logDir');
