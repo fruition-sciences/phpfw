@@ -16,7 +16,7 @@ class Bread_Crumbs {
     public function __toString()
     {
         $html = "<div class='crumbs'>";
-        $cumbsTxt = StringUtils::arrayToString($this->items, " -> ");
+        $cumbsTxt = StringUtils::arrayToString($this->items, " &rarr; ");
         $html .= $cumbsTxt;
         $html .= "</div>";
         return $html;
