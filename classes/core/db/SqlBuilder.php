@@ -17,7 +17,7 @@ class SqlBuilder {
     /**
      * Add a select for the given column and apply the given functions on the column
      * @param $tableName
-     * @param $alias the alias for this column.
+     * @param $alias prefix to be used for all column aliases.
      * @param $columns
      * @param $functions (optional) Array of the same size as $columns which
      *        contains SQL functions (such as max, avg, min) to apply on the
