@@ -154,4 +154,30 @@ class DateUtils {
         }
         return $months;
     }
+
+    /**
+     * Create a new unix timestamp representing the given date/time in the given
+     * timezone.
+     *
+     * @param $year int
+     * @param $month int
+     * @param $day int
+     * @param $hour int
+     * @param $minute int
+     * @param $second int
+     * @param $timezone (String) the timezone to evaluate the given time in. If
+     *        null, the current user's account's timezone will be used.
+     * @return DateTime
+     */
+    public static function makeDate($year, $month, $day, $hour=0, $minute=0, $second=0, $timezone=null) {
+        if (!$timezone) {
+            $timezone = Transaction::getInstance()->getUser()->getTimezone();
+        }
+        $date = new DateTime();
+        $tz = new DateTimeZone($timezone);
+        $date->setTimezone($tz);
+        $date->setDate($year, $month, $day);
+        $date->setTime($hour, $minute, $second);
+        return $date;
+    }
 }
