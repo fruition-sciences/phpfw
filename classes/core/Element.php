@@ -19,6 +19,7 @@ class Element {
 
     public function un_set($key) {
         unset($this->atts[$key]);
+        return $this;
     }
 
 }
