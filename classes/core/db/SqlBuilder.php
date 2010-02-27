@@ -166,7 +166,7 @@ class SQLJoin {
     public function __toString() {
         $sql = "$this->table $this->alias";
         if ($this->condition) {
-            $sql = "left join $sql on $this->condition";
+            $sql = "left join $sql on ($this->condition)";
         }
         return $sql;
     }
