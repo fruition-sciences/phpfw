@@ -68,6 +68,10 @@ class Application {
         if ($e instanceof ErrorException) {
             $severety = $e->getSeverity();
         }
+        if ($e instanceof EndOfResponseException) {
+            // Happens after redirect. Ignore this exception.
+            return;
+        }
         $showErrorDetails = Config::getInstance()->getBoolean('webapp/errorHandling/showDetails', true);
         // Page not found
         if ($e instanceof PageNotFoundException) {

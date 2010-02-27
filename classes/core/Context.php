@@ -82,7 +82,7 @@ class Context {
     public function redirect($path) {
         $newPath = self::normalizePath($path);
         header('Location: ' . $newPath);
-        return null;
+        throw new EndOfResponseException();
     }
 
     public static function normalizePath($path) {

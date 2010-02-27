@@ -19,6 +19,7 @@ require_once("classes/exception/FileNotFoundException.php");
 require_once("classes/exception/PageNotFoundException.php");
 require_once("classes/exception/UndefinedKeyException.php");
 require_once("classes/exception/ConfigurationException.php");
+require_once("classes/exception/EndOfResponseException.php");
 require_once("classes/core/Transaction.php");
 require_once("classes/core/DefaultSession.php");
 require_once("classes/core/Context.php");
