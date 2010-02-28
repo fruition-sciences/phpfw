@@ -103,8 +103,22 @@ class Formatter {
         return sprintf("%.$digits" . "f", $val);
     }
 
+    /**
+     * Get the name of this formatter's timezone.
+     * 
+     * @return String
+     */
     public function getTimeZoneName() {
         return $this->timezone->getName();
+    }
+
+    /**
+     * Get this formatter's timezone.
+     * 
+     * @return DateTimeZone
+     */
+    public function getTimeZone() {
+        return $this->timezone;
     }
 
     private static function getUTCTimeZone() {
