@@ -22,8 +22,11 @@ class Dropdown extends HtmlElement {
         return $this->addOption($name, $value);
     }
 
-    public function addOption($name, $value=null) {
+    public function addOption($name, $value=null, $tooltip=null) {
         $option = new Dropdown_Option($name, $value);
+        if ($tooltip) {
+            $option->set("title", $tooltip);
+        }
         $option->setForm($this->getForm());
         $this->options[] = $option;
         return $this;
