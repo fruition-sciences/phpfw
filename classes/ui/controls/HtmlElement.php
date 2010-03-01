@@ -76,7 +76,7 @@ class HtmlElement extends Element {
             $readonly = isset($this->form) ? $this->form->isReadonly() : false;
         }
         if ($readonly) {
-            return $this->toString();
+            return (string)$this->toString();
         }
         else {
             return $this->toInput();
