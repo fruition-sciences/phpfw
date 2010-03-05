@@ -31,6 +31,7 @@ class GenerateBeans {
     }
 
     public function process() {
+        date_default_timezone_set('UTC');
         $generator = new BeanGenerator($this->templetsDir, $this->beansOutputDir);
         $dirHandle = opendir($this->beanDescriptorsDir);
         while (false !== ($file = readdir($dirHandle))) {
