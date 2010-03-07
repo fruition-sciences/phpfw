@@ -125,10 +125,10 @@ class Application {
         }
         $view = $method->invoke($obj, $ctx);
         if ($view instanceof View) {
-            $view->init($ctx);
-            if ($ctx->getForm()->hasErrors()) {
+            if ($ctx->getUIManager()->getErrorManager()->hasErrors()) {
                 $ctx->getForm()->setValues($ctx->getAttributes());
             }
+            $view->init($ctx);
             global $form;
             $view->render($ctx);
         }
