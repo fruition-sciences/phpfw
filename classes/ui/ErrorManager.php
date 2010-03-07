@@ -32,6 +32,10 @@ class ErrorManager {
         $error = $this->tagsMap[$tag];
         $error->setMessage($message);
     }
+
+    public function hasErrors() {
+        return count($this->errors) > 0;
+    }
 }
 
 class UserError {
