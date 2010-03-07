@@ -42,7 +42,7 @@ class Href extends Element {
             $nameVal = explode("=", $pair);
             if (sizeof($nameVal) == 2) {
                 // Call set on parent, so values are not encoded (they are already encoded)
-                parent::set($nameVal[0], $nameVal[1]);
+                parent::set($nameVal[0], urldecode($nameVal[1]));
             }
         }
     }
@@ -64,6 +64,10 @@ class Href extends Element {
 
     public function get($key) {
         return urldecode(parent::get($key));
+    }
+
+    public function getAttributes() {
+        return $this->atts;
     }
 
     private function parse($path) {
