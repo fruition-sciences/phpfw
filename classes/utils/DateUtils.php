@@ -100,6 +100,7 @@ class DateUtils {
 
     /**
      * Calculate time difference between 2 time stamps.
+     * Returns a formatted string containing the difference.
      *
      * @param long $startTime unix timestamp
      * @param long $endTime (optional) unix timestamp. Default is current time.
