@@ -74,6 +74,13 @@ abstract class UI {
     public function getFormatter() {
         return Formatter::getInstance();
     }
+
+    /**
+     * @return Context
+     */
+    public function getContext() {
+        return $this->ctx;
+    }
 }
 
 ?>
