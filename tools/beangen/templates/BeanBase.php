@@ -55,11 +55,15 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
 ?>
     private $<?php 
       echo $field['name'];
+      $defaultValue = null;
       if ($field['type'] == "id") {
-          echo " = -1";
+          $defaultValue = -1;
       }
       if (isset($field['defaultValue'])) {
-          echo " = " . $field['defaultValue'];
+          $defaultValue = $field['defaultValue'];
+      }
+      if ($defaultValue !== null) {
+          echo " = $defaultValue";
       }
       ?>;
 <?php

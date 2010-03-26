@@ -24,6 +24,20 @@ class ResultSet {
         return (int)$this->map[$key];
     }
 
+    /**
+     * Like getLong() but translate null to -1.
+     * 
+     * @param $key
+     * @return long
+     */
+    public function getId($key) {
+        $value = $this->map[$key];
+        if ($value === null) {
+            return -1;
+        }
+        return (int)$value;
+    }
+
     public function setLong($key, $value) {
         $this->map[$key] = $value;
     }

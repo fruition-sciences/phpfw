@@ -81,8 +81,11 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanHomeBase {
   foreach ($descriptor->xml->field as $field) {
         $extraParams = "";
         switch ($field['type']) {
-            case 'id': case 'long': case 'Boolean':
+            case 'long': case 'Boolean':
                 $rsMethod = "getLong";
+                break;
+            case 'id': 
+                $rsMethod = "getId";
                 break;
             case 'double':
                 $rsMethod = "getDouble";
