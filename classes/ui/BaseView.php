@@ -92,6 +92,10 @@ abstract class BaseView implements View {
         return $this->components[$name];
     }
 
+    public function hasComponent($name) {
+        return isset($this->components[$name]);
+    }
+
     private function initChildComponents($ctx) {
         foreach ($this->components as $name=>$component) {
             $component->init($ctx);
