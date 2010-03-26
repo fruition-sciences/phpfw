@@ -57,6 +57,27 @@ class DateUtils {
     }
 
     /**
+     * Add given quantity of unit to the given time.
+     * Unit examples: hour, day, month, year, etc.
+     * 
+     * @param $timestamp
+     * @param $unit String
+     * @param $quantity number
+     * @param $timezone String
+     * @return unix timestamp
+     */
+    public static function add($timestamp, $unit, $quantity, $timezone=null) {
+        if (!$timezone) {
+            $timezone = Transaction::getInstance()->getUser()->getTimezone();
+        }
+        $date = new DateTime(date('c', $timestamp));
+        $tz = new DateTimeZone($timezone);
+        $date->setTimezone($tz);
+        $date->modify("$quantity $unit");
+        return (int)$date->format('U'); 
+    }
+
+    /**
      * Get a unix timestamp representing 12AM of the given date in the given
      * timezone.
      *
@@ -168,7 +189,7 @@ class DateUtils {
      * @param $second int
      * @param $timezone (String) the timezone to evaluate the given time in. If
      *        null, the current user's account's timezone will be used.
-     * @return DateTime
+     * @return DateTime The PHP DateTime object. Call its getTimestamp() method to get the unix timestamp. 
      */
     public static function makeDate($year, $month, $day, $hour=0, $minute=0, $second=0, $timezone=null) {
         if (!$timezone) {
@@ -180,5 +201,16 @@ class DateUtils {
         $date->setDate($year, $month, $day);
         $date->setTime($hour, $minute, $second);
         return $date;
+    }
+
+    /**
+     * Convert a DateTime object to a unix timestamp.
+     * Equivalent to DateTime::getTimestamp (PHP 5 >= 5.3.0)
+     * 
+     * @param $dateTime
+     * @return long unix timestamp
+     */
+    public static function dateTimeToTimestamp($dateTime) {
+        return $dateTime->format("U");
     }
 }
