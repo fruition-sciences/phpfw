@@ -85,6 +85,8 @@ class MenuItem {
     private $adminOnly; // Can be seen only by admin users
     private $items = array();
     private $selected = false;
+    private $attributes;
+
     /**
      * @var Menu
      */
@@ -94,7 +96,8 @@ class MenuItem {
      */
     private $xmlElement;
 
-    public function __construct($menu, $xmlElement) {        
+    public function __construct($menu, $xmlElement) {
+        $this->attributes = self::getXmlElementAttributes($xmlElement);        
         $this->menu = $menu;
         $this->id = $xmlElement['id'];
         $this->adminOnly = $xmlElement['adminOnly'];
@@ -108,6 +111,14 @@ class MenuItem {
             }
             $this->items[] = $item;
         }
+    }
+
+    private static function getXmlElementAttributes($xmlElement) {
+        $attributes = array();
+        foreach ($xmlElement->attributes() as $k => $v) {
+            $attributes[$k] = (string)$v;
+        }
+        return $attributes;
     }
 
     public function getId() {
@@ -140,5 +151,16 @@ class MenuItem {
     
     public function getXmlElement() {
         return $this->xmlElement;
+    }
+
+    public function getAttributes() {
+        return $this->attributes;
+    }
+
+    public function getAttribute($key) {
+        if (!isset($this->attributes[$key])) {
+            return null;
+        }
+        return $this->attributes[$key];
     }
 }
