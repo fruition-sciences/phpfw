@@ -22,4 +22,13 @@ class Element {
         return $this;
     }
 
+    /**
+     * Remove all attributes.
+     * 
+     * @return Element
+     */
+    public function removeAll() {
+        $this->atts = array();
+        return $this;
+    }
 }

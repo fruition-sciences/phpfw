@@ -31,39 +31,86 @@ class Href extends Element {
 
     /**
      * Set all the parameters from the given query string into this Href.
-     * New parameters will be added. Existing ones will be overwritten.
+     * All prior parameters are removed.
      * 
      * @param String query new query string to apply.
      */
     public function setQuery($query) {
+        $this->removeAll();
         $pairs = explode("&", $query);
         for ($i = 0; $i < sizeof($pairs); $i++) {
             $pair = $pairs[$i];
             $nameVal = explode("=", $pair);
             if (sizeof($nameVal) == 2) {
-                // Call set on parent, so values are not encoded (they are already encoded)
-                parent::set($nameVal[0], urldecode($nameVal[1]));
+                $this->set($nameVal[0], $nameVal[1], true);
             }
         }
     }
 
-    public function __toString()
-    { 
+    /**
+     * Serialize this Href as a URL string.
+     * String values are being urlencoded.
+     * Array values get translatetd to multiple entries with the same key.
+     * '[]' is added to array keys if it's not there already.
+     * 
+     * @return String
+     */
+    public function __toString() {
         $text = $this->path;
-        $sep = "?";
+        $nameValueList = array();
         foreach ($this->atts as $key=>$value) {
-            $text .= $sep . $key . "=" . $value;
-            $sep = "&";
+            if (is_array($value)) {
+                if (!endsWith($key, '[]')) {
+                    $key .= '[]';
+                }
+                foreach ($value as $entry) {
+                    $nameValueList[] = $this->getQueryStringNameValue($key, $entry);
+                }
+            }
+            else {
+                $nameValueList[] = $this->getQueryStringNameValue($key, $value);
+            }
+        }
+        if ($nameValueList) {
+            $text .= "?";
+            $text .= implode('&', $nameValueList);
         }
         return $text;
     }
 
-    public function set($key, $val) {
-        return parent::set($key, urlencode($val));
+    private function getQueryStringNameValue($key, $value) {
+        if (is_string($value)) {
+            $value = urlencode($value);
+        }
+        return "$key=$value";
     }
 
-    public function get($key) {
-        return urldecode(parent::get($key));
+    /**
+     * Set value to the given key.
+     * If $addToArray is true, existing keys will not be overwritten, rather,
+     * if the new value is already in the map, it will be added into an array.
+     * 
+     * @param $key
+     * @param $val
+     * @param $addToArray
+     */
+    public function set($key, $val, $addToArray=false) {
+        // Support 'addToArray', if new value is not an array. 
+        if ($addToArray && !is_array($val)) {
+            $existingVal = $this->get($key);
+            // If there is an existing value
+            if ($existingVal !== null) {
+                // Turn existing value into an array (if it's not already)
+                if (!is_array($existingVal)) {
+                    $existingVal = array($existingVal);
+                }
+                // Add new value to array
+                $existingVal[] = $val;
+                // Set the array into '$val' and proceed normally
+                $val = $existingVal;
+            }
+        }
+        return parent::set($key, $val);
     }
 
     public function getAttributes() {

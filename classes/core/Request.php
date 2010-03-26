@@ -49,7 +49,11 @@ class Request {
                 return $defaultVal;
             }
         }
-        return $map[$key];
+        $val = $map[$key];
+        if (is_string($val)) {
+            $val = urldecode($val);
+        }
+        return $val;
     }
 
     public function getLong($key, $defaultValue=self::UNDEFINED) {
