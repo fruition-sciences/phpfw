@@ -95,6 +95,10 @@ class Href extends Element {
      * @param $addToArray
      */
     public function set($key, $val, $addToArray=false) {
+        // Serialize value if it's an object
+        if (is_object($val)) {
+            $val = $val->__toString();
+        }
         // Support 'addToArray', if new value is not an array. 
         if ($addToArray && !is_array($val)) {
             $existingVal = $this->get($key);
