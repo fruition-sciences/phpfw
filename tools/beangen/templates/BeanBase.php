@@ -19,7 +19,7 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
 <?php if (sizeof($descriptor->xml->constant) > 0) { ?>
     // Constants
 <?php     foreach ($descriptor->xml->constant as $constant) { ?>
-<?php         if ($constant['comment']) { ?>
+<?php         if ($constant['comment'] && strlen(trim($constant['comment'])) > 0) { ?>
     /**
      * <?php echo wordwrap($constant['comment'], 73, "\n     * ") ?>.
      */
