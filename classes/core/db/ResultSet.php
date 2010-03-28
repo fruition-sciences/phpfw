@@ -21,7 +21,8 @@ class ResultSet {
     }
 
     public function getLong($key) {
-        return (int)$this->map[$key];
+        $val = $this->map[$key];
+        return ($val === null) ? null : (int)$val;
     }
 
     /**
