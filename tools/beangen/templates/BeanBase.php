@@ -149,7 +149,7 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
      */
     public function <?php echo $descriptor->setterName($rel) ?>($<?php echo $rel["name"]?>) {
         $this-><?php echo $rel["name"]?> = $<?php echo $rel["name"]?>;
-        $this-><?php echo $rel["foreignKey"]?> = $<?php echo $rel["name"]?>->getId();
+        $this-><?php echo $rel["foreignKey"]?> = ($<?php echo $rel["name"]?>) ? $<?php echo $rel["name"]?>->getId() : -1;
     }
 
     /**
