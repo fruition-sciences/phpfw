@@ -15,7 +15,10 @@ require_once "classes/utils/FileUtils.php";
 
 $upgradeDb = new UpgradeDB();
 if ($upgradeDb->parseArgs()) {
-    $upgradeDb->process();
+    $success = $upgradeDb->process();
+    if (!$success) {
+        exit(1);
+    }
 }
 
 class UpgradeDB {
@@ -31,7 +34,11 @@ class UpgradeDB {
         return true;
     }
 
+    /** 
+     * @return boolean true on success, false if there was an error.
+     */
     public function process() {
+        $ret = true;
         $xmlElement = simplexml_load_file($this->scriptsXmlFile);
         $baseDir = dirname($this->scriptsXmlFile);
         $db = Transaction::getInstance()->getDB();
@@ -44,10 +51,11 @@ class UpgradeDB {
             }
         }
         catch (SQLException $e) {
-            // Error was already reported.
             echo $e;
+            $ret = false;
         }
         $db->sql_close();
+        return $ret;
     }
 
     private function executeScript($script) {
