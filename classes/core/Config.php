@@ -13,7 +13,10 @@ class Config {
     private function __construct() {
         $this->load();
     }
-
+    
+    /**
+     * @return Config
+     */
     public static function getInstance() {
         if (!self::$theInstance) {
             self::$theInstance = new Config();
