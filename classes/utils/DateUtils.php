@@ -172,7 +172,7 @@ class DateUtils {
     public static function getMonthsArray($format){
         $months = array();
         for ($i = 1; $i <= 12; $i++){
-            $months[$i] = date($format, mktime(0, 0, 0, $i+1, 0, 0, 0));
+            $months[$i] = date($format, mktime(0, 0, 0, $i+1, 0, 0));
         }
         return $months;
     }
