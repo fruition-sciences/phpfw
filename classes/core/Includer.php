@@ -31,12 +31,19 @@ class Includer {
         if (!$dirHandle) {
             return;
         }
+        $files = array();
         while (false !== ($file = readdir($dirHandle))) {
             if (endsWith($file, ".php")) {
                 $path = $dir . "/$file";
-                require_once($path);
+                $files[] = $path;
             }
         }
         closedir($dirHandle);
+        // Sort files alphapetically
+        sort($files);
+        // Include all files
+        foreach ($files as $file) {
+            require_once($file);
+        }
     }
 }
