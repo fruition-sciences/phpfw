@@ -54,4 +54,24 @@ class FileUtils {
         }
         return $l;
     }
+    
+    /**
+     * Put unit at an integer and return them in an array (ex: 45678 == 45,67KB)
+     * @param Int $bytes integer in bytes
+     * @param Int $precision is the number of decimal digits to round to
+     * @return Array [value, unit]
+     */
+	public function convertBytes($bytes, $precision = 2) {
+    	$units = array('B', 'KB', 'MB', 'GB', 'TB');
+  
+    	$bytes = max($bytes, 0);
+    	$pow = floor(($bytes ? log($bytes) : 0) / log(1024));
+    	$pow = min($pow, count($units) - 1);
+  
+    	$bytes /= pow(1024, $pow);
+    	
+    	return array(round($bytes, $precision), $units[$pow]);
+  		
+    	//return round($bytes, $precision) . ' ' . $units[$pow];
+	}
 }
