@@ -166,8 +166,8 @@ class DateUtils {
     /**
      * Return an array containing all the months
      * The key is the month number and the value is the formatted month
-     * @param string $format : F or m or M or n or t
-     * @return array
+     * @param string $format [F|m|M|n|t] See http://php.net/manual/en/function.date.php
+     * @return array containing the 12 months. January is in index 1.
      */
     public static function getMonthsArray($format){
         $months = array();
