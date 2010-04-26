@@ -38,9 +38,11 @@ abstract class ExecutableApp {
         $startTime = microtime(true);
         try {
             $this->process();
+            $this->onSuccess();
         }
         catch (Exception $e) {
             Logger::error("Exception caught.", $e);
+            $this->onException($e);
         }
         $endTime = microtime(true);
         $timeDiff = $endTime - $startTime;
@@ -49,6 +51,20 @@ abstract class ExecutableApp {
         Logger::info("Completed (" . number_format($timeDiff, 2) . " seconds)");
         $transaction = Transaction::getInstance();
         $transaction->end();
+    }
+
+    /**
+     * Called after successful call to process()
+     */
+    protected function onSuccess() {
+    }
+
+    /**
+     * Called when process() threw an exception.
+     * 
+     * @param $exception
+     */
+    protected function onException($exception) {
     }
 
     /**
