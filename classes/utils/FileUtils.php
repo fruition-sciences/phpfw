@@ -25,7 +25,7 @@ class FileUtils {
      * @param String $directoryPath
      * @return Array List of directories
      */
-    function dir_list($directoryPath){
+    public static function dirList($directoryPath){
         $l = array();
         $files = array_diff(scandir($directoryPath),array('.','..'));
         foreach($files as $f){
@@ -41,7 +41,7 @@ class FileUtils {
      * @param String $x extension (ex "xml")
      * @return Array
      */
-    function file_list($directoryPath,$x=null){
+    public static function fileList($directoryPath,$x=null){
         $l = array();
         $files = array_diff(scandir($directoryPath),array('.','..'));
         foreach($files as $f){
@@ -61,7 +61,7 @@ class FileUtils {
      * @param Int $precision is the number of decimal digits to round to
      * @return Array [value, unit]
      */
-	public function convertBytes($bytes, $precision = 2) {
+	public static function convertBytes($bytes, $precision = 2) {
     	$units = array('B', 'KB', 'MB', 'GB', 'TB');
   
     	$bytes = max($bytes, 0);
