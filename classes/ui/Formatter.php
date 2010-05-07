@@ -59,8 +59,9 @@ class Formatter {
      * @return String formatted date and time, of the given timestamp in the
      *         timezone set for this Formatter object.
      */
-    public function dateTime($timestamp, $newLine=false) {
-        return $this->dateFormat($timestamp, $newLine?"m/d/y<b\\r/>g:i a":"m/d/y g:i a");
+    public function dateTime($timestamp, $newLine=false, $showSeconds=false) {
+        $time = $showSeconds ? "g:i:s" : "g:i";
+        return $this->dateFormat($timestamp, $newLine ? "m/d/y<b\\r/>$time a" : "m/d/y $time a");
     }
     
     /**
