@@ -64,8 +64,7 @@ class Dropdown extends HtmlElement {
     public function toString() {
         $options = $this->options;
         foreach ($this->optgroups as $optgroup) {
-            array_merge($options,$optgroup->getOptions());
-            
+            $options = array_merge($options,$optgroup->getOptions());
         }
         foreach($options as $option) {
             if ($option->get("value") == $this->value) {
@@ -82,11 +81,11 @@ class Dropdown extends HtmlElement {
 
     private function options_as_string() {
         $html = "";
-        for ($i = 0; $i < sizeof($this->optgroups); $i++) {
-            $html .= $this->optgroups[$i]->asString($this->value);
-        }
         for ($i = 0; $i < sizeof($this->options); $i++) {
             $html .= $this->options[$i]->asString($this->value);
+        }
+        for ($i = 0; $i < sizeof($this->optgroups); $i++) {
+            $html .= $this->optgroups[$i]->asString($this->value);
         }
         return $html;
     }
