@@ -67,12 +67,7 @@ class DateUtils {
      * @return unix timestamp
      */
     public static function add($timestamp, $unit, $quantity, $timezone=null) {
-        if (!$timezone) {
-            $timezone = Transaction::getInstance()->getUser()->getTimezone();
-        }
-        $date = new DateTime(date('c', $timestamp));
-        $tz = new DateTimeZone($timezone);
-        $date->setTimezone($tz);
+        $date = self::makeDateFromTimestamp($timestamp, $timezone);
         $date->modify("$quantity $unit");
         return (int)$date->format('U'); 
     }
@@ -110,13 +105,30 @@ class DateUtils {
      * @param String $timezone time zone code.
      * @return long unix timestamp
      */
-    public static function getBeginningOfWeek($timestamp, $timezone){
+    public static function getBeginningOfWeek($timestamp, $timezone) {
         date_default_timezone_set($timezone);
         if(date("l",$timestamp) == "Monday"){
             return DateUtils::getBeginningOfDay($timestamp, $timezone);
         }else{
             return DateUtils::getBeginningOfDay(strtotime("last monday", $timestamp), $timezone);
         }
+    }
+
+    /**
+     * Get the first day of the month of the given timestamp. Time is set to
+     * minnight.
+     * 
+     * @param $timestamp
+     * @param $timezone
+     * @return unix timestamp
+     */
+    public static function getBeginningOfMonth($timestamp, $timezone) {
+        $date = self::makeDateFromTimestamp($timestamp, $timezone);
+        $year = $date->format('Y');
+        $month = $date->format('n');        
+        $date->setDate($year, $month, 1);
+        $date->setTime(0, 0, 0);
+        return (int)$date->format('U');
     }
 
     /**
@@ -178,7 +190,7 @@ class DateUtils {
     }
 
     /**
-     * Create a new unix timestamp representing the given date/time in the given
+     * Create a new DateTime object representing the given date/time in the given
      * timezone.
      *
      * @param $year int
@@ -192,14 +204,27 @@ class DateUtils {
      * @return DateTime The PHP DateTime object. Call its getTimestamp() method to get the unix timestamp. 
      */
     public static function makeDate($year, $month, $day, $hour=0, $minute=0, $second=0, $timezone=null) {
+        $date = self::makeDateFromTimestamp(time(), $timezone);
+        $date->setDate($year, $month, $day);
+        $date->setTime($hour, $minute, $second);
+        return $date;
+    }
+
+    /**
+     * Create a new DateTime object representing the current date/time in the
+     * given timezone.
+     * 
+     * @param $timezone (String) the timezone to evaluate the given time in. If
+     *        null, the current user's account's timezone will be used.
+     * @return DateTime
+     */
+    public static function makeDateFromTimestamp($timestamp, $timezone=null) {
         if (!$timezone) {
             $timezone = Transaction::getInstance()->getUser()->getTimezone();
         }
-        $date = new DateTime();
+        $date = new DateTime(date('c', $timestamp));
         $tz = new DateTimeZone($timezone);
         $date->setTimezone($tz);
-        $date->setDate($year, $month, $day);
-        $date->setTime($hour, $minute, $second);
         return $date;
     }
 
