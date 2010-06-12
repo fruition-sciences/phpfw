@@ -110,7 +110,7 @@ class HtmlElement extends Element {
             }
             $text .= $key;
             if (isset($value)) {
-                $text .= "=\"" . $value . "\"";
+                $text .= "=\"" . htmlentities($value) . "\"";
             }
         }
         return $text;
