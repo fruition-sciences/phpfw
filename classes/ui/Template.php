@@ -29,6 +29,6 @@ class Template {
      *         value is null.
      */
     public function containsKey($key) {
-        return is_null($this->map[$key]) || isset($this->map[$key]);
+        return array_key_exists($key, $this->map) || isset($this->map[$key]);
     }
 }
