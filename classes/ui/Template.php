@@ -21,7 +21,14 @@ class Template {
         return $this->map[$key];
     }
 
+    /**
+     * Check if the given key is defined in this template.
+     * 
+     * @param $key
+     * @return true if the given key is defined in this template, even if its
+     *         value is null.
+     */
     public function containsKey($key) {
-        return isset($this->map[$key]);
+        return is_null($this->map[$key]) || isset($this->map[$key]);
     }
 }
