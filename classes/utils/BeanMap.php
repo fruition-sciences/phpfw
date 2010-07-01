@@ -59,4 +59,12 @@ class BeanMap {
         }
         return null;
     }
+    
+    /**
+     * Return the full map array
+     * @return Array id -> bean
+     */
+    public function getAll(){
+        return $this->map;
+    }
 }
