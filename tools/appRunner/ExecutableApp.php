@@ -31,6 +31,7 @@ abstract class ExecutableApp {
         if (!$this->lockProcess()) {
             Logger::warning("Process locked. Quitting");
             echo "Process locked. Quitting";
+            $this->onLockError();
             return;
         }
         $this->init();
@@ -215,6 +216,7 @@ abstract class ExecutableApp {
                 return false;
             }
         }
+        $this->onLockCreated();
         return true;
     }
 
@@ -252,6 +254,9 @@ abstract class ExecutableApp {
         fclose($this->lockFp);
         if (!@unlink($lockFile)) {
             Logger::warning("Could not delete lock file $lockFile");
+        }
+        else {
+            $this->onLockReleased();
         }
     }
 
