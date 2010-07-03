@@ -68,6 +68,25 @@ abstract class ExecutableApp {
     }
 
     /**
+     * Called when the lock for this process was successfully created.
+     */
+    protected function onLockCreated() {
+    }
+
+    /**
+     * Called when the lock for this process was released.
+     */
+    protected function onLockReleased() {
+    }
+
+    /**
+     * Called when the process cannot run because another process of this type
+     * is running (i.e: lock file cannot be created.
+     */
+    protected function onLockError() {        
+    }
+
+    /**
      * Parse arguments.
      * Override this if the program's argument do not consist of simple name=val
      * tokens. Otherwise, simply override parseArgKeyValuePair().
