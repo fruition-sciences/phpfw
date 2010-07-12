@@ -45,9 +45,9 @@ function formKeyPress(e) {
         key = window.event.keyCode;
         control = e.srcElement;
     }
-//    alert(control.nodeName);
-//    alert(control.type);
-    if (control.nodeName == 'INPUT' && (control.type == 'text' || control.type == 'password')) {
+    //alert(control.nodeName);
+    //alert(control.type);
+    if (control.nodeName == 'SELECT' || control.nodeName == 'INPUT' && (control.type == 'text' || control.type == 'password' || control.type == 'checkbox' || control.type == 'radio')) {
         if (key == 13 || key == 3) {
             var button = getFirstButton(control);
             if (button) {
