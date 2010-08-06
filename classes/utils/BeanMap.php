@@ -68,6 +68,15 @@ class BeanMap {
         return $this->map;
     }
 
+    
+    /**
+     * Return the 'plain', i.e. numerically indexed, array of all beans in the map.
+     *
+     * @return Array of beans
+     */
+    public function getAllAsList(){
+        return array_values($this->map);
+    }
     /**
      * Get the ids of the beans in the map.
      * 
