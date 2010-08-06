@@ -67,4 +67,13 @@ class BeanMap {
     public function getAll(){
         return $this->map;
     }
+
+    /**
+     * Get the ids of the beans in the map.
+     * 
+     * @return Array of ids
+     */
+    public function getIds() {
+        return array_keys($this->map);
+    }
 }
