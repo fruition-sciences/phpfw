@@ -5,6 +5,8 @@
  */
 
 class Config {
+    const UNDEFINED = "___UNDEFINED___";
+
     private static $theInstance;
     private $xml; // SimpleXML
     const configFile = "build/setup/config/config.xml";
@@ -29,23 +31,23 @@ class Config {
         $this->xml = new SimpleXMLElement($xmlStr);
     }
 
-    public function getString($name, $defaultVal=null) {
+    public function getString($name, $defaultVal=self::UNDEFINED) {
         $xpath = "/config/$name";
         $result = $this->xml->xpath($xpath);
         if (sizeof($result) > 0) {
             return (string)$result[0];
         }
-        if (!isset($defaultVal)) {
+        if ($defaultVal === self::UNDEFINED) {
             throw new ConfigurationException("Missing configuration value '$name' in " . self::configFile);
         }
         return $defaultVal;
     }
 
-    public function getInt($name, $defaultVal=null) {
+    public function getInt($name, $defaultVal=self::UNDEFINED) {
         return $this->getString($name, $defaultVal);
     }
 
-    public function getBoolean($name, $defaultVal=null) {
+    public function getBoolean($name, $defaultVal=self::UNDEFINED) {
         $val = strtolower($this->getString($name, $defaultVal));
         if ($val == "true" || $val == "yes" || $val == "1" || $val == "on") {
             return true;
