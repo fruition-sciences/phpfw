@@ -42,10 +42,11 @@ class NotificationManager {
         }
         $body = $mime->get();
         $headers = $mime->headers($headers);
-        $params = array();
-        // TODO: host should be defined in configuration
-        $params['host'] = "localhost";
-
+        $emailEnabled = Config::getInstance()->getString("email/enabled", true);
+        if (!$emailEnabled) {
+            return true;
+        }
+        $params = self::getMailConfigParams();
         $mailer =& Mail::factory('smtp', $params);
         $sendResult = $mailer->send($recipients, $headers, $body);
         if (PEAR::isError($sendResult)) {
@@ -55,6 +56,25 @@ class NotificationManager {
         Logger::info("Email sent to " . $notification->getRecipient() . ". Subject: " . $notification->getSubject());
         return true;
     }
+
+    private static function getMailConfigParams() {
+        $params = array();
+        $config = Config::getInstance();
+        $params['host'] = $config->getString('email/smtp_host', 'localhost');
+        $port = $config->getString('email/smtp_port', null);
+        if ($port) {
+            $params['port'] = $port;
+        }
+        $authRequired = $config->getBoolean('email/smtp_auth', false);
+        if ($authRequired) {
+            $params['auth'] = $authRequired;
+            $params['username'] = $config->getString('email/smtp_username');
+            $params['password'] = $config->getString('email/smtp_password');
+        }
+        $params['timeout'] = "30";
+        return $params;
+    }
+    
 
     /**
      * Generate a list of all recipients for this email.
