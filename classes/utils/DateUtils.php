@@ -238,4 +238,15 @@ class DateUtils {
     public static function dateTimeToTimestamp($dateTime) {
         return $dateTime->format("U");
     }
+    
+    /**
+     * Returns the timezone offset from GMT in seconds
+     * @param int $timestamp
+     * @param string $timezone
+     * @return int offset in seconds
+     */
+    public static function getGmtOffset($timestamp, $timezone){
+        $date = self::makeDateFromTimestamp($timestamp, $timezone);
+        return $date->getOffset();
+    }
 }
