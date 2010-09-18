@@ -26,11 +26,26 @@ class SqlBuilder {
      */
     public function select($tableName, $alias, $columns, $functions=null) {
         $this->from($tableName, $alias);
+        $this->addColumns($alias, $columns, $functions);
+    }
+
+    /**
+     * Add the given columns into the columns array. The columns array indicates
+     * which columns will be selected in the query.
+     * Optionally, applies the given functions to the columns.
+     * 
+     * @param $alias the table's alias.
+     * @param $columns
+     * @param $functions (option) array of the same size of the given columns array.
+     * @return unknown_type
+     */
+    private function addColumns($alias, $columns, $functions=null) {
         $useFunction = is_array($functions) && count($columns) == count($functions);
         foreach ($columns as $k=>$column) {
-            if($useFunction && !empty($functions[$k])){
+            if ($useFunction && !empty($functions[$k])){
                 $this->columns[] = "{$functions[$k]}(${alias}.${column}) {$functions[$k]}_${alias}_${column}";
-            }else{
+            }
+            else {
                 $this->columns[] = "${alias}.${column} ${alias}_${column}";
             }
         }
@@ -54,8 +69,42 @@ class SqlBuilder {
         $this->conditions[] = "($condition)";
     }
 
-    public function leftJoin($tableName, $alias, $condition) {
-        $this->tables[$alias] = new SQLJoin($tableName, $alias, $condition);
+    /**
+     * Use this method in order to perform an explicit regular (inner) join.
+     *  
+     * @param $tableName
+     * @param $alias
+     * @param $condition
+     * @param $columns (optional) columns to be selected
+     */
+    public function join($tableName, $alias, $condition, $columns=null) {
+        $this->explicitJoin($tableName, $alias, $condition, SQLJoin::INNER_JOIN, $columns);
+    }
+
+    /**
+     * Performs a left join.
+     * 
+     * @param $tableName
+     * @param $alias
+     * @param $condition
+     * @param $columns (optional) columns to be selected
+     */
+    public function leftJoin($tableName, $alias, $condition, $columns=null) {
+        $this->explicitJoin($tableName, $alias, $condition, SQLJoin::LEFT_JOIN, $columns);
+    }
+
+    /**
+     * Performs an expilicit join.
+     * 
+     * @param $tableName
+     * @param $alias
+     * @param $condition
+     * @param $joinType int self::INNER_JOIN or self::LEFT_JOIN
+     * @param $columns (optional) columns to be selected
+     */
+    public function explicitJoin($tableName, $alias, $condition, $joinType, $columns=null) {
+        $this->tables[$alias] = new SQLJoin($tableName, $alias, $condition, $joinType);
+        $this->addColumns($alias, $columns, $functions);
     }
 
     public function orderBy($order) {
@@ -137,18 +186,27 @@ class SqlBuilder {
 }
 
 /**
- * Holds either a regular table join, or a left join (in which case a condition
- * will be populated).
+ * Holds a join, which can be either:
+ * 1. Implicit inner join (regular join)
+ *    or
+ * 2. Explicit join. Either inner join or left join.
+ * 
+ * In case of an explicit join, the condition will be populated.
  */
 class SQLJoin {
+    const INNER_JOIN = 1;
+    const LEFT_JOIN = 2;
+
     private $table;
     private $alias;
-    private $condition; // Used for left joins only
+    private $condition; // If set, an explicit join notation will be used
+    private $joinType; // self::INNER_JOIN or self::LEFT_JOIN
 
-    public function __construct($table, $alias, $condition=null) {
+    public function __construct($table, $alias, $condition=null, $joinType=self::INNER_JOIN) {
         $this->table = $table;
         $this->alias = $alias;
         $this->condition = $condition;
+        $this->joinType = $joinType;
     }
 
     public function getTable() {
@@ -166,7 +224,8 @@ class SQLJoin {
     public function __toString() {
         $sql = "$this->table $this->alias";
         if ($this->condition) {
-            $sql = "left join $sql on ($this->condition)";
+            $joinTypeStr = $this->joinType == self::LEFT_JOIN ? 'left' : '';
+            $sql = "$joinTypeStr join $sql on ($this->condition)";
         }
         return $sql;
     }
