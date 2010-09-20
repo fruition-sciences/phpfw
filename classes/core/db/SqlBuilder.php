@@ -104,7 +104,7 @@ class SqlBuilder {
      */
     public function explicitJoin($tableName, $alias, $condition, $joinType, $columns=null) {
         $this->tables[$alias] = new SQLJoin($tableName, $alias, $condition, $joinType);
-        $this->addColumns($alias, $columns, $functions);
+        $this->addColumns($alias, $columns);
     }
 
     public function orderBy($order) {
