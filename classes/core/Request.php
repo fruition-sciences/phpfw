@@ -50,10 +50,18 @@ class Request {
             }
         }
         $val = $map[$key];
-        if (is_string($val)) {
+        if ($this->isGet() && is_string($val)) {
             $val = urldecode($val);
         }
         return $val;
+    }
+
+    public function isPost() {
+        return $_SERVER['REQUEST_METHOD'] == 'POST';
+    }
+
+    public function isGet() {
+        return $_SERVER['REQUEST_METHOD'] == 'GET';
     }
 
     public function getLong($key, $defaultValue=self::UNDEFINED) {
