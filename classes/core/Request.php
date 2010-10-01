@@ -8,31 +8,62 @@
 class Request {
     const UNDEFINED = "___UNDEFINED___";
     private $ctx;
+    private $attributes;
 
     public function __construct($ctx) {
         $this->ctx = $ctx;
     }
 
     public function getAttributes() {
-        $map = array();
-        foreach ($_REQUEST as $key=>$val) {
-            if ($key != "_constraints" && $key != "_checkboxes") {
-                $map[$key] = $val;
-            }
+        if ($this->attributes === null) {
+            $this->loadAttributes();
         }
+        return $this->attributes;
+    }
+
+    /**
+     * Read all attributes from the request.
+     * Sets it into $this->attributes 
+     * 
+     * @return the attributes map
+     */
+    private function loadAttributes() {
+        $this->attributes = array();
+        $this->copyAttributes($_GET, $this->attributes, true);
+        $this->copyAttributes($_POST, $this->attributes);
+
         // Add unchecked checkboxes to the map
         if (isset($_REQUEST['_checkboxes'])) {
             $names = explode(';', $_REQUEST['_checkboxes']);
             foreach ($names as $name) {
                 // Ignore if name ends with []. This are being handled properly as array by PHP.
                 if ($name != '' && !endsWith($name, '[]')) {
-                    if (!isset($map[$name])) {
-                        $map[$name] = "0";
+                    if (!isset($this->attributes[$name])) {
+                        $this->attributes[$name] = "0";
                     }
                 }
             }
         }
-        return $map;
+        return $this->attributes;
+    }
+
+    /**
+     * Copy attributes from $sourceMap to $targetMap and (optionally) apply urldecoding.
+     * Ignores certain keys, such as '_constraints' and '_checkboxes';
+     * 
+     * @param $sourceMap
+     * @param $targetMap
+     * @param $urlDecode if true, string values will be decoded
+     */
+    private function copyAttributes($sourceMap, &$targetMap, $urlDecode=false) {
+        foreach ($sourceMap as $key=>$val) {
+            if ($key != "_constraints" && $key != "_checkboxes") {
+                if ($urlDecode && is_string($val)) {
+                    $val = urldecode($val);
+                }
+                $targetMap[$key] = $val;
+            }
+        }        
     }
 
     public function containsKey($key) {
