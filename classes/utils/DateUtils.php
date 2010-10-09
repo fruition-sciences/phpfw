@@ -53,7 +53,7 @@ class DateUtils {
             $date->setTime($hours, $minutes, $seconds);
         }
         $date->modify("$daysToAdd day");
-        return (int)$date->format('U');
+        return self::dateTimeToTimestamp($date);
     }
 
     /**
@@ -69,7 +69,7 @@ class DateUtils {
     public static function add($timestamp, $unit, $quantity, $timezone=null) {
         $date = self::makeDateFromTimestamp($timestamp, $timezone);
         $date->modify("$quantity $unit");
-        return (int)$date->format('U'); 
+        return self::dateTimeToTimestamp($date); 
     }
 
     /**
@@ -128,7 +128,7 @@ class DateUtils {
         $month = $date->format('n');        
         $date->setDate($year, $month, 1);
         $date->setTime(0, 0, 0);
-        return (int)$date->format('U');
+        return self::dateTimeToTimestamp($date);
     }
 
     /**
@@ -201,7 +201,7 @@ class DateUtils {
      * @param $second int
      * @param $timezone (String) the timezone to evaluate the given time in. If
      *        null, the current user's account's timezone will be used.
-     * @return DateTime The PHP DateTime object. Call its getTimestamp() method to get the unix timestamp. 
+     * @return DateTime The PHP DateTime object. Call DateUtils::dateTimeToTimestamp() to get the unix timestamp. 
      */
     public static function makeDate($year, $month, $day, $hour=0, $minute=0, $second=0, $timezone=null) {
         $date = self::makeDateFromTimestamp(time(), $timezone);
@@ -236,7 +236,7 @@ class DateUtils {
      * @return long unix timestamp
      */
     public static function dateTimeToTimestamp($dateTime) {
-        return $dateTime->format("U");
+        return (int)$dateTime->format('U');
     }
     
     /**
