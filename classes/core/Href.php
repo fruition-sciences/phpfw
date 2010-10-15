@@ -3,6 +3,7 @@
  * Created on Jun 22, 2007
  * Author: Yoni Rosenbaum
  * 
+ * Variables are encoded only during __toString().
  */
 
 require_once("Element.php");
@@ -32,17 +33,20 @@ class Href extends Element {
     /**
      * Set all the parameters from the given query string into this Href.
      * All prior parameters are removed.
+     * Each value is being urldecoded before being added to the map.
      * 
      * @param String query new query string to apply.
      */
-    public function setQuery($query) {
+    private function setQuery($query) {
         $this->removeAll();
         $pairs = explode("&", $query);
         for ($i = 0; $i < sizeof($pairs); $i++) {
             $pair = $pairs[$i];
             $nameVal = explode("=", $pair);
             if (sizeof($nameVal) == 2) {
-                $this->set($nameVal[0], $nameVal[1], true);
+                $name = $nameVal[0];
+                $value = urldecode($nameVal[1]);
+                $this->set($name, $value, true);
             }
         }
     }
