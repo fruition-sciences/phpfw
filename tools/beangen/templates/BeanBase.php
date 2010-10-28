@@ -136,6 +136,8 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
 ?>
     /**
      * Get the relationship field '<?php echo $rel["name"]?>'.
+     *
+     * @return <?php echo $rel["refType"]?> 
      */
     public function <?php echo $descriptor->getterName($rel) ?>() {
         return $this-><?php echo $rel["name"]?>;
@@ -145,7 +147,7 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
      * Set the relationship field '<?php echo $rel["name"]?>'.
      * This also sets the field <?php echo $rel["foreignKey"]?> according to its primary key.
      *
-     * @param <?php echo $rel["refType"]?> 
+     * @param <?php echo $rel["refType"]?> $<?php echo $rel["name"]?> 
      */
     public function <?php echo $descriptor->setterName($rel) ?>($<?php echo $rel["name"]?>) {
         $this-><?php echo $rel["name"]?> = $<?php echo $rel["name"]?>;
