@@ -9,7 +9,7 @@ class PagingInfo {
     private $recordsPerPage;
     private $totalRows;
     private $orderByColumn;
-    private $orderByAscending; // boolean
+    private $orderByAscending = true; // boolean
 
     public function __construct() {
         $this->recordsPerPage = Config::getInstance()->getInt("tablePaging/rowsPerPage", 10);
