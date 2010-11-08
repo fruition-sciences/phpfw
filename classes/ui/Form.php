@@ -55,6 +55,10 @@ class Form {
         return $control;
     }
 
+    /**
+     * @param $name String
+     * @return Dropdown
+     */
     public function dropdown($name) {
         $control = new Dropdown($name);
         $this->registerControl($control);
