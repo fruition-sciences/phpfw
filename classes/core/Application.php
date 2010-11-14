@@ -193,6 +193,7 @@ class Application {
 
     private function createAnonymousUser() {
         $user = new User();
+        $user->setId(0);
         $timezone = Config::getInstance()->getString("properties/anonymousUserTimezone");
         $user->setTimezone($timezone);
         return $user;
