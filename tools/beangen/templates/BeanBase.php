@@ -314,4 +314,28 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
   }
 ?>
     }
+
+    /**
+     * Serialize the content of the bean. For debug and logging purposes.
+     *
+     * @return String 
+     */
+    public function __toString() {
+        $format = Formatter::getInstance();
+        return ''
+<?php
+  foreach ($descriptor->xml->field as $field) {
+      $fieldName = $field['name'];
+      $getterName = $descriptor->getterName($field);
+      $q = ($field['type'] == 'String') ? '"' : '';
+      $valueExpression = '$this->' . $getterName . '()';
+      if (($field['type'] == 'Date')) {
+          $valueExpression = '$format->dateTime(' . $valueExpression . ')';
+      }
+?>
+            . '<?php echo $fieldName ?>=<?php echo $q ?>' . <?php echo $valueExpression ?> . '<?php echo $q ?>; '
+<?php
+  }
+?>;
+    }
 }
