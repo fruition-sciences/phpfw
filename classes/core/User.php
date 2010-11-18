@@ -63,7 +63,7 @@ class User {
     }
 
     public function isAnonymous() {
-        return $this->id < 0;
+        return $this->id <= 0;
     }
 
 }
