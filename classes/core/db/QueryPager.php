@@ -7,7 +7,13 @@
  * result to be paged.
  */
 class QueryPager {
+    /**
+     * @var String
+     */
     private $sql;
+    /**
+     * @var PagingInfo
+     */
     private $paging;
 
     public function __construct($sql, $paging) {
