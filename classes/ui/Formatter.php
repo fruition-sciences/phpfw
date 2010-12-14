@@ -84,9 +84,14 @@ class Formatter {
         if (!isset($timestamp) || $timestamp == "") {
             return "";
         }
-        $date = new DateTime(date('c', $timestamp));
-        $date->setTimezone($this->timezone);
-        return $date->format($formatString);
+        try {
+            $date = new DateTime(date('c', $timestamp));
+            $date->setTimezone($this->timezone);
+            return $date->format($formatString);
+        }
+        catch (Exception $e) {
+            return "";
+        }
     }
 
     /**
