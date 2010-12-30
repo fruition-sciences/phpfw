@@ -34,9 +34,7 @@ class Dropdown extends HtmlElement {
     
     public function addOptgroup($label) {
         $optgroup = new Dropdown_Optgroup($label);
-        $optgroup->setForm($this->getForm());
-        $this->optgroups[] = $optgroup;
-        return $this;
+        return $this->addOptgroupObject($optgroup);
     }
     
     public function addOptgroupObject($optgroup) {
@@ -64,7 +62,7 @@ class Dropdown extends HtmlElement {
     public function toString() {
         $options = $this->options;
         foreach ($this->optgroups as $optgroup) {
-            $options = array_merge($options,$optgroup->getOptions());
+            $options = array_merge($options, $optgroup->getOptions());
         }
         foreach($options as $option) {
             if ($option->get("value") == $this->value) {
