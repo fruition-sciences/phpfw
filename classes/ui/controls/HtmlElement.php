@@ -13,6 +13,7 @@ class HtmlElement extends Element {
     private $form;
     private $body;
     private $readonly; // if set, overwrites form's 'readonly' flag.
+    private $cssClasses = array(); // Map (serves as a Set. Keys are css class names, values are 'true').
 
     public function __construct($type, $name='') {
         $this->type = $type;
@@ -98,6 +99,7 @@ class HtmlElement extends Element {
     public function getElementOpenTag() {
         $html = "<" . $this->type . " ";
         $html .= $this->getAttributesAsString();
+        $html .= $this->getCssClassNamesAsString();
         $html .= ">";
         return $html;
     }
@@ -114,6 +116,14 @@ class HtmlElement extends Element {
             }
         }
         return $text;
+    }
+
+    private function getCssClassNamesAsString() {
+        if (!$this->cssClasses) {
+            return '';
+        }
+        $cssClasses = array_keys($this->cssClasses);
+        return ' class="' . implode(' ', $cssClasses) . '"';
     }
 
     public function getElementCloseTag() {
@@ -142,5 +152,43 @@ class HtmlElement extends Element {
     public function setTooltip($text) {
         $this->set('title', $text);
         return $this;
+    }
+
+    /**
+     * Set the css class of this element.
+     * 
+     * @param $cssClass
+     * @return HtmlElement
+     */
+    public function setClass($cssClass) {
+        if ($this->cssClasses) {
+            $this->cssClasses = array();
+        }
+        $this->addClass($cssClass);
+        return $this;
+    }
+
+    /**
+     * Add a css class to this element.
+     * @param $cssClass
+     * @return HtmlElement
+     */
+    public function addClass($cssClass) {
+        $this->cssClasses[$cssClass] = true;
+        return $this;
+    }
+
+    /**
+     * Overridden to handle key=class.
+     * 
+     * (non-PHPdoc)
+     * @see classes/core/Element#set($key, $val)
+     */
+    public function set($key, $val=null) {
+        if (strtolower($key) == 'class') {
+            return $this->setClass($val);
+        }
+        // In all other cases
+        return parent::set($key, $val);
     }
 }
