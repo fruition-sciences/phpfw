@@ -127,10 +127,12 @@ class StringUtils {
         return sprintf($format, $bytes / pow(1024, $power), $units[$power]);
     }
 
+    /**
+     * @param String $name
+     * @deprecated
+     */
     public static function capitalizeFirstLetter($name) {
-        $str = "" . $name;
-        $first = strtoupper($str[0]);
-        return $first . substr($str, 1);
+        return ucfirst($name);
     }
 
     /**

@@ -31,12 +31,12 @@ class BeanDescriptor {
 
     public function getterName($field) {
         $verb = ($field["type"] == "Boolean") ? "is" : "get";
-        return $verb . $this->capitalizeFirstLetter($field["name"]);
+        return $verb . ucfirst($field["name"]);
     }
 
     public function adderName($field) {
         $noun = $this->getSingular($field["name"]);
-        return "add" . $this->capitalizeFirstLetter($noun);
+        return "add" . ucfirst($noun);
     }
 
     private function getSingular($name) {
@@ -52,11 +52,11 @@ class BeanDescriptor {
     }
 
     public function setterName($field) {
-        return "set" . $this->capitalizeFirstLetter($field["name"]);
+        return "set" . ucfirst($field["name"]);
     }
 
     public function loaderName($field) {
-        return "load" . $this->capitalizeFirstLetter($field["name"]);
+        return "load" . ucfirst($field["name"]);
     }
 
     public function escapedField($field) {
@@ -86,10 +86,6 @@ class BeanDescriptor {
 
     private function getPrimaryKeyField() {
         return $this->xml->field[0];
-    }
-
-    private function capitalizeFirstLetter($name) {
-        return StringUtils::capitalizeFirstLetter($name);
     }
 
     /**
@@ -151,7 +147,7 @@ class BeanDescriptor {
 
     /**
      * Given a field name, generate a constant name for this field.
-     * This transoforms a mixed case word to an upper case delimited with
+     * This transforms a mixed case word to an upper case delimited with
      * underscores.
      *
      * @param String $fieldName
