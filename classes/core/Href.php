@@ -15,6 +15,9 @@ class Href extends Element {
         $this->parse($path);
     }
 
+    /**
+     * @return Href
+     */
     public static function current() {
         $pathInfo = '/' . Application::getPathInfo();
         $href = self::from_url($pathInfo);

@@ -85,6 +85,16 @@ class Context {
         throw new EndOfResponseException();
     }
 
+    /**
+     * Forward to the given View. This is done by throwing a ForwardViewException
+     * which is being handled by the Application.
+     * 
+     * @param $view
+     */
+    public function forward($view) {
+        throw new ForwardViewException($view);
+    }
+
     public static function normalizePath($path) {
         return beginsWith($path, "/") ? Application::getAppRoot() . substr($path, 1) : $path;
     }

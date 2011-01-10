@@ -123,7 +123,14 @@ class Application {
         catch (ReflectionException $e) {
             throw new PageNotFoundException($e->getMessage(), 0, $e);
         }
-        $view = $method->invoke($obj, $ctx);
+        try {
+            $view = $method->invoke($obj, $ctx);
+        }
+        catch (ForwardViewException $e) {
+            // Hanlde 'forwarding': A controller method threw this exception
+            // containing a view instead of returning it in a normal way.
+            $view = $e->getView();
+        }
         if ($view instanceof View) {
             if ($ctx->getUIManager()->getErrorManager()->hasErrors()) {
                 $ctx->getForm()->setValues($ctx->getAttributes());
