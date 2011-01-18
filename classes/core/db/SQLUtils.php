@@ -25,6 +25,19 @@ class SQLUtils {
         $format = new Formatter($timeZone);
         return "'" . $format->dateFormat($dateTime, "Y-m-d H:i:s") . "'";
     }
+    
+    /**
+     * Convert a time in seconds (number) to a database time 
+     * representation (string HH:MM:SS).
+     *
+     * @param long time The time (seconds number)
+     */
+    public static function convertTime($time) {
+        if ($time == null || $time === "") {
+            return "null";
+        }
+        return "'" . sprintf("%02d%s%02d%s%02d", floor($time/3600), ":", ($time/60)%60, ":", $time%60) . "'";
+    }
 
     public static function convertLong($val) {
         if ($val === null || $val === "") {

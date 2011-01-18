@@ -28,7 +28,7 @@ class DateUtils {
      * @param long $daysToAdd number of days to add (or substract, if negative)
      * @param long $hours (optional) the hour of the day to set.
      * @param long $minutes (optional) the minute of the day to set.
-     * @param long $seconds (optional) the minute of the day to set.
+     * @param long $seconds (optional) the second of the day to set.
      * @param String $timezone the timezone to evaluate the given time in. If null,
      *        the current user's account's timezone will be used.
      * @return long unix timestamp

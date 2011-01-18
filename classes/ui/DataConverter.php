@@ -53,4 +53,16 @@ class DataConverter {
         date_default_timezone_set($originalDefaulyTimezone);
         return $date->format('U');
     }
+    
+    /**
+     * Parse the given formatted time.
+     * 
+     * @param String $formattedDate formatted time "HH:MM:SS"
+     * @return long number of seconds
+     */
+    public static function parseTime($formattedTime){
+        list($hours,$mins,$secs) = explode(':',$formattedTime);
+        $seconds = $hours * 3600 + $mins * 60 + $secs;
+        return $seconds;
+    }
 }

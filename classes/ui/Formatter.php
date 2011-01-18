@@ -73,6 +73,11 @@ class Formatter {
     public function time($timestamp) {
         return $this->dateFormat($timestamp, "g:i a");
     }
+    
+    public function secondsToTime($seconds) {
+        $timeStr = substr(SQLUtils::convertTime($seconds), 1, -1);
+        return $timeStr == "null" ? "" : $timeStr;
+    }
 
     /**
      * Format the given timestamp using the given format string.

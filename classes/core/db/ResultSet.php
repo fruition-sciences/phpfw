@@ -59,6 +59,13 @@ class ResultSet {
         // Assumes that DB and PHP are both in UTC
         $this->map[$key] = $value;
     }
+    
+    public function getTime($key) {
+        return DataConverter::parseTime($this->map[$key]);
+    }
+    public function setTime($key, $value) {
+        $this->map[$key] = $value;
+    }
 
     public function containsKey($key) {
         return isset($this->map[$key]);
