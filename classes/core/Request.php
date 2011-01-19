@@ -113,12 +113,13 @@ class Request {
      *
      * @param String $key the key
      * @param timestamp $dafaultValue value to return in case the key doesn't exist in the request.
+     * @param String $timezone If not passed, the user timezone will be used.
      * @return timestamp Unix timestamp - the number of seconds since January 1 1970 00:00:00 GMT
      */
-    public function getDate($key, $defaultValue=self::UNDEFINED) {
+    public function getDate($key, $defaultValue=self::UNDEFINED, $timezone=null) {
         try {
             $str = $this->getString($key);
-            $converter = DataConverter::getInstance();
+            $converter = new DataConverter($timezone ? $timezone : Transaction::getInstance()->getUser()->getTimezone());
             return $converter->parseDate($str);
         }
         catch (UndefinedKeyException $e) {
