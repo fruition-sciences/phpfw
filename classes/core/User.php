@@ -12,6 +12,7 @@ class User {
     private $isAdmin;
     private $groupId;
     private $timezone; // String. For example: 'America/Los_Angeles'
+    private $locale = 'en_US'; // String. For example: 'en_US'
 
     public function setId($id) {
         $this->id = $id;
@@ -60,6 +61,14 @@ class User {
 
     public function getTimezone() {
         return $this->timezone;
+    }
+
+    public function setLocale($locale) {
+        $this->locale = $locale;
+    }
+
+    public function getLocale() {
+        return $this->locale;
     }
 
     public function isAnonymous() {
