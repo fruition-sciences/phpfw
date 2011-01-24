@@ -34,6 +34,13 @@ class BeanDescriptor {
         return $verb . ucfirst($field["name"]);
     }
 
+    public function unitGetterName($field) {
+        if (!isset($field['unit'])) {
+            throw new IllegalArgumentException("The field " . $field["name"] . " does not have a 'unit' attribute");
+        }
+        return $this->getterName($field) . 'Measure';
+    }
+
     public function adderName($field) {
         $noun = $this->getSingular($field["name"]);
         return "add" . ucfirst($noun);

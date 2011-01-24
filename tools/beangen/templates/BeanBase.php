@@ -109,12 +109,12 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
 <?php
   if ($field["type"] == "Boolean") {
 ?>
-      $this-><?php echo $field["name"]?> = ($<?php echo $field["name"]?> != null && $<?php echo $field["name"]?> != 0 && $<?php echo $field["name"]?> != false);
+        $this-><?php echo $field["name"]?> = ($<?php echo $field["name"]?> != null && $<?php echo $field["name"]?> != 0 && $<?php echo $field["name"]?> != false);
 <?php
   }
   else {
 ?>
-      $this-><?php echo $field["name"]?> = $<?php echo $field["name"]?>;
+        $this-><?php echo $field["name"]?> = $<?php echo $field["name"]?>;
 <?php
   }
   $fieldName = $field["name"];
@@ -129,6 +129,41 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
     }
 ?>
     }
+<?php 
+  if ($field["unit"]) {
+      $unitInfo = preg_split('/::/', $field["unit"]);
+      $unitClassName = $unitInfo[0];
+      $unitConstantName = $unitInfo[1];
+?>
+
+    /**
+     * <?php echo wordwrap("Get the " . $field["name"] . " as a Zend Measure object, containing both the unit measure and the value", 73, "\n     * ") ?>.
+     *
+     * @param $locale String (Optional) If not set, current user's locale is used.
+     * @return <?php echo $unitInfo[0] ?> 
+     */
+    public function <?php echo $descriptor->unitGetterName($field) ?>($locale=null) {
+        if (!$locale) {
+            $locale = Transaction::getInstance()->getUser()->getLocale();
+        }
+        $measure = new <?php echo $unitClassName ?>($this-><?php echo $descriptor->getterName($field) ?>(), <?php echo $field["unit"] ?>, $locale);
+    }
+
+    /**
+     * <?php echo wordwrap("Set the temperature using a Zend Measure object. The unit can be any $unitClassName unit. It will automatically be converted to $unitConstantName", 73, "\n     * ") ?>.
+     * 
+     * @param $temperatureMeasure <?php echo $unitClassName ?>
+     */
+    public function setTemperatureMeasure($temperatureMeasure) {
+        // Clone the given measure (to avoid modifying it)
+        $clonedMeasure = new <?php echo $unitClassName ?>($temperatureMeasure->getValue(), $temperatureMeasure->getType(), $temperatureMeasure->getLocale());
+        // Convert to <?php echo $unitConstantName ?> 
+        $clonedMeasure->setType(<?php echo $field["unit"] ?>);
+        $this-><?php echo $descriptor->setterName($field) ?>($clonedMeasure->getValue());
+    }
+<?php
+  } // $field["unit"]
+?>
 
 <?php
     if (isset($descriptor->oneToOneRelsMap["${fieldName}"])) {
@@ -335,7 +370,7 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
       $getterName = $descriptor->getterName($field);
       $q = ($field['type'] == 'String') ? '"' : '';
       $valueExpression = '$this->' . $getterName . '()';
-      if ($field['type'] == 'Date') {
+      if (($field['type'] == 'Date')) {
           $valueExpression = '$format->dateTime(' . $valueExpression . ')';
       }
       if ($field['type'] == 'time') {
