@@ -30,7 +30,7 @@ class BeanDescriptor {
     }
 
     public function getterName($field) {
-        $verb = (strtolower($field["type"]) == "boolean") ? "is" : "get";
+        $verb = ($field["type"] == "Boolean") ? "is" : "get";
         return $verb . ucfirst($field["name"]);
     }
 
@@ -60,8 +60,8 @@ class BeanDescriptor {
     }
 
     public function escapedField($field) {
-        switch (strtolower($field["type"])) {
-            case "string":
+        switch ($field["type"]) {
+            case "String":
                 return "SQLUtils::escapeString(\$this->${field['name']})";
                 //return "\"'\" . mysql_escape_string(\$this->${field['name']}) . \"'\"";
             case "long":
@@ -70,7 +70,7 @@ class BeanDescriptor {
                 return "SQLUtils::convertId(\$this->${field['name']})";
             case "double":
                 return "SQLUtils::convertDouble(\$this->${field['name']})";
-            case "date":
+            case "Date":
                 $extraParam = "";
                 if ($field['timezone']) {
                     $extraParam = ", '" . $field['timezone'] . "'";
@@ -79,7 +79,7 @@ class BeanDescriptor {
                 //return "\"'\" . mysql_escape_string(\$this->${field['name']}) . \"'\"";
             case "time":
                 return "SQLUtils::convertTime(\$this->${field['name']})";
-            case "boolean":
+            case "Boolean":
                  return "SQLUtils::convertBoolean(\$this->${field['name']})";
             default:
                 throw new Exception("Unknown field type: " . $field["type"]);
@@ -132,7 +132,7 @@ class BeanDescriptor {
 
     private function addRequiredDefaultValues() {
     	foreach ($this->xml->field as $field) {
-    		if (strtolower($field['type']) == "boolean" && !isset($field['defaultValue'])) {
+    		if ($field['type'] == "Boolean" && !isset($field['defaultValue'])) {
     			$field['defaultValue'] = "false";
     		}
     	}

@@ -80,9 +80,8 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanHomeBase {
 <?php
   foreach ($descriptor->xml->field as $field) {
         $extraParams = "";
-        switch (strtolower($field['type'])) {
-            case 'long': 
-            case 'boolean':
+        switch ($field['type']) {
+            case 'long': case 'Boolean':
                 $rsMethod = "getLong";
                 break;
             case 'id': 
@@ -91,10 +90,10 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanHomeBase {
             case 'double':
                 $rsMethod = "getDouble";
                 break;
-            case 'string':
+            case 'String':
                 $rsMethod = "getString";
                 break;
-            case 'date':
+            case 'Date':
                 $rsMethod = "getDate";
                 if (isset($field['timezone'])) {
                     $extraParams = ", '" . $field['timezone'] . "'";

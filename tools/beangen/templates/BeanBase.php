@@ -56,7 +56,7 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
     private $<?php 
       echo $field['name'];
       $defaultValue = null;
-      if (strtolower($field['type']) == "id") {
+      if ($field['type'] == "id") {
           $defaultValue = -1;
       }
       if (isset($field['defaultValue'])) {
@@ -91,7 +91,7 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
     /**
      * <?php echo wordwrap($field["comment"], 73, "\n     * ") ?>. 
      * 
-     * @return <?php echo strtolower($field['type'])?> 
+     * @return <?php echo $field['type']?> 
      */
 <?php } ?>
     public function <?php echo $descriptor->getterName($field) ?>() {
@@ -102,12 +102,12 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
     /**
      * <?php echo wordwrap($field["comment"], 73, "\n     * ") ?>. 
      *
-     * @param <?php echo strtolower($field['type'])?> $<?php echo $field["name"]?> 
+     * @param <?php echo $field['type']?> $<?php echo $field["name"]?> 
      */
 <?php } ?>
     public function <?php echo $descriptor->setterName($field) ?>($<?php echo $field["name"]?>) {
 <?php
-  if (strtolower($field["type"]) == "boolean") {
+  if ($field["type"] == "Boolean") {
 ?>
       $this-><?php echo $field["name"]?> = ($<?php echo $field["name"]?> != null && $<?php echo $field["name"]?> != 0 && $<?php echo $field["name"]?> != false);
 <?php
@@ -284,10 +284,10 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
 <?php
   foreach ($descriptor->xml->field as $field) {
       $convertedValue = '$this->' . $field["name"];
-      if (strtolower($field['type']) == 'date') {
+      if ($field['type'] == 'Date') {
           $convertedValue = '$format->date(' . $convertedValue . ')';
       }
-      if (strtolower($field['type']) == 'time') {
+      if ($field['type'] == 'time') {
           $convertedValue = '$format->secondsToTime(' . $convertedValue . ')';
       }
 ?>
@@ -303,7 +303,7 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
 <?php
   foreach ($descriptor->xml->field as $field) {
         $constant = "\$map[\$prefix . self::" . $descriptor->fieldConstant($field) . "]";
-        if (strtolower($field['type']) == 'date') {
+        if ($field['type'] == 'Date') {
             $parsedConstant = "\$converter->parseDate($constant)";
         }
         else if (strtolower($field['type']) == 'time') {
@@ -333,12 +333,12 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
   foreach ($descriptor->xml->field as $field) {
       $fieldName = $field['name'];
       $getterName = $descriptor->getterName($field);
-      $q = (strtolower($field['type']) == 'string') ? '"' : '';
+      $q = ($field['type'] == 'String') ? '"' : '';
       $valueExpression = '$this->' . $getterName . '()';
-      if ((strtolower($field['type']) == 'date')) {
+      if ($field['type'] == 'Date') {
           $valueExpression = '$format->dateTime(' . $valueExpression . ')';
       }
-      if ((strtolower($field['type']) == 'time')) {
+      if ($field['type'] == 'time') {
           $valueExpression = '$format->secondsToTime(' . $valueExpression . ')';
       }
 ?>
