@@ -119,7 +119,11 @@ class Request {
     public function getDate($key, $defaultValue=self::UNDEFINED, $timezone=null) {
         try {
             $str = $this->getString($key);
-            $converter = new DataConverter($timezone ? $timezone : Transaction::getInstance()->getUser()->getTimezone());
+            if($timezone){
+                $converter = new DataConverter($timezone);
+            }else{
+                $converter = DataConverter::getInstance();
+            }
             return $converter->parseDate($str);
         }
         catch (UndefinedKeyException $e) {
