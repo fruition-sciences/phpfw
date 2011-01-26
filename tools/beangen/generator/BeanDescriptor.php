@@ -61,6 +61,13 @@ class BeanDescriptor {
     public function setterName($field) {
         return "set" . ucfirst($field["name"]);
     }
+    
+    public function unitSetterName($field) {
+        if (!isset($field['unit'])) {
+            throw new IllegalArgumentException("The field " . $field["name"] . " does not have a 'unit' attribute");
+        }
+        return $this->setterName($field) . 'Measure';
+    }
 
     public function loaderName($field) {
         return "load" . ucfirst($field["name"]);

@@ -146,17 +146,17 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
         if (!$locale) {
             $locale = Transaction::getInstance()->getUser()->getLocale();
         }
-        $measure = new <?php echo $unitClassName ?>($this-><?php echo $descriptor->getterName($field) ?>(), <?php echo $field["unit"] ?>, $locale);
+        return new <?php echo $unitClassName ?>($this-><?php echo $descriptor->getterName($field) ?>(), <?php echo $field["unit"] ?>, $locale);
     }
 
     /**
-     * <?php echo wordwrap("Set the temperature using a Zend Measure object. The unit can be any $unitClassName unit. It will automatically be converted to $unitConstantName", 73, "\n     * ") ?>.
+     * <?php echo wordwrap("Set the {$field["name"]} using a Zend Measure object. The unit can be any $unitClassName unit. It will automatically be converted to $unitConstantName", 73, "\n     * ") ?>.
      * 
-     * @param $temperatureMeasure <?php echo $unitClassName ?>
+     * @param $<?php echo $field["name"]?>Measure <?php echo $unitClassName ?> 
      */
-    public function setTemperatureMeasure($temperatureMeasure) {
+    public function <?php echo $descriptor->unitSetterName($field) ?>($<?php echo $field["name"]?>Measure) {
         // Clone the given measure (to avoid modifying it)
-        $clonedMeasure = new <?php echo $unitClassName ?>($temperatureMeasure->getValue(), $temperatureMeasure->getType(), $temperatureMeasure->getLocale());
+        $clonedMeasure = new <?php echo $unitClassName ?>($<?php echo $field["name"]?>Measure->getValue(), $<?php echo $field["name"]?>Measure->getType(), $<?php echo $field["name"]?>Measure->getLocale());
         // Convert to <?php echo $unitConstantName ?> 
         $clonedMeasure->setType(<?php echo $field["unit"] ?>);
         $this-><?php echo $descriptor->setterName($field) ?>($clonedMeasure->getValue());
