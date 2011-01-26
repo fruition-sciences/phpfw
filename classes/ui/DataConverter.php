@@ -55,10 +55,10 @@ class DataConverter {
     }
     
     /**
-     * Parse the given formatted time.
+     * Parse the given formatted time which is a duration (absolute amount of time).
      * 
      * @param String $formattedDate formatted time "HH:MM:SS"
-     * @return long number of seconds since midnight.
+     * @return long number of seconds.
      */
     public static function parseTime($formattedTime){
         list($hours,$mins,$secs) = explode(':',$formattedTime);
