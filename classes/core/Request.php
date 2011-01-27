@@ -120,7 +120,7 @@ class Request {
         try {
             $str = $this->getString($key);
             $converter = DataConverter::getInstance();
-            if ($converter->getTimeZoneName() != $timezone) {
+            if ($timezone && $converter->getTimeZoneName() != $timezone) {
                 $converter = new DataConverter($timezone);
             }
             return $converter->parseDate($str);
