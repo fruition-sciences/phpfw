@@ -86,10 +86,20 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
 
 <?php
   foreach ($descriptor->xml->field as $field) {
+      $comment = "";
+      if ($field["comment"]) {
+          $comment = $field["comment"];
+      }
+      if ($field['unit']) {
+          $unitInfo = preg_split('/::/', $field["unit"]);
+          $unitClassName = $unitInfo[0];
+          $unitConstantName = $unitInfo[1];
+          $comment .= " ($unitConstantName)";
+      }
 ?>
-<?php if ($field["comment"]) { ?>
+<?php if ($comment) { ?>
     /**
-     * <?php echo wordwrap($field["comment"], 73, "\n     * ") ?>. 
+     * <?php echo wordwrap($comment, 73, "\n     * ") ?>.
      * 
      * @return <?php echo $field['type']?> 
      */
@@ -98,9 +108,9 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
         return $this-><?php echo $field['name']?>;
     }
 
-<?php if ($field["comment"]) { ?>
+<?php if ($comment) { ?>
     /**
-     * <?php echo wordwrap($field["comment"], 73, "\n     * ") ?>. 
+     * <?php echo wordwrap($comment, 73, "\n     * ") ?>.
      *
      * @param <?php echo $field['type']?> $<?php echo $field["name"]?> 
      */
@@ -131,9 +141,6 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
     }
 <?php 
   if ($field["unit"]) {
-      $unitInfo = preg_split('/::/', $field["unit"]);
-      $unitClassName = $unitInfo[0];
-      $unitConstantName = $unitInfo[1];
 ?>
 
     /**
