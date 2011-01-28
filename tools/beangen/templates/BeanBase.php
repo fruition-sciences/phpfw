@@ -141,6 +141,7 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
     }
 <?php 
   if ($field["unit"]) {
+      $measureParamName = $field["name"] . 'Measure';
 ?>
 
     /**
@@ -161,9 +162,14 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
      * 
      * @param $<?php echo $field["name"]?>Measure <?php echo $unitClassName ?> 
      */
-    public function <?php echo $descriptor->unitSetterName($field) ?>($<?php echo $field["name"]?>Measure) {
-        // Clone the given measure (to avoid modifying it)
-        $clonedMeasure = new <?php echo $unitClassName ?>($<?php echo $field["name"]?>Measure->getValue(), $<?php echo $field["name"]?>Measure->getType(), $<?php echo $field["name"]?>Measure->getLocale());
+    public function <?php echo $descriptor->unitSetterName($field) ?>($<?php echo $measureParamName?>) {
+        // If the unit is the same, just set the value
+        if ($<?php echo $measureParamName?>->getType() == <?php echo $field["unit"] ?>) {
+            $this-><?php echo $descriptor->setterName($field) ?>($<?php echo $measureParamName?>->getValue());
+            return;
+        }
+        // Otherwise, clone the given measure (to avoid modifying it)
+        $clonedMeasure = new <?php echo $unitClassName ?>($<?php echo $measureParamName?>->getValue(), $<?php echo $measureParamName?>->getType(), $<?php echo $measureParamName?>->getLocale());
         // Convert to <?php echo $unitConstantName ?> 
         $clonedMeasure->setType(<?php echo $field["unit"] ?>);
         $this-><?php echo $descriptor->setterName($field) ?>($clonedMeasure->getValue());
