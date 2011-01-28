@@ -22,6 +22,10 @@ class Notification {
     private $content;
     private $attachments = array(); // Array of IAttachment instances
 
+    /**
+     * Set the recepient for the message.
+     * @param $recipient String email address. Can be comma separated list of addresses.
+     */
     public function setRecipient($recipient) {
         $this->recipient = $recipient;
     }
