@@ -36,6 +36,7 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanHomeBase {
      * The 'cache' flag should be used only for beans that represent constants.
      *
      * @param long $id the primary key.
+     * @return <?php echo $descriptor->xml['name'] ?>Bean
      */
     public static function get($id) {
         self::getAll();

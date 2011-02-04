@@ -147,14 +147,10 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
     /**
      * <?php echo wordwrap("Get the " . $field["name"] . " as a Zend Measure object, containing both the unit measure and the value", 73, "\n     * ") ?>.
      *
-     * @param $locale String (Optional) If not set, current user's locale is used.
      * @return <?php echo $unitInfo[0] ?> 
      */
-    public function <?php echo $descriptor->unitGetterName($field) ?>($locale=null) {
-        if (!$locale) {
-            $locale = Transaction::getInstance()->getUser()->getLocale();
-        }
-        return new <?php echo $unitClassName ?>($this-><?php echo $descriptor->getterName($field) ?>(), <?php echo $field["unit"] ?>, $locale);
+    public function <?php echo $descriptor->unitGetterName($field) ?>() {
+        return new <?php echo $unitClassName ?>($this-><?php echo $descriptor->getterName($field) ?>(), <?php echo $field["unit"] ?>);
     }
 
     /**
