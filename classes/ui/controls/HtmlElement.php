@@ -45,6 +45,9 @@ class HtmlElement extends Element {
         $this->form = $form;
     }
 
+    /**
+     * @return Form
+     */
     public function getForm() {
     	return $this->form;
     }
