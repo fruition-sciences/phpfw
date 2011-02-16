@@ -5,12 +5,14 @@
  *
  */
 
+require_once("controls/Control.php");
 require_once("controls/Checkbox.php");
 require_once("controls/Radio.php");
 require_once("controls/Dropdown.php");
 require_once("controls/Password.php");
 require_once("controls/TextArea.php");
 require_once("controls/Textbox.php");
+require_once("controls/MeasureTextbox.php");
 require_once("controls/Datebox.php");
 require_once("controls/Hidden.php");
 require_once("controls/FileUpload.php");
@@ -32,6 +34,20 @@ class Form {
 
     public function textbox($name) {
         $control = new TextBox($name);
+        $this->registerControl($control);
+        return $control;
+    }
+
+    /**
+     * Create a new Measure control.
+     * 
+     * @param $name
+     * @param $displayUnit String A full Zend_Measure unit. For example:
+     *        'Zend_Measure_Temperature::CELSIUS'
+     * @return unknown_type
+     */
+    public function measure($name, $displayUnit) {
+        $control = new MeasureTextbox($name, $displayUnit);
         $this->registerControl($control);
         return $control;
     }
@@ -93,6 +109,12 @@ class Form {
         return $control;
     }
 
+    /**
+     * Register the given control by adding it to the list of controls in the
+     * form and by letting the control know about the form.
+     * 
+     * @param $control HtmlElement
+     */
     public function registerControl($control) {
         $control->setForm($this);
         $this->addControl($control->getName(), $control);

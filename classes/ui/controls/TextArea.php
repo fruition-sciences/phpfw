@@ -5,7 +5,7 @@
  *
  */
 
-class TextArea extends HTMLElement {
+class TextArea extends Control {
     public function __construct($name) {
         parent::__construct("textarea", $name);
         $this->set("cols", "40");

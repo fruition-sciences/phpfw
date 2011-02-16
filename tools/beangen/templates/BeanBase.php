@@ -323,19 +323,43 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
     }
 
     public function getAttributes() {
-        $format = Formatter::getInstance();
+        $user = Transaction::getInstance()->getUser();
+        $inputConverter = new InputConverter($user->getTimezone(), $user->getLocale());        
+
         $map = array();
 <?php
   foreach ($descriptor->xml->field as $field) {
-      $convertedValue = '$this->' . $field["name"];
-      if ($field['type'] == 'Date') {
-          $convertedValue = '$format->date(' . $convertedValue . ')';
+      $value = '$this->' . $field["name"];
+      $inputConverterMethodCall = null;
+      $type = $field['type'];
+      $fieldConstant = 'self::' . $descriptor->fieldConstant($field);
+      if ($field['unit']) {
+          $inputConverterMethodCall = 'setMeasure($map, ' . $fieldConstant . ', $this->' . $descriptor->unitGetterName($field) . '())';
       }
-      if ($field['type'] == 'time') {
-          $convertedValue = '$format->secondsToTime(' . $convertedValue . ')';
+      else if ($type == 'String') {
+          $inputConverterMethodCall = 'setString($map, ' . $fieldConstant . ', ' . $value . ')';
       }
+      else if ($type == 'Boolean') {
+          $inputConverterMethodCall = 'setBoolean($map, ' . $fieldConstant . ', ' . $value . ')';
+      }
+      else if ($type == 'Date') {
+          $inputConverterMethodCall = 'setDate($map, ' . $fieldConstant . ', ' . $value . ')';
+      }
+      else if ($type == 'time') {
+          $inputConverterMethodCall = 'setTime($map, ' . $fieldConstant . ', ' . $value . ')';
+      }
+      else if ($type == "long" || $type == 'id') {
+          $inputConverterMethodCall = 'setLong($map, ' . $fieldConstant . ', ' . $value . ')';
+      }
+      else if ($type == "double") {
+          $inputConverterMethodCall = 'setDouble($map, ' . $fieldConstant . ', ' . $value . ')';
+      }
+      else {
+          throw new IllegalStateException("Unsupported type: $type");
+      }
+
 ?>
-        $map[self::<?php echo $descriptor->fieldConstant($field)?>] = <?php echo $convertedValue ?>;
+        $inputConverter-><?php echo $inputConverterMethodCall ?>;
 <?php
   }
 ?>
@@ -344,21 +368,44 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
 
     public function setAttributes($map, $prefix='') {
         $converter = DataConverter::getInstance();
+        $user = Transaction::getInstance()->getUser();
+        $inputConverter = new InputConverter($user->getTimezone(), $user->getLocale());
 <?php
   foreach ($descriptor->xml->field as $field) {
-        $constant = "\$map[\$prefix . self::" . $descriptor->fieldConstant($field) . "]";
-        if ($field['type'] == 'Date') {
-            $parsedConstant = "\$converter->parseDate($constant)";
-        }
-        else if (strtolower($field['type']) == 'time') {
-            $parsedConstant = "\$converter->parseTime($constant)";
-        }
-        else {
-            $parsedConstant = $constant;
-        }
+      $constantName = 'self::' . $descriptor->fieldConstant($field);
+      $key = '$prefix . ' . $constantName;
+      $constant = "\$map[\$prefix . " . $constantName . "]";
+      $converterMethodCall = null;
+      $setterName = $descriptor->setterName($field);
+      $type = $field['type'];
+      if ($type == 'long' || $type == 'id') {
+          $converterMethodCall = 'getLong($map, ' . $key . ')';
+      }
+      if ($type == 'double') {
+          $converterMethodCall = 'getDouble($map, ' . $key . ')';
+      }
+      if ($type == 'Date') {
+          $converterMethodCall = 'getDate($map, ' . $key . ')';
+          $parsedConstant = "\$converter->parseDate($constant)";
+      }
+      else if (strtolower($type) == 'time') {
+          $parsedConstant = "\$converter->parseTime($constant)";
+      } 
+      else {
+          $parsedConstant = $constant;
+      }
+
+      if ($field['unit']) {
+          $converterMethodCall = 'getMeasure($map, ' . $key . ')';
+          $setterName = $descriptor->unitSetterName($field);
+      }
 ?>
         if (isset(<?php echo $constant?>)) {
-            $this-><?php echo $descriptor->setterName($field) ?>(<?php echo $parsedConstant?>);
+<?php if ($converterMethodCall) {?>
+            $this-><?php echo $setterName?>($inputConverter-><?php echo $converterMethodCall?>);
+<?php } else {?>
+            $this-><?php echo $setterName?>(<?php echo $parsedConstant?>);
+<?php }?>
         }
 <?php
   }

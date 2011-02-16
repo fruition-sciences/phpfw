@@ -5,7 +5,7 @@
  *
  */
 
-class Datebox extends HtmlElement {
+class Datebox extends Control {
     private static $dateFormat = "%m/%d/%y";
     private static $timeFormat = "%l:%M %P";
     private static $dateTimeFormat = "%m/%d/%y %l:%M %P";
@@ -71,7 +71,7 @@ class Datebox extends HtmlElement {
     }
 
     public function toInput() {
-        if($this->showPopup){
+        if ($this->showPopup){
             $buttonName = $this->getButtonName();
             $img = new HtmlElement("img", $buttonName);
             $img->set('src', Application::getAppRoot() . "js/core/zpcal/themes/img.gif");
@@ -82,7 +82,7 @@ class Datebox extends HtmlElement {
             return parent::toInput() . $img . $script;
         }
         
-        if($this->showTime){
+        if ($this->showTime){
             $return = $this->getHourDropdown();
             if($this->showMinute){
                 $return .= ":" . $this->getMinuteDropdown();
@@ -92,7 +92,7 @@ class Datebox extends HtmlElement {
             $return .= " " . $this->getPMDropdown();
             
             $return .= $this->getHiddenField();
-        }else{
+        } else{
             $return = parent::toInput() . $this->getDateFormatLabel();
         }
         return $return;

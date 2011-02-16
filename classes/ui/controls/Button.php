@@ -7,7 +7,7 @@
 
 require_once("HtmlElement.php");
 
-class Button extends HtmlElement {
+class Button extends Control {
     private $href;
     private $title;
     private $submit = true;

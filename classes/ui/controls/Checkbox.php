@@ -5,7 +5,7 @@
  * 
  */
 
-class Checkbox extends HtmlElement {
+class Checkbox extends Control {
     private $value; // The 'run time' value of this checkbox. (not the 'value' property)
     
     public function __construct($name) {

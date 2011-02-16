@@ -5,7 +5,7 @@
  * 
  */
 
-class Hidden extends HtmlElement {
+class Hidden extends Control {
     public function __construct($name) {
         parent::__construct("input", $name);
         $this->set("type", "hidden");

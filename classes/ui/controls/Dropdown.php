@@ -5,7 +5,7 @@
  *
  */
 
-class Dropdown extends HtmlElement {
+class Dropdown extends Control {
     private $options = array();
     private $optgroups = array();
     private $value;
@@ -101,7 +101,7 @@ class Dropdown extends HtmlElement {
     }
 }
 
-class Dropdown_Option extends HtmlElement {
+class Dropdown_Option extends Control {
     public function __construct($label, $value) {
         parent::__construct("option");
         $this->set("value", $value);
@@ -131,7 +131,7 @@ class Dropdown_Option extends HtmlElement {
     }
 }
 
-class Dropdown_Optgroup extends HtmlElement {
+class Dropdown_Optgroup extends Control {
     private $options = array();
     
     public function __construct($label) {

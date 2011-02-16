@@ -6,7 +6,7 @@
 
 require_once("HtmlElement.php");
 
-class FileUpload extends HtmlElement {
+class FileUpload extends Control {
     public function __construct($name) {
         parent::__construct("input", $name);
         $this->set("type", "file");

@@ -5,7 +5,7 @@
  * 
  */
 
-class Radio extends HtmlElement {
+class Radio extends Control {
     private $value; // The 'run time' value of this radio. (not the 'value' property)
     
     public function __construct($name, $val) {
