@@ -155,7 +155,7 @@ class InputConverter {
     }
 
     public function setDouble(&$map, $key, $value, $digits=2) {
-        $map[$key] = $this->formatter->number($value, $digits);
+        $map[$key] = isset($value) ? $this->formatter->number($value, $digits) : null;
     }
 
     public function getString($map, $key) {

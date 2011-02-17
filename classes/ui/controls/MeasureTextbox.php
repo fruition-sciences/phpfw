@@ -55,7 +55,7 @@ class MeasureTextbox extends Textbox {
 
     public function toInput() {
         $hidden = $this->getForm()->hidden($this->getUnitFieldName());
-        $hidden->setValue($this->displayUnit);
+        $hidden->setValue($this->displayUnit)->set("id", $this->getUnitFieldName());
         $this->convert();
         return parent::toInput() . $hidden . ' ' . $this->getUnitSymbolIfShown();
     }
@@ -73,19 +73,21 @@ class MeasureTextbox extends Textbox {
      * Do not call this method more than once!
      */
     private function convert() {
-        $form = $this->getForm();
-        // Get the 'hidden' value, which indicates the unit of the current value.
-        $unit = $form->getValue($this->getUnitFieldName());
-        // If the unit is different, convert
-        if ($unit && $unit != $this->displayUnit) {
-            $measure = MeasureUtils::newMeasure($unit, $this->getValue());
-            $inutInfo = MeasureUtils::getUnitInfo($this->displayUnit);
-            $measure->setType($inutInfo['constantName']);
-            // Sets the new value
-            $this->setValue($measure->getValue());
+        if($this->getValue() !== null){
+            $form = $this->getForm();
+            // Get the 'hidden' value, which indicates the unit of the current value.
+            $unit = $form->getValue($this->getUnitFieldName());
+            // If the unit is different, convert
+            if ($unit && $unit != $this->displayUnit) {
+                $measure = MeasureUtils::newMeasure($unit, $this->getValue());
+                $inutInfo = MeasureUtils::getUnitInfo($this->displayUnit);
+                $measure->setType($inutInfo['constantName']);
+                // Sets the new value
+                $this->setValue($measure->getValue());
+            }
+            // TODO: Use formatter to be local aware
+            $this->setValue(number_format($this->getValue(), $this->decimalDigits));
         }
-        // TODO: Use formatter to be local aware
-        $this->setValue(number_format($this->getValue(), $this->decimalDigits));
     }
 
     private function getUnitFieldName() {

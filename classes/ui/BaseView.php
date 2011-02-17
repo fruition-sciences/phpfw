@@ -16,20 +16,38 @@ require_once("classes/ui/Formatter.php");
 require_once("classes/ui/DataConverter.php");
 
 abstract class BaseView implements View {
+    /**
+     * @var Template
+     */
     protected $template;
     private $components = array(); // Map component_name -> component
+    /**
+     * @var Context
+     */
     private $ctx;
+    /**
+     * @var Page
+     */
     private $page;
 
+    /**
+     * @param Context $ctx
+     */
     public function init($ctx) {
         $this->ctx = $ctx;
         $this->prepare($ctx);
         $this->initChildComponents($ctx);
     }
 
+    /**
+     * @param Context $ctx
+     */
     public function prepare($ctx) {
     }
-
+    
+    /**
+     * @param Context $ctx
+     */
     public function render($ctx) {
         $this->ctx = $ctx;
         $templateName = get_class($this) . ".php";
