@@ -159,7 +159,7 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
      * @param $<?php echo $field["name"]?>Measure <?php echo $unitClassName ?> 
      */
     public function <?php echo $descriptor->unitSetterName($field) ?>($<?php echo $measureParamName?>) {
-        if(!$<?php echo $measureParamName?>){
+        if (!$<?php echo $measureParamName?>) {
         	$this-><?php echo $descriptor->setterName($field) ?>(null);
         	return;
         }
