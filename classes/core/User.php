@@ -67,6 +67,9 @@ class User {
         $this->locale = $locale;
     }
 
+    /** 
+     * @return String
+     */
     public function getLocale() {
         return $this->locale;
     }

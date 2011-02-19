@@ -10,10 +10,17 @@ class Formatter {
      * @var Formatter
      */
     private static $theInstance;
+
     /**
      * @var DateTimeZone
      */
     private $timezone;
+
+    /**
+     * @var Zend_Locale
+     */
+    private $zendLocale;
+
     /**
      * @var DateTimeZone
      */
@@ -24,8 +31,9 @@ class Formatter {
      *
      * @param String $timezoneName For example: 'America/Los_Angeles'
      */
-    public function Formatter($timezoneName) {
+    public function Formatter($timezoneName, $localeName) {
         $this->timezone = new DateTimeZone($timezoneName);
+        $this->zendLocale = new Zend_Locale($localeName);
     }
 
     /**
@@ -36,8 +44,8 @@ class Formatter {
      */
     public static function getInstance() {
         if (!self::$theInstance) {
-            $timezone = Transaction::getInstance()->getUser()->getTimezone();
-            self::$theInstance = new Formatter($timezone);
+            $user = Transaction::getInstance()->getUser();
+            self::$theInstance = new Formatter($user->getTimezone(), $user->getLocale());
         }
         return self::$theInstance;
     }
@@ -110,8 +118,11 @@ class Formatter {
         return $date->format("Y-m-d H:i:s T");
     }
 
-    public function number($val, $digits) {
-        return sprintf("%.$digits" . "f", $val);
+    public function number($val, $digits=null) {
+        return Zend_Locale_Format::toNumber(
+            $val,
+            array('locale' => $this->zendLocale,
+                  'precision' => $digits));
     }
 
     /**

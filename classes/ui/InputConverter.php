@@ -22,7 +22,7 @@ class InputConverter {
     public function __construct($timezoneName, $locale) {
         $this->timezoneName = $timezoneName;
         $this->locale = $locale;
-        $this->formatter = new Formatter($timezoneName);
+        $this->formatter = new Formatter($timezoneName, $this->locale);
     }
 
     /**
@@ -128,7 +128,7 @@ class InputConverter {
      * @param $measure
      */
     public function setMeasure(&$map, $key, $measure) {
-        $this->setDouble($map, $key, $measure->getValue(), 10);
+        $this->setDouble($map, $key, $measure->getValue());
         $map[$key . '__unit'] = get_class($measure) . '::' . $measure->getType();
         $map[$key . '__measure'] = $measure;
     }
@@ -154,7 +154,7 @@ class InputConverter {
         return (float)$value; 
     }
 
-    public function setDouble(&$map, $key, $value, $digits=2) {
+    public function setDouble(&$map, $key, $value, $digits=null) {
         $map[$key] = isset($value) ? $this->formatter->number($value, $digits) : null;
     }
 
