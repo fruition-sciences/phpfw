@@ -85,7 +85,10 @@ abstract class BaseView implements View {
         return $this->template;
     }
 
-    protected function get($key) {
+    protected function get($key, $default='__UNDEFINED__') {
+        if ($default != '__UNDEFINED__' && !$this->getTemplate()->containsKey($key)) {
+            return $default;
+        }
         return $this->getTemplate()->get($key);
     }
 
