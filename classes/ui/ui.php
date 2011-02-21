@@ -47,6 +47,9 @@ abstract class UI {
         return $element;
     }
 
+    /**
+     * @return ErrorManager
+     */
     function getErrorManager() {
         if (!$this->errorManager) {
             $this->errorManager = new ErrorManager();
