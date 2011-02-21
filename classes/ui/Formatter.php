@@ -31,7 +31,10 @@ class Formatter {
      *
      * @param String $timezoneName For example: 'America/Los_Angeles'
      */
-    public function Formatter($timezoneName, $localeName) {
+    public function Formatter($timezoneName, $localeName=null) {
+        if (!$localeName) {
+            $localeName = Transaction::getInstance()->getUser()->getLocale();
+        }
         $this->timezone = new DateTimeZone($timezoneName);
         $this->zendLocale = new Zend_Locale($localeName);
     }
