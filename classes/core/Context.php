@@ -99,6 +99,9 @@ class Context {
         return beginsWith($path, "/") ? Application::getAppRoot() . substr($path, 1) : $path;
     }
 
+    /** 
+     * @return UI
+     */
     public function getUIManager() {
         return $this->ui;
     }
