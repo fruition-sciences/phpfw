@@ -7,6 +7,9 @@
 
 class Request {
     const UNDEFINED = "___UNDEFINED___";
+    /**
+     * @var Context
+     */
     private $ctx;
     private $attributes;
 

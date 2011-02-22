@@ -12,7 +12,7 @@ class MeasureTextbox extends Textbox {
     private $showSymbol; // boolean
     private $displayUnit; // String. Full Zend_Measure unit. For example: 'Zend_Measure_Temperature::CELSIUS'
     private $measureValue;
-    private $decimalDigits = 2; // Number of decimal digits to show
+    private $decimalDigits = null; // Number of decimal digits to show
 
     /** 
      * @param $name the name for this control.
@@ -73,20 +73,22 @@ class MeasureTextbox extends Textbox {
      * Do not call this method more than once!
      */
     private function convert() {
-        if($this->getValue() !== null){
+        $user = Transaction::getInstance()->getUser();
+        if($this->getValue() !== null && Zend_Locale_Format::isNumber($this->getValue(), array("locale"=>$user->getLocale()))){
             $form = $this->getForm();
             // Get the 'hidden' value, which indicates the unit of the current value.
             $unit = $form->getValue($this->getUnitFieldName());
             // If the unit is different, convert
             if ($unit && $unit != $this->displayUnit) {
-                $measure = MeasureUtils::newMeasure($unit, $this->getValue());
-                $inutInfo = MeasureUtils::getUnitInfo($this->displayUnit);
-                $measure->setType($inutInfo['constantName']);
-                // Sets the new value
-                $this->setValue($measure->getValue());
+                $measure = MeasureUtils::newMeasure($unit, $this->getValue(), $user->getLocale());
+                $unitInfo = MeasureUtils::getUnitInfo($this->displayUnit);
+                $measure->setType($unitInfo['constantName']);
+                // Sets the new value without rounding and without formatting
+                $this->setValue($measure->getValue(-1, $user->getLocale()));
             }
-            // TODO: Use formatter to be local aware
-            $this->setValue(number_format($this->getValue(), $this->decimalDigits));
+            $format = Formatter::getInstance();
+            // Format and round the value
+            $this->setValue($format->number($format->getNumber($this->getValue()), $this->decimalDigits));
         }
     }
 

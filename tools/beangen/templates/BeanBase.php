@@ -352,7 +352,10 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
       else if ($type == 'time') {
           $inputConverterMethodCall = 'setTime($map, ' . $fieldConstant . ', ' . $value . ')';
       }
-      else if ($type == "long" || $type == 'id') {
+      else if ($type == 'id') {
+          $inputConverterMethodCall = 'setId($map, ' . $fieldConstant . ', ' . $value . ')';
+      }
+      else if ($type == "long") {
           $inputConverterMethodCall = 'setLong($map, ' . $fieldConstant . ', ' . $value . ')';
       }
       else if ($type == "double") {
@@ -371,7 +374,6 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
     }
 
     public function setAttributes($map, $prefix='') {
-        $converter = DataConverter::getInstance();
         $user = Transaction::getInstance()->getUser();
         $inputConverter = new InputConverter($user->getTimezone(), $user->getLocale());
 <?php
@@ -382,7 +384,10 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
       $converterMethodCall = null;
       $setterName = $descriptor->setterName($field);
       $type = $field['type'];
-      if ($type == 'long' || $type == 'id') {
+      if ($type == 'id') {
+          $converterMethodCall = 'getId($map, ' . $key . ')';
+      }
+      if ($type == 'long') {
           $converterMethodCall = 'getLong($map, ' . $key . ')';
       }
       if ($type == 'double') {

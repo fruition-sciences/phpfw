@@ -10,12 +10,14 @@ class NumberConstraint extends Constraint {
     private $maxValue = null;
 
     public function doValidate($ctx) {
-        $value = $ctx->getRequest()->getString($this->getName(), null);
+        $formattedValue = $ctx->getRequest()->getString($this->getName(), null);
         // Validate only if there is a value
-        if ($value === null || $value === '') {
+        if ($formattedValue === null || $formattedValue === '') {
             return true;
         }
-        if (!is_numeric($value)) {
+        $format = new Formatter($ctx->getUser()->getTimezone(), $ctx->getUser()->getLocale());
+        $value = $format->getNumber($formattedValue);
+        if ($value === false) {
             $msg = I18nUtil::lookupString('NUMBER_CONSTRAINT_MSG');
             $msg->set('fieldName', $this->getLabel());
             $this->addFieldError($ctx, $this->getName(), $msg->__toString());

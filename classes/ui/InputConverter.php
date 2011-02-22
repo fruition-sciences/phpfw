@@ -41,7 +41,7 @@ class InputConverter {
         $value = $this->getValue($map, $key);
 
         // TODO: Parse according to locale
-        $originalDefaulyTimezone = date_default_timezone_get();
+        $originalDefaultTimezone = date_default_timezone_get();
         // Temporarily change time zone.
         date_default_timezone_set($this->timezoneName);
 
@@ -50,7 +50,7 @@ class InputConverter {
         $date->setTimezone($tz);
 
         // Set default time zone back
-        date_default_timezone_set($originalDefaulyTimezone);
+        date_default_timezone_set($originalDefaultTimezone);
         return $date->format('U');
     }
 
@@ -114,7 +114,7 @@ class InputConverter {
         if (!$unitValue) {
             throw new IllegalArgumentException("The map should contain the unit");
         }
-        return MeasureUtils::newMeasure($unitValue, $value);
+        return MeasureUtils::newMeasure($unitValue, $this->formatter->getNumber($value));
     }
 
     /**
@@ -132,8 +132,8 @@ class InputConverter {
         $map[$key . '__unit'] = get_class($measure) . '::' . $measure->getType();
         $map[$key . '__measure'] = $measure;
     }
-
-    public function getLong($map, $key) {
+    
+    public function getId($map, $key) {
         $value = $this->getValue($map, $key);
         if (!$value) {
             return null;
@@ -141,9 +141,20 @@ class InputConverter {
         return (int)$value; 
     }
 
-    public function setLong(&$map, $key, $value) {
-        // TODO: Format number
+    public function setId(&$map, $key, $value) {
         $map[$key] = $value;
+    }
+
+    public function getLong($map, $key) {
+        $value = $this->getValue($map, $key);
+        if (!$value) {
+            return null;
+        }
+        return (int)$this->formatter->getNumber($value, 0); 
+    }
+
+    public function setLong(&$map, $key, $value) {
+        $map[$key] = isset($value) ? $this->formatter->number($value, 0) : null;
     }
 
     public function getDouble($map, $key) {
@@ -151,7 +162,7 @@ class InputConverter {
         if (!$value) {
             return null;
         }
-        return (float)$value; 
+        return (float)$this->formatter->getNumber($value); 
     }
 
     public function setDouble(&$map, $key, $value, $digits=null) {
@@ -183,7 +194,7 @@ class InputConverter {
     }
 
     private function getValue($map, $key) {
-        if (!$map[$key]) {
+        if (!isset($map[$key])) {
             return null;
         }
         return $map[$key];

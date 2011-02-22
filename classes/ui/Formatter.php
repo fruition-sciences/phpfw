@@ -30,6 +30,7 @@ class Formatter {
      * Create a new Formatter, for the given time zone.
      *
      * @param String $timezoneName For example: 'America/Los_Angeles'
+     * @param String $localeName For example: "en_US".
      */
     public function Formatter($timezoneName, $localeName=null) {
         if (!$localeName) {
@@ -121,11 +122,37 @@ class Formatter {
         return $date->format("Y-m-d H:i:s T");
     }
 
+    /**
+     * Format a string or a number (float or int) to the Formatter
+     * locale with the $digits precision.
+     * @param String $val Value to format
+     * @param Integer $digits Precision
+     */
     public function number($val, $digits=null) {
         return Zend_Locale_Format::toNumber(
             $val,
             array('locale' => $this->zendLocale,
                   'precision' => $digits));
+    }
+    
+    /**
+     * Returns the normalized number from a localized one
+     * Parsing depends on the Formatter locale
+     * @param String $input Formatted String
+     * @param Integer $digits Precision
+     * @return String normalized number of Boolean false
+     * if $input is not a valid formatted number.
+     */
+    public function getNumber($input, $digits=null){
+        try {
+            return Zend_Locale_Format::getNumber(
+                $input,
+                array('locale' => $this->zendLocale,
+                      'precision' => $digits));
+        } catch(Zend_Locale_Exception $e) {
+            // The string is not a valid formatted number.
+            return false;
+        }
     }
 
     /**
