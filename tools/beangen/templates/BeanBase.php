@@ -381,8 +381,11 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
       $constantName = 'self::' . $descriptor->fieldConstant($field);
       $key = '$prefix . ' . $constantName;
       $constant = "\$map[\$prefix . " . $constantName . "]";
+      $measureConstant = null;
       $converterMethodCall = null;
+      $measureConverterMethodCall = null;
       $setterName = $descriptor->setterName($field);
+      $measureSetterName = null;
       $type = $field['type'];
       if ($type == 'id') {
           $converterMethodCall = 'getId($map, ' . $key . ')';
@@ -405,13 +408,22 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
       }
 
       if ($field['unit']) {
-          $converterMethodCall = 'getMeasure($map, ' . $key . ')';
-          $setterName = $descriptor->unitSetterName($field);
+          $measureConstant = "\$map[\$prefix . " . $constantName . " . '__unit']";
+          $measureConverterMethodCall = 'getMeasure($map, ' . $key . ')';
+          $measureSetterName = $descriptor->unitSetterName($field);
       }
 ?>
         if (isset(<?php echo $constant?>)) {
 <?php if ($converterMethodCall) {?>
+<?php     if ($measureConverterMethodCall) {?>
+            if (isset(<?php echo $measureConstant?>)) {
+                $this-><?php echo $measureSetterName?>($inputConverter-><?php echo $measureConverterMethodCall?>);
+            }else{
+                $this-><?php echo $setterName?>($inputConverter-><?php echo $converterMethodCall?>);
+            }
+<?php     }else{?>
             $this-><?php echo $setterName?>($inputConverter-><?php echo $converterMethodCall?>);
+<?php     }?>
 <?php } else {?>
             $this-><?php echo $setterName?>(<?php echo $parsedConstant?>);
 <?php }?>
