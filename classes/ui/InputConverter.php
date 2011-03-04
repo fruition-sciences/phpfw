@@ -107,7 +107,7 @@ class InputConverter {
      */
     public function getMeasure($map, $key) {
         $value = $this->getValue($map, $key);
-        if (!$value) {
+        if (!isset($value) || $value === "" || $value === false) {
             return null;
         }
         $unitValue = $this->getValue($map, $key . '__unit');
@@ -147,7 +147,7 @@ class InputConverter {
 
     public function getLong($map, $key) {
         $value = $this->getValue($map, $key);
-        if (!$value) {
+        if (!isset($value) || $value === "" || $value === false) {
             return null;
         }
         return (int)$this->formatter->getNumber($value, 0); 
@@ -159,7 +159,7 @@ class InputConverter {
 
     public function getDouble($map, $key) {
         $value = $this->getValue($map, $key);
-        if (!$value) {
+        if (!isset($value) || $value === "" || $value === false) {
             return null;
         }
         return (float)$this->formatter->getNumber($value); 
@@ -171,7 +171,7 @@ class InputConverter {
 
     public function getString($map, $key) {
         $value = $this->getValue($map, $key);
-        if (!$value) {
+        if (!isset($value) || $value === "" || $value === false) {
             return null;
         }
         return (String)$value;
@@ -183,7 +183,7 @@ class InputConverter {
 
     public function getBoolean($map, $key) {
         $value = $this->getValue($map, $key);
-        if (!$value) {
+        if (!isset($value) || $value === "") {
             return null;
         }
         return (bool)$value;
