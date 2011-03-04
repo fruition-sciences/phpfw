@@ -459,4 +459,13 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
   }
 ?>;
     }
+
+    /**
+     * Get the list of column names of the table represented by this bean.
+     *
+     * @return Array of String
+     */
+    public function getColumnNames() {
+        return self::$ALL;
+    }
 }
