@@ -326,7 +326,22 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
         $db->query($sql);
     }
 
-    public function getAttributes() {
+    /**
+     * Get a map containing all fields of this bean as formatted strings.
+     * 
+     * The strings will be formatted according to the current user's timezone
+     * and locale.
+     * 
+     * @param $dateTime boolean. If true, date fields will be formatted as date time.
+     * @param $expanded boolean. If true, more complex data types will be expanded
+     *        into more than 1 parameter. The extra parameters would have a name
+     *        similar to the original parameter name + a prefix (such as '__unit').
+     *        For example: 
+     *        1. Measure will be represented as 2 fields: value & unit
+     *        Well, that's the only example for now.
+     *        TODO: Do the same with Date
+     */
+    public function getAttributes($dateTime=false, $expanded=true) {
         $user = Transaction::getInstance()->getUser();
         $inputConverter = new InputConverter($user->getTimezone(), $user->getLocale());        
 
@@ -335,10 +350,13 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
   foreach ($descriptor->xml->field as $field) {
       $value = '$this->' . $field["name"];
       $inputConverterMethodCall = null;
+      $dateTimeInputConverterMethodCall = null;
+      $expandedInputConverterMethodCall = null;
       $type = $field['type'];
       $fieldConstant = 'self::' . $descriptor->fieldConstant($field);
       if ($field['unit']) {
-          $inputConverterMethodCall = 'setMeasure($map, ' . $fieldConstant . ', $this->' . $descriptor->unitGetterName($field) . '())';
+          $inputConverterMethodCall = 'setDouble($map, ' . $fieldConstant . ', $this->' . $descriptor->getterName($field) . '())';
+          $expandedInputConverterMethodCall = 'setMeasure($map, ' . $fieldConstant . ', $this->' . $descriptor->unitGetterName($field) . '())';
       }
       else if ($type == 'String') {
           $inputConverterMethodCall = 'setString($map, ' . $fieldConstant . ', ' . $value . ')';
@@ -348,6 +366,7 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
       }
       else if ($type == 'Date') {
           $inputConverterMethodCall = 'setDate($map, ' . $fieldConstant . ', ' . $value . ')';
+          $dateTimeInputConverterMethodCall = 'setDateTime($map, ' . $fieldConstant . ', ' . $value . ')';
       }
       else if ($type == 'time') {
           $inputConverterMethodCall = 'setTime($map, ' . $fieldConstant . ', ' . $value . ')';
@@ -364,10 +383,32 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
       else {
           throw new IllegalStateException("Unsupported type: $type");
       }
-
+      
+      if ($dateTimeInputConverterMethodCall) {
+?>
+        if ($dateTime) {
+            $inputConverter-><?php echo $dateTimeInputConverterMethodCall ?>;
+        }
+        else {
+            $inputConverter-><?php echo $inputConverterMethodCall ?>;
+        }
+<?php
+      }
+      else if ($expandedInputConverterMethodCall) {
+?>
+        if ($expanded) {
+            $inputConverter-><?php echo $expandedInputConverterMethodCall ?>;
+        }
+        else {
+            $inputConverter-><?php echo $inputConverterMethodCall ?>;
+        }
+<?php
+      }
+      else {
 ?>
         $inputConverter-><?php echo $inputConverterMethodCall ?>;
 <?php
+      }
   }
 ?>
         return $map;
