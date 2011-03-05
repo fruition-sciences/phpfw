@@ -70,7 +70,7 @@ class InputConverter {
     }
 
     public function setDateTime(&$map, $key, $value) {
-        $map[$key] = $this->formatter->dateTime24($value, false, true);
+        $map[$key] = $this->formatter->dateTime24($value);
     }
 
     /**
