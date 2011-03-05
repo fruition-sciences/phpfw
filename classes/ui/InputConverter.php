@@ -69,6 +69,10 @@ class InputConverter {
         $map[$key] = $this->formatter->date($value);
     }
 
+    public function setDateTime(&$map, $key, $value) {
+        $map[$key] = $this->formatter->dateTime24($value, false, true);
+    }
+
     /**
      * Get time value (number of seconds) from the given map.
      * The value in the map is assumed to be formatted as: "HH:MM:SS"

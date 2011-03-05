@@ -75,7 +75,11 @@ class Formatter {
         $time = $showSeconds ? "g:i:s" : "g:i";
         return $this->dateFormat($timestamp, $newLine ? "m/d/y<b\\r/>$time a" : "m/d/y $time a");
     }
-    
+
+    public function dateTime24($timestamp) {
+        return $this->dateFormat($timestamp, "m/d/Y H:i:s");
+    }
+
     /**
      * Format the given timestamp as time.
      *
