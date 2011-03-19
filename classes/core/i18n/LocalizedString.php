@@ -43,10 +43,14 @@ class LocalizedString {
     private function substituteVars() {
         $resultMsg = $this->msg;
         foreach ($this->attributes as $key => $val) {
-            // Skip this pair if value cannot be converted to string
-            if (is_object($val) && !method_exists($val, '__toString')) {
-                continue;
-            }
+            if (is_object($val)) {
+                // Skip this pair if value cannot be converted to string
+                if (!method_exists($val, '__toString')) {
+                    continue;
+                }
+                // Convert value to a string
+                $val = $val->__toString();
+            } 
             $search = '${'. $key . '}';
             $resultMsg = str_replace($search, $val, $resultMsg);
         }
