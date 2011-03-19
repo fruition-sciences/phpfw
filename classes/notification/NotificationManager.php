@@ -42,7 +42,7 @@ class NotificationManager {
         }
         $body = $mime->get();
         $headers = $mime->headers($headers);
-        $emailEnabled = Config::getInstance()->getString("email/enabled", true);
+        $emailEnabled = Config::getInstance()->getBoolean("email/enabled", true);
         if (!$emailEnabled) {
             return true;
         }
