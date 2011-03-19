@@ -28,6 +28,7 @@ class TemplateBasedNotification extends Notification {
      * array of possible paths. Paths are relative to the 'notifications' directory.
      *
      * @param Mixed $templateFile either a file or an array of possible files.
+     * @throws FileNotFoundException if the template file was not found.
      */
     public function __construct($templateFile) {
         $this->templateFile = $templateFile;
@@ -42,8 +43,20 @@ class TemplateBasedNotification extends Notification {
         return $this->attributes[$key];
     }
 
+    public function setAll($attributes) {
+        foreach ($attributes as $k => $v) {
+            $this->set($k, $v);
+        }
+    }
+
+    public function getAttributes() {
+        return $this->attributes;
+    }
+
     /**
      * Create the localized string from the content of the template.
+     * 
+     * @throws FileNotFoundException if a valid template file was not found.
      */
     private function initMessage() {
         $file = $this->findTemplateFullPath($this->templateFile);
@@ -56,7 +69,7 @@ class TemplateBasedNotification extends Notification {
      *
      * @param Mixed $templateFile String or Array of Strings.
      * @return String full path
-     * @throws IllegalStateException if a valid template file was not found.
+     * @throws FileNotFoundException if a valid template file was not found.
      */
     private function findTemplateFullPath($templateFile) {
         $appRoot = Config::getInstance()->getString('appRootDir');
