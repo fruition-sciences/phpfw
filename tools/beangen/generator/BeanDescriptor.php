@@ -137,6 +137,12 @@ class BeanDescriptor {
             if ($rel['type'] == 'one-to-one') {
                 $fieldName = $rel['foreignKey'];
                 $this->oneToOneRelsMap["${fieldName}"] = $rel;
+                $refType = (string)$rel['refType'];
+                $refBeanDescriptor = $this->getDescriptorFromBeanClassName($refType);
+                if ($refBeanDescriptor->xml['cache']) {
+                    // Mark that this is a reference to a constant table
+                    $rel['isConstant'] = true;
+                }
             }
             if ($rel['type'] == 'one-to-many') {
                 $this->oneToManyRelsList[] = $rel;
@@ -197,5 +203,24 @@ class BeanDescriptor {
         }
         $text = implode('_', $elements);
         return strtoupper($text);
+    }
+
+    /**
+     * Given a bean class name, get its BeanDescriptor.
+     * Assumes that the bean descriptor file is in the same directory of the
+     * current (this) bean descriptor.
+     * 
+     * @param $beanClassName
+     * @return BeanDescriptor
+     */
+    private function getDescriptorFromBeanClassName($beanClassName) {
+        $beanDesciptorDir = dirname($this->xmlFile);
+        if (!endsWith($beanClassName, 'Bean')) {
+            throw new IllegalArgumentException("Invalid bean class name: $beanClassName");
+        }
+        $fileName = substr($beanClassName, 0, -4); // Remove 'Bean' from end
+        $fileName .= '.xml';
+        $file = "$beanDesciptorDir/$fileName";
+        return new BeanDescriptor($file); 
     }
 }

@@ -69,18 +69,25 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
 <?php
   }
 
-  if (sizeof($descriptor->xml->relationship) > 0) {
+  // Declare relationships (skips relationship to constant tables)
+  $declaredRelationships = array();
+  foreach ($descriptor->xml->relationship as $rel) {
+      // Skip 1:1 relationship to a constant table
+      if ($rel['type'] == 'one-to-one' && $rel['isConstant']) {
+          continue;
+      }
+      $declaredRelationships[] = $rel;
+  }
+  if ($declaredRelationships) {
 ?>
 
     // Relationships
 <?php
-    foreach ($descriptor->xml->relationship as $rel) {
+      foreach ($declaredRelationships as $rel) {
 ?>
     private $<?php echo $rel['name']?>;
 <?php
-    }
-?>
-<?php
+      }
   }
 ?>
 
@@ -130,12 +137,14 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
   $fieldName = $field["name"];
     if (isset($descriptor->oneToOneRelsMap["${fieldName}"])) {
       $rel = $descriptor->oneToOneRelsMap["${fieldName}"];
+      if (!$rel['isConstant']) {
 ?>
         // If id doesn't match the id of '<?php echo $rel["name"]?>', set '<?php echo $rel["name"]?>' to null
         if (isset($this-><?php echo $rel['name']?>) && $this-><?php echo $rel['name']?>->getId() != $<?php echo $field["name"]?>) {
             $this-><?php echo $rel["name"]?> = null;
         }
 <?php
+      }
     }
 ?>
     }
@@ -181,6 +190,20 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
 <?php
     if (isset($descriptor->oneToOneRelsMap["${fieldName}"])) {
       $rel = $descriptor->oneToOneRelsMap["${fieldName}"];
+      if ($rel['isConstant']) {
+?>
+    /**
+     * <?php echo wordwrap("Get the relationship field '" . $rel["name"] . "'. This is a reference to a constant table", 73, "\n     * ") ?>.
+     *
+     * @return <?php echo $rel["refType"]?> 
+     */
+    public function <?php echo $descriptor->getterName($rel) ?>() {
+        return <?php echo $rel["refType"]?>Home::get($this-><?php echo $rel["foreignKey"]?>);
+    }
+
+<?php
+      }
+      else {
 ?>
     /**
      * Get the relationship field '<?php echo $rel["name"]?>'.
@@ -215,6 +238,7 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
     }
 
 <?php
+      }
     }
   }
 
