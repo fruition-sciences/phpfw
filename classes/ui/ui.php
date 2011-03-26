@@ -42,6 +42,12 @@ abstract class UI {
         return $link;
     }
 
+    /**
+     * Create a new HtmlElement of the given type.
+     * 
+     * @param $type String
+     * @return HtmlElement
+     */
     function newHtmlElement($type) {
         $element = new HtmlElement($type);
         return $element;
