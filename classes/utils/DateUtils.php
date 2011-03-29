@@ -249,4 +249,71 @@ class DateUtils {
         $date = self::makeDateFromTimestamp($timestamp, $timezone);
         return $date->getOffset();
     }
+    
+    /**
+     * 
+     * check if a time is inside a time interval.
+     * It can check for time frames that cross midnight too.
+     * 
+     * @param int $h  the hour of the time you want to check 
+     * @param int $m  the minute of the time you want to check 
+     * @param int $h1 the hour of the lower endpoint of the timeframe 
+     * @param int $m1 the minute of the lower endpoint of the timeframe 
+     * @param int $h2 the hour of the upper endpoint of the timeframe
+     * @param int $m2 the minute of the upper endpoint of the timeframe
+     * @return boolean return true (if our time is in the timeframe) or false.
+     */
+    public static function timeInInterval($h,$m,$h1,$m1,$h2,$m2){
+    	//filter the parameters
+    	$h = intval($h);
+    	$m = intval($m);
+    	$h1 = intval($h1);
+    	$m1 = intval($m1);
+    	$h2 = intval($h2);
+    	$m2 = intval($m2);
+    	//cases like 00:00 - 14:00
+    	if ($h1 < $h2){
+    		if (($h < $h1) || ($h > $h2)){
+    			return false;
+    		} else if (($h == $h1) || ($h == $h2)) {
+    			if ($h == $h1){
+    				if ($m < $m1){
+    					return false;
+    				}
+    			} else {
+    				if ($m > $m2){
+    					return false;
+    				}
+    			}
+    		}
+    	}
+    	//cases like 12:00 - 12:30 and 12:30-12:00
+    	if ($h1 == $h2){
+    		if ($m1 > $m2){
+    			//split it into 2 intervals 
+    			//12:30-12:00 => 12:30-23:59 and 00:00-12:00
+    			$tmp1 = self::timeInInterval($h,$m,$h1,$m1,23,59);
+    			$tmp2 = self::timeInInterval($h,$m,0,0,$h2,$m2);
+    			if (($tmp1 == 0) && ($tmp2 == 0)){
+    				return false;
+    			}
+    		} else {
+    			if ($h != $h2){
+    				return false;
+    			} else if (($m > $m2) || ($m < $m1)) {
+    				return false;
+    			}
+    		}
+    	}
+    	//cases like 08:00 - 01:00
+    	if ($h1 > $h2){
+    		//split it into 2 intervals : 08:00 - 23:59 and 00:00-01:00
+    		$tmp1 = self::timeInInterval($h,$m,$h1,$m1,23,59);
+    		$tmp2 = self::timeInInterval($h,$m,0,0,$h2,$m2);
+    		if (($tmp1 == 0) && ($tmp2 == 0)){
+    			return false;
+    		}
+    	}
+    	return true;
+    }
 }
