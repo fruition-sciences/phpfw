@@ -50,7 +50,6 @@ abstract class BaseView implements View {
      */
     public function render($ctx) {
         $this->ctx = $ctx;
-        $templateName = get_class($this) . ".php";
         $path = $this->getTemplateDirPath() . "/" . $this->getTemplateName();
         global $form, $format;
         $form = $ctx->getForm();
