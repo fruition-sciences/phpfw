@@ -34,6 +34,7 @@ class Dropdown extends Control {
     
     public function addOptgroup($label) {
         $optgroup = new Dropdown_Optgroup($label);
+        $optgroup->setForm($this->getForm());
         return $this->addOptgroupObject($optgroup);
     }
     
@@ -42,6 +43,7 @@ class Dropdown extends Control {
         $this->optgroups[] = $optgroup;
         return $this;
     }
+    
 
     /**
      * Set a link to be shown instead of the regular title in readonly mode.
@@ -134,9 +136,10 @@ class Dropdown_Option extends Control {
 class Dropdown_Optgroup extends Control {
     private $options = array();
     
-    public function __construct($label) {
+    public function __construct($label, $form=null) {
         parent::__construct("optgroup");
         $this->set("label", $label);
+        $this->setForm($form);
     }
     
     public function addOption($name, $value=null) {
