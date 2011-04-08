@@ -18,6 +18,6 @@ class TextArea extends HTMLElement {
     }
 
     public function toString() {
-        return str_replace("\t","&nbsp;&nbsp;&nbsp;&nbsp;",nl2br(htmlentities($this->getBody())));
+        return str_replace("\t","&nbsp;&nbsp;&nbsp;&nbsp;",nl2br(htmlentities($this->getBody(), ENT_COMPAT, "UTF-8")));
     }
 }
