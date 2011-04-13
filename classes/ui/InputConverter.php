@@ -39,7 +39,9 @@ class InputConverter {
      */
     public function getDate($map, $key) {
         $value = $this->getValue($map, $key);
-
+        if (!isset($value) || $value === "" || $value === false) {
+            return null;
+        }
         // TODO: Parse according to locale
         $originalDefaultTimezone = date_default_timezone_get();
         // Temporarily change time zone.
@@ -83,6 +85,9 @@ class InputConverter {
      */
     public function getTime($map, $key) {
         $value = $this->getValue($map, $key);
+        if (!isset($value) || $value === "" || $value === false) {
+            return null;
+        }
         list($hours, $mins, $secs) = explode(':', $value);
         $seconds = $hours * 3600 + $mins * 60 + $secs;
         return $seconds;
