@@ -44,7 +44,7 @@ class ResultSet {
     }
 
     public function getDouble($key) {
-        return $this->map[$key];
+        return (float)$this->map[$key];
     }
 
     public function setDouble($key, $value) {
