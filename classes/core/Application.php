@@ -40,7 +40,7 @@ class Application {
     public function service() {
         try {
             session_name($this->sessionName);
-            session_start();
+            Zend_Session::start();
             $this->includeFiles();
             $this->validate();
             $this->invokeControllerMethod();
