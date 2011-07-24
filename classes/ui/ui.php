@@ -67,6 +67,12 @@ abstract class UI {
         return new Table($name, $className, $this->ctx);
     }
 
+    /**
+     * Creates a new Section object
+     * @param $title
+     * @param $bookmark
+     * @return Section
+     */
     public function newSection($title='', $bookmark=null) {
         return new Section($title, $bookmark);
     }
