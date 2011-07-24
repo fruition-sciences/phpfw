@@ -7,6 +7,7 @@
 
 class Section extends HtmlElement {
     private $title;
+    private $started = false; // true after begin() was called and before end()
 
     public function __construct($title, $bookmark=null) {
         parent::__construct("fieldset");
@@ -21,10 +22,12 @@ class Section extends HtmlElement {
         $legend = new HtmlElement("legend");
         $legend->setBody($this->title);
         echo $legend;
+        $this->started = true;
     }
 
     public function end() {
         echo $this->getElementCloseTag() . "\n";
+        $this->started = false;
     }
 
     /**
@@ -33,5 +36,15 @@ class Section extends HtmlElement {
      */
     public function __toString() {
         return "section:" . $this->getName();
+    }
+
+    /**
+     * Checks whther the section's begin() method has been called (and end()
+     * has not been called yet).
+     * 
+     * @return true is the section has begun. Otherwise false.
+     */
+    public function isStarted() {
+        return $this->started;
     }
 }
