@@ -59,6 +59,9 @@ class Context {
         return false;
     }
 
+    /**
+     * @return Boolean
+     */
     public function validateConstraints() {
         if (!isset($_REQUEST['_constraints'])) {
             return true;
@@ -118,14 +121,23 @@ class Context {
         return $this->controllerAlias;
     }
 
+    /**
+     * @param User $user
+     */
     public function setUser($user) {
         $this->user = $user;
     }
-
+    
+    /**
+     * @return User
+     */
     public function getUser() {
         return $this->user;
     }
 
+    /**
+     * @return Boolean
+     */
     public function isUserLoggedIn() {
         $user = $this->getUser();
         return isset($user) && !$user->isAnonymous();
