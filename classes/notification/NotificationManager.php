@@ -38,7 +38,11 @@ class NotificationManager {
             $mime->setTXTBody($content);
         }
         foreach ($notification->getAttachments() as $attachment) {
-            self::addAttachment($mime, $attachment);
+            $result = self::addAttachment($mime, $attachment);
+            if (PEAR::isError($result)) {
+                Logger::error("Send email failed. " . $result->getMessage());
+                return false;
+            }
         }
         $body = $mime->get();
         $headers = $mime->headers($headers);
@@ -97,14 +101,16 @@ class NotificationManager {
      *
      * @param Mail_mime $mime
      * @param IAttachment $attachment
+     * @return Boolean|PEAR_Error True on success 
      */
     private static function addAttachment($mime, $attachment) {
         if ($attachment instanceof ContentAttachment) {
-            $mime->addAttachment($attachment->getContent(), $attachment->getContentType(), $attachment->getFileName(), false);
+            $result = $mime->addAttachment($attachment->getContent(), $attachment->getContentType(), $attachment->getFileName(), false);
         }
         else if ($attachment instanceof FileAttachment) {
-            $mime->addAttachment($attachment->getFilePath());
+            $result = $mime->addAttachment($attachment->getFilePath());
         }
+        return $result;
     }
 
     private static function validateNotification($notification) {

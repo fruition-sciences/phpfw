@@ -316,4 +316,17 @@ class DateUtils {
     	}
     	return true;
     }
+    
+    /**
+     * Returns the timestamp corresponding to the end of a period
+     * Returned timestamp = current time + passed duration
+     * @param int $duration (in seconds)
+     * @return int Timestamp
+     */
+    public static function getEndPeriod($duration){
+        $date = new DateTime();
+        // adds duration value in secs P: Period , T: Time, S: Seconds 
+        $date->add(new DateInterval("PT".$duration."S"));
+        return $date->getTimestamp();
+    }
 }
