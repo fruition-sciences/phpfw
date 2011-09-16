@@ -16,11 +16,11 @@ abstract class UI {
     protected $ctx;
     private $errorManager;
 
-    public function __construct($ctx) {
+    public public function __construct($ctx) {
         $this->ctx = $ctx;
     }
 
-    function button($title, $action=null) {
+    public function button($title, $action=null) {
         $button = new Button($title);
         if (isset($action)) {
             $button->setAction($action);
@@ -28,7 +28,7 @@ abstract class UI {
         return $button;
     }
 
-    function link($url, $title = '') {
+    public function link($url, $title = '') {
         $href = null;
         if ($url) {
             if (is_object($url) && get_class($url) == 'Href') {
@@ -48,7 +48,7 @@ abstract class UI {
      * @param $type String
      * @return HtmlElement
      */
-    function newHtmlElement($type) {
+    public function newHtmlElement($type) {
         $element = new HtmlElement($type);
         return $element;
     }
@@ -56,7 +56,7 @@ abstract class UI {
     /**
      * @return ErrorManager
      */
-    function getErrorManager() {
+    public function getErrorManager() {
         if (!$this->errorManager) {
             $this->errorManager = new ErrorManager();
         }
