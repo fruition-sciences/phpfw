@@ -16,7 +16,7 @@ abstract class UI {
     protected $ctx;
     private $errorManager;
 
-    public public function __construct($ctx) {
+    public function __construct($ctx) {
         $this->ctx = $ctx;
     }
 
