@@ -343,6 +343,18 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
         $db->query($sql);
     }
 
+    /**
+     * Insert or update this bean, depending on whether it's new or not.
+     */
+    public function store() {
+        if ($this->getId() > 0) {
+            $this->update();
+        }
+        else {
+            $this->insert();
+        }
+    }
+
     public function remove() {
         $db = Transaction::getInstance()->getDB();
         $sql = "delete from " . self::TABLE_NAME .
