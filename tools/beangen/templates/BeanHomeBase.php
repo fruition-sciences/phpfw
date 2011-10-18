@@ -94,6 +94,12 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanHomeBase {
             case 'String':
                 $rsMethod = "getString";
                 break;
+            case 'Polygon':
+                $rsMethod = "getPolygon";
+                break;
+            case 'Point':
+                $rsMethod = "getPoint";
+                break;
             case 'Date':
                 $rsMethod = "getDate";
                 if (isset($field['timezone'])) {
@@ -124,4 +130,29 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanHomeBase {
         $db->disposeQuery();
         return $beans;
     }
+    
+<?php foreach ($descriptor->xml->field as $field) { 
+    if ($field["type"] == "Point") {?>
+    /**
+     * Function loading, from the database, (X,Y) values from type "Point" field
+     * 
+     * @param integer $id : object Id
+     *
+     * @return array [X,Y]
+     */
+    public static function findXYfrom<?php echo ucfirst($field["name"]) ?>($id) {
+        $sql = "SELECT X(" . <?php echo $descriptor->xml['name'] ?>Bean::<?php echo $descriptor->fieldConstant($field) ?> . ") X,Y(" . <?php echo $descriptor->xml['name'] ?>Bean::<?php echo $descriptor->fieldConstant($field) ?> . ") Y FROM " . <?php echo $descriptor->xml['name'] ?>Bean::TABLE_NAME . " WHERE " . <?php echo $descriptor->xml['name'] ?>Bean::ID . "=" . $id;
+        $db = Transaction::getInstance()->getDB();
+        $db->query($sql);
+        $XY = array();
+        if ($row = $db->fetch_row()){ 
+            $XY[0] = $row->getDouble('X');
+            $XY[1] = $row->getDouble('Y');
+        }
+        return $XY;
+    }
+<?php
+  }
+}
+?>
 }

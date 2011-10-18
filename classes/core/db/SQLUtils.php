@@ -12,6 +12,20 @@ class SQLUtils {
         }
         return "'" . mysql_escape_string($str) . "'";
     }
+      
+    /**
+     * Return string without adding simple quotes
+     * Needed to use the GeomFromText function in MySql
+     * 
+     * @param string $str
+     */
+    public static function escapeStringPolygon($str) {
+        return $str;
+    }
+    
+    public static function escapeStringPoint($str) {
+        return $str;
+    }
 
     /**
      * Convert a date (number) to a database date representation (string).

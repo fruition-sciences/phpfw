@@ -67,6 +67,12 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
       }
       ?>;
 <?php
+     if ($field['type'] == "Point") { ?>
+    
+    // Extra geom
+    private $<?php echo $field['name']."X";?>;
+    private $<?php echo $field['name']."Y";?>;     
+<?php  }
   }
 
   // Declare relationships (skips relationship to constant tables)
@@ -114,6 +120,40 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
     public function <?php echo $descriptor->getterName($field) ?>() {
         return $this-><?php echo $field['name']?>;
     }
+    
+<?php if ($field["type"] == "Point") {?>
+    /**
+     * Function loading (X,Y) values (if there aren't loaded yet) from type Point and returning X
+     * 
+     * @return float longitude (decimal)
+     */
+    public function <?php echo "load".ucfirst($field["name"])."X"; ?>() {
+        if($this-><?php echo $field['name']."X";?> == null){
+            $XY = <?php echo $descriptor->xml['name'] ?>BeanHomeBase::findXYfrom<?php echo ucfirst($field["name"]) ?>($this->id);
+            if ($XY == null) { return null;}
+            $this-><?php echo $field['name']."X";?> = $XY[0];
+            $this-><?php echo $field['name']."Y";?> = $XY[1];
+        }
+        return $this-><?php echo $field['name']."X";?>;
+    }
+    
+    /**
+     * Function loading (X,Y) values (if there aren't loaded yet) from type Point and returning Y
+     * 
+     * @return float latitude (decimal)
+     */
+     public function <?php echo "load".ucfirst($field["name"])."Y"; ?>() {
+        if($this-><?php echo $field['name']."Y";?> == null){
+            $XY = <?php echo $descriptor->xml['name'] ?>BeanHomeBase::findXYfrom<?php echo ucfirst($field["name"]) ?>($this->id);
+            if ($XY == null) { return null;}
+            $this-><?php echo $field['name']."X";?> = $XY[0];
+            $this-><?php echo $field['name']."Y";?> = $XY[1];
+        }
+        return $this-><?php echo $field['name']."Y";?>;
+    }
+<?php
+  }
+?>
 
 <?php if ($comment) { ?>
     /**
@@ -334,10 +374,10 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
   for ($i=1; $i<sizeof($descriptor->xml->field); $i++) {
       $field = $descriptor->xml->field[$i];
       $sep = $i < sizeof($descriptor->xml->field)-1 ? "\",\" ." : "";
-?>
-            self::<?php echo $descriptor->fieldConstant($field)?> . " = " . <?php echo $descriptor->escapedField($field) . " . $sep"?> 
-<?php
-  }
+      ?>
+      
+      self::<?php echo $descriptor->fieldConstant($field)?> . " = " . <?php echo $descriptor->escapedField($field) . " . $sep"?>
+    <?php  }
 ?>
             " where " . self::ID . "=" . $this->id;
         $db->query($sql);
@@ -416,6 +456,12 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
       else if ($type == "double") {
           $inputConverterMethodCall = 'setDouble($map, ' . $fieldConstant . ', ' . $value . ')';
       }
+      else if ($type == "Polygon") {
+          $inputConverterMethodCall = 'setPolygon($map, ' . $fieldConstant . ', ' . $value . ')';
+      }
+      else if ($type == "Point") {
+          $inputConverterMethodCall = 'setPoint($map, ' . $fieldConstant . ', $this->load' . ucfirst($field["name"]) . 'X(), $this->load' . ucfirst($field["name"]) . 'Y())';
+      }
       else {
           throw new IllegalStateException("Unsupported type: $type");
       }
@@ -472,6 +518,13 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
       }
       if ($type == 'double') {
           $converterMethodCall = 'getDouble($map, ' . $key . ')';
+      }
+      if ($type == 'Polygon') {
+          $converterMethodCall = 'getPolygon($map, ' . $key . ')';
+      }
+      if ($type == 'Point') {
+          $issetConstant = "isset(\$map[\$prefix . " . $constantName . " . \"_X\"]) && isset(\$map[\$prefix . " . $constantName . " . \"_Y\"])";
+          $converterMethodCall = 'getPoint($map, ' . $key . ')';
       }
       if ($type == 'Date') {
           $converterMethodCall = 'getDate($map, ' . $key . ')';

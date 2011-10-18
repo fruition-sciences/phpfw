@@ -201,6 +201,43 @@ class InputConverter {
     public function setBoolean(&$map, $key, $value) {
         $map[$key] = $value;
     }
+    
+    
+    public function setPolygon(&$map, $key, $value) {
+        $map[$key] = $value;
+    }
+
+    public function getPolygon($map, $key) {
+        $value = $this->getValue($map, $key);
+        if (!isset($value) || $value === null) {
+            return null;
+        }
+        return (String)$value;
+    }
+    
+    /**
+     * 
+     * Set longitude and latitude values before turning them into a geometric Point (with the get function)
+     * 
+     * @param float $value_X longitude
+     * @param float $value_Y latitude
+     */
+    public function setPoint(&$map, $key, $value_X, $value_Y ) {
+        $map[$key."_X"] = $value_X;
+        $map[$key."_Y"] = $value_Y;
+    }
+
+    public function getPoint($map, $key) {
+        $value_X = $this->getValue($map, $key."_X");
+        $value_Y = $this->getValue($map, $key."_Y");
+        if (isset($value_X) && $value_X != null && isset($value_Y) && $value_Y != null) {
+            // GeomFromText is a SQL function which creates geometric objects from a string
+            // 4326 is the code defining the projection used. In this case : WGS84
+            $value = "GeomFromText('POINT(". $value_X ." ". $value_Y .")',4326)";
+            return (String)$value;
+        }
+        return null;
+    }
 
     private function getValue($map, $key) {
         if (!isset($map[$key])) {

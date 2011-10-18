@@ -19,6 +19,22 @@ class ResultSet {
     public function setString($key, $value) {
         $this->map[$key] = $value;
     }
+    
+    public function getPoint($key) {
+        return $this->map[$key];
+    }
+
+    public function setPoint($key, $value) {
+        $this->map[$key] = $value;
+    }
+    
+    public function getPolygon($key) {
+        return $this->map[$key];
+    }
+
+    public function setPolygon($key, $value) {
+        $this->map[$key] = $value;
+    }
 
     public function getLong($key) {
         $val = $this->map[$key];
