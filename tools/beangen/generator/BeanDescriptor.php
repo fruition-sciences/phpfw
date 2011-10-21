@@ -96,9 +96,9 @@ class BeanDescriptor {
             case "Boolean":
                  return "SQLUtils::convertBoolean(\$this->${field['name']})";
             case "Polygon":
-                 return "SQLUtils::escapeStringPolygon(\$this->${field['name']})";
+                 return "\$this->${field['name']}";
             case "Point":
-                 return "SQLUtils::escapeStringPoint(\$this->${field['name']})";
+                 return "\$this->${field['name']}";
             default:
                 throw new Exception("Unknown field type: " . $field["type"]);
         }
