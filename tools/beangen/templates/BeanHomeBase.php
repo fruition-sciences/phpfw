@@ -9,6 +9,16 @@ echo "<" . "?php";
  * Generated on <?php echo date("F j, Y") ?>
  */
 
+<?php
+  $containGeometricField = false;
+  foreach ($descriptor->xml->field as $field) {
+        if ($field['type']=="Point" || $field['type']=="Polygon" ) {
+            $containGeometricField = true;
+            break;
+        }
+  }
+?>
+                
 abstract class <?php echo $descriptor->xml['name'] ?>BeanHomeBase {
 <?php if ($descriptor->xml['cache']) { ?>
     private static $cache; // Maps id -> <?php echo $descriptor->xml['name'] ?>Bean
@@ -22,11 +32,12 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanHomeBase {
      */
     public static function find($id) {
         $db = Transaction::getInstance()->getDB();
-        $sql = "select * from " . <?php echo $descriptor->xml['name'] ?>Bean::TABLE_NAME .
-            " where " . <?php echo $descriptor->xml['name'] ?>Bean::ID . "=" . $id;
-        $db->query($sql);
+        $sb = new SQLBuilder();
+        $sb->select(<?php echo $descriptor->xml['name'] ?>Bean::TABLE_NAME, 't', <?php echo $descriptor->xml['name'] ?>Bean::$ALL<?php if($containGeometricField){?>,<?php echo $descriptor->xml['name'] ?>Bean::$functions<?php }?>);     
+        $sb->filter('t.' . <?php echo $descriptor->xml['name'] ?>Bean::ID . "=" . $id); 
+        $db->query($sb);
         $rs = $db->fetch_row();
-        return self::create($rs);
+        return self::create($rs,'t');
     }
 
 <?php if ($descriptor->xml['cache']) { ?>
@@ -91,14 +102,8 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanHomeBase {
             case 'double':
                 $rsMethod = "getDouble";
                 break;
-            case 'String':
+            case 'String': case 'Polygon': case 'Point':
                 $rsMethod = "getString";
-                break;
-            case 'Polygon':
-                $rsMethod = "getPolygon";
-                break;
-            case 'Point':
-                $rsMethod = "getPoint";
                 break;
             case 'Date':
                 $rsMethod = "getDate";
@@ -113,7 +118,7 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanHomeBase {
                 throw new Exception("Unrecognized data type (in BeanHomeBase.php): " . $field['type']);
         }
 ?>
-        $bean-><?php echo $descriptor->setterName($field) ?>($rs-><?php echo $rsMethod ?>($prefix . <?php echo $descriptor->xml['name'] . "Bean::" . $descriptor->fieldConstant($field) . $extraParams ?>));
+        $bean-><?php echo $descriptor->setterName($field) ?>($rs-><?php echo $rsMethod ?>(<?php if($field['type']=="Point" || $field['type']=="Polygon"){?>'AsText_'  . <?php }?>$prefix . <?php echo $descriptor->xml['name'] . "Bean::" . $descriptor->fieldConstant($field) . $extraParams ?>));
 <?php
   }
 ?>
@@ -122,37 +127,13 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanHomeBase {
     public static function findAll($paging=null) {
         $db = Transaction::getInstance()->getDB();
         $beans = array();
-        $sql = "select * from " . <?php echo $descriptor->xml['name'] ?>Bean::TABLE_NAME;
-        $db->query($sql, $paging);
+        $sb = new SQLBuilder();
+        $sb->select(<?php echo $descriptor->xml['name'] ?>Bean::TABLE_NAME, 't', <?php echo $descriptor->xml['name'] ?>Bean::$ALL<?php if($containGeometricField){?>,<?php echo $descriptor->xml['name'] ?>Bean::$functions<?php }?>);
+        $db->query($sb);
         while ($row = $db->fetch_row()) {
-            $beans[] = self::create($row);
+            $beans[] = self::create($row,'t');
         }
         $db->disposeQuery();
         return $beans;
     }
-    
-<?php foreach ($descriptor->xml->field as $field) { 
-    if ($field["type"] == "Point") {?>
-    /**
-     * Function loading, from the database, (X,Y) values from type "Point" field
-     * 
-     * @param integer $id : object Id
-     *
-     * @return array [X,Y]
-     */
-    public static function findXYfrom<?php echo ucfirst($field["name"]) ?>($id) {
-        $sql = "SELECT X(" . <?php echo $descriptor->xml['name'] ?>Bean::<?php echo $descriptor->fieldConstant($field) ?> . ") X,Y(" . <?php echo $descriptor->xml['name'] ?>Bean::<?php echo $descriptor->fieldConstant($field) ?> . ") Y FROM " . <?php echo $descriptor->xml['name'] ?>Bean::TABLE_NAME . " WHERE " . <?php echo $descriptor->xml['name'] ?>Bean::ID . "=" . $id;
-        $db = Transaction::getInstance()->getDB();
-        $db->query($sql);
-        $XY = array();
-        if ($row = $db->fetch_row()){ 
-            $XY[0] = $row->getDouble('X');
-            $XY[1] = $row->getDouble('Y');
-        }
-        return $XY;
-    }
-<?php
-  }
-}
-?>
 }

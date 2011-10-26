@@ -30,10 +30,14 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
 <?php } ?>
     // Columns
 <?php
+  $isGeometricTable = false;
   foreach ($descriptor->xml->field as $field) {
 ?>
     const <?php echo $descriptor->fieldConstant($field) ?> = "<?php echo $field['column'] ?>";
 <?php
+    if ($field['type'] == "Point" || $field['type'] == "Polygon" ) {
+           $isGeometricTable = true;    
+    }
   }
 ?>
 
@@ -48,6 +52,25 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
     $started = true;
   }
 ?>);
+
+<?php if($isGeometricTable){?>
+    // All columns functions. Array used for queries. Define the sql function to use for each field. (In case of Null : no function)
+    public static $functions = array(<?php
+  $started = false;
+  foreach ($descriptor->xml->field as $field) {
+    if ($started) {
+        echo ", ";
+    }
+     if ($field['type'] == "Point" || $field['type'] == "Polygon" ) {
+       echo '"AsText"';   
+     }else{
+        echo "null"; 
+     }
+    
+    $started = true;
+  }
+?>);
+<?php }?>
 
     // Fields
 <?php
@@ -71,7 +94,8 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
     
     // Extra geom
     private $<?php echo $field['name']."X";?>;
-    private $<?php echo $field['name']."Y";?>;     
+    private $<?php echo $field['name']."Y";?>;
+         
 <?php  }
   }
 
@@ -129,7 +153,7 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
      */
     public function <?php echo "load".ucfirst($field["name"])."X"; ?>() {
         if($this-><?php echo $field['name']."X";?> == null){
-            $XY = <?php echo $descriptor->xml['name'] ?>BeanHomeBase::findXYfrom<?php echo ucfirst($field["name"]) ?>($this->id);
+            $XY = GeomUtils::findXYfromPoint($this-><?php echo $field['name'];?>);
             if ($XY == null) { return null;}
             $this-><?php echo $field['name']."X";?> = $XY[0];
             $this-><?php echo $field['name']."Y";?> = $XY[1];
@@ -144,7 +168,7 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
      */
      public function <?php echo "load".ucfirst($field["name"])."Y"; ?>() {
         if($this-><?php echo $field['name']."Y";?> == null){
-            $XY = <?php echo $descriptor->xml['name'] ?>BeanHomeBase::findXYfrom<?php echo ucfirst($field["name"]) ?>($this->id);
+            $XY = GeomUtils::findXYfromPoint($this-><?php echo $field['name'];?>);
             if ($XY == null) { return null;}
             $this-><?php echo $field['name']."X";?> = $XY[0];
             $this-><?php echo $field['name']."Y";?> = $XY[1];
@@ -457,10 +481,10 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
           $inputConverterMethodCall = 'setDouble($map, ' . $fieldConstant . ', ' . $value . ')';
       }
       else if ($type == "Polygon") {
-          $inputConverterMethodCall = 'setPolygon($map, ' . $fieldConstant . ', ' . $value . ')';
+          $inputConverterMethodCall = 'setString($map, ' . $fieldConstant . ', ' . $value . ')';
       }
       else if ($type == "Point") {
-          $inputConverterMethodCall = 'setPoint($map, ' . $fieldConstant . ', $this->load' . ucfirst($field["name"]) . 'X(), $this->load' . ucfirst($field["name"]) . 'Y())';
+          $inputConverterMethodCall = 'setPoint($map, ' . $fieldConstant . ', $this->load' . ucfirst($field["name"]) . 'X() , $this->load' . ucfirst($field["name"]) . 'Y())';
       }
       else {
           throw new IllegalStateException("Unsupported type: $type");
@@ -520,11 +544,12 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
           $converterMethodCall = 'getDouble($map, ' . $key . ')';
       }
       if ($type == 'Polygon') {
-          $converterMethodCall = 'getPolygon($map, ' . $key . ')';
+          $converterMethodCall = 'getString($map, ' . $key . ')';
       }
       if ($type == 'Point') {
           $issetConstant = "isset(\$map[\$prefix . " . $constantName . " . \"_X\"]) && isset(\$map[\$prefix . " . $constantName . " . \"_Y\"])";
-          $converterMethodCall = 'getPoint($map, ' . $key . ')';
+          $converterMethodCallPoint = 'getPoint($map, ' . $key . ')';
+          $converterMethodCallString = 'getString($map, ' . $key . ')';
       }
       if ($type == 'Date') {
           $converterMethodCall = 'getDate($map, ' . $key . ')';
@@ -542,8 +567,15 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
           $measureConverterMethodCall = 'getMeasure($map, ' . $key . ')';
           $measureSetterName = $descriptor->unitSetterName($field);
       }
+      if ($type == 'Point') {
 ?>
-        if (isset(<?php echo $constant?>)) {
+    if (<?php echo $issetConstant?>) {
+         $this-><?php echo $setterName?>($inputConverter-><?php echo $converterMethodCallPoint?>);
+    }else if(isset(<?php echo $constant?>)){
+         $this-><?php echo $setterName?>($inputConverter-><?php echo $converterMethodCallString?>);
+    }
+<?php }else{ ?>        
+    if (isset(<?php echo $constant?>)) {
 <?php if ($converterMethodCall) {?>
 <?php     if ($measureConverterMethodCall) {?>
             if (isset(<?php echo $measureConstant?>)) {
@@ -559,7 +591,7 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
 <?php }?>
         }
 <?php
-  }
+  }}
 ?>
     }
 

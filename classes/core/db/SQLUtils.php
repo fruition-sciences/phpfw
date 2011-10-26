@@ -63,4 +63,20 @@ class SQLUtils {
     public static function convertBoolean($val) {
         return $val ? 1 : 0;
     }
+    
+    /**
+     * 
+     * Return the SQL function to insert a geometric feature from a WKT string
+     * 
+     * 4326 is the code for the "WGS84" projection, used for all the features
+     * 
+     * @param String $str, format WKT : POINT(X Y) or POLYGON((X1 Y1, .... , Xn Yn , X1 Y1))
+     * @return string
+     */
+    public static function convertGeom($str) {
+        if ($str === null) {
+            return "null";
+        }
+        return "GeomFromText('" . $str . "',4326)";
+    }
 }
