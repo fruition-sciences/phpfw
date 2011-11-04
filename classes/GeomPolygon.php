@@ -19,7 +19,6 @@ class GeomPolygon{
     private $wkt; 
     
     /**
-     * .
      * @param String $strWKT : WKT Format
      * @throws IllegalArgumentException : Try to construct a GeomPolygon with a null WKT value
      */
