@@ -67,6 +67,35 @@ class ResultSet {
     public function setTime($key, $value) {
         $this->map[$key] = $value;
     }
+    
+    /**
+     * Return a GeomPoint if longitude and latitude are specified
+     * Otherwise return null
+     * 
+     * @param $key
+     * @return GeomPoint | @return null
+     */
+    public function getPoint($key) {
+        if(isset($this->map[$key])){
+            return new GeomPoint($this->map[$key]);
+        }
+        return null;
+    }
+    
+    /**
+     * Return a GeomPolygon if block geometry is specified
+     * Otherwise return null
+     * 
+     * @param $key
+     * @return GeomPolygon | @return null
+     */
+    public function getPolygon($key) {
+        if(isset($this->map[$key])){
+            return new GeomPolygon($this->map[$key]);
+        }
+        return null;
+    }
+    
 
     public function containsKey($key) {
         return isset($this->map[$key]);

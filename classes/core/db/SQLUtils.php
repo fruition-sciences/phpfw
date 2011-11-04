@@ -67,16 +67,16 @@ class SQLUtils {
     /**
      * 
      * Return the SQL function to insert a geometric feature from a WKT string
-     * 
+     * Format WKT : POINT(X Y) or POLYGON((X1 Y1, .... , Xn Yn , X1 Y1))
      * 4326 is the code for the "WGS84" projection, used for all the features
      * 
-     * @param String $str, format WKT : POINT(X Y) or POLYGON((X1 Y1, .... , Xn Yn , X1 Y1))
+     * @param GeomPoint $geom | @param GeomPolygon $geom
      * @return string
      */
-    public static function convertGeom($str) {
-        if ($str === null) {
+    public static function convertGeom($geom) {
+        if ($geom === null) {
             return "null";
         }
-        return "GeomFromText('" . $str . "',4326)";
+        return "GeomFromText('" . $geom->toWKT() . "',4326)";
     }
 }

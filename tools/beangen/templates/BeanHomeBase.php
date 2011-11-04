@@ -33,7 +33,7 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanHomeBase {
     public static function find($id) {
         $db = Transaction::getInstance()->getDB();
         $sb = new SQLBuilder();
-        $sb->select(<?php echo $descriptor->xml['name'] ?>Bean::TABLE_NAME, 't', <?php echo $descriptor->xml['name'] ?>Bean::$ALL<?php if($containGeometricField){?>,<?php echo $descriptor->xml['name'] ?>Bean::$functions<?php }?>);     
+        $sb->selectAll('<?php echo $descriptor->xml['name'] ?>Bean', 't');     
         $sb->filter('t.' . <?php echo $descriptor->xml['name'] ?>Bean::ID . "=" . $id); 
         $db->query($sb);
         $rs = $db->fetch_row();
@@ -87,7 +87,15 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanHomeBase {
         self::populate($bean, $rs, $prefix);
         return $bean;
     }
-
+    
+    /**
+    *
+    * Populate the bean object thanks to the result set.
+    *
+    * @param <?php echo $descriptor->xml['name'] ?>Bean $bean
+    * @param ResultSet $rs
+    * @param String $prefix
+    */
     public static function populate($bean, $rs, $prefix='') {
 <?php
   foreach ($descriptor->xml->field as $field) {
@@ -102,7 +110,13 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanHomeBase {
             case 'double':
                 $rsMethod = "getDouble";
                 break;
-            case 'String': case 'Polygon': case 'Point':
+            case 'Point':
+                $rsMethod = "getPoint";
+                break;
+            case 'Polygon':
+                $rsMethod = "getPolygon";
+                break;
+            case 'String':
                 $rsMethod = "getString";
                 break;
             case 'Date':
@@ -128,7 +142,7 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanHomeBase {
         $db = Transaction::getInstance()->getDB();
         $beans = array();
         $sb = new SQLBuilder();
-        $sb->select(<?php echo $descriptor->xml['name'] ?>Bean::TABLE_NAME, 't', <?php echo $descriptor->xml['name'] ?>Bean::$ALL<?php if($containGeometricField){?>,<?php echo $descriptor->xml['name'] ?>Bean::$functions<?php }?>);
+        $sb->selectAll('<?php echo $descriptor->xml['name'] ?>Bean', 't');
         $db->query($sb);
         while ($row = $db->fetch_row()) {
             $beans[] = self::create($row,'t');

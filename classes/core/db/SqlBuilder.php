@@ -28,6 +28,17 @@ class SqlBuilder {
         $this->from($tableName, $alias);
         $this->addColumns($alias, $columns, $functions);
     }
+    
+    /**
+     * 
+     * Select all columns and functions relative to the bean object specified
+     * 
+     * @param String $beanClassName
+     * @param String $alias
+     */
+    public function selectAll($beanClassName, $alias) {
+        $this->select($beanClassName::TABLE_NAME, $alias, $beanClassName::$ALL, $beanClassName::$functions);
+    }
 
     /**
      * Add the given columns into the columns array. The columns array indicates

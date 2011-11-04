@@ -8,7 +8,6 @@
 require_once("classes/utils/functions.php");
 require_once("classes/utils/MimeTypeUtils.php");
 require_once("classes/utils/MeasureUtils.php");
-require_once("classes/utils/GeomUtils.php");
 require_once("classes/core/db/db.php");
 require_once("classes/core/db/PagingInfo.php");
 require_once("classes/core/db/QueryPager.php");
@@ -42,3 +41,5 @@ require_once("classes/core/Application.php");
 require_once("classes/ui/DataConverter.php");
 require_once("classes/ui/InputConverter.php");
 require_once("classes/utils/BeanMap.php");
+require_once("classes/GeomPoint.php");
+require_once("classes/GeomPolygon.php");

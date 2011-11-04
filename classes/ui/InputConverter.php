@@ -201,26 +201,63 @@ class InputConverter {
     public function setBoolean(&$map, $key, $value) {
         $map[$key] = $value;
     }
-    
-    public function setPoint(&$map, $key, $longitude,  $latitude) {
-        $map[$key . "_X"] = $longitude;
-        $map[$key . "_Y"] = $latitude;
+
+    /**
+     * 
+     * Set longitude and latitude values into the map
+     * @param $map
+     * @param $key
+     * @param GeomPoint $geomPoint
+     */
+    public function setPoint(&$map, $key, $geomPoint) {
+        if($geomPoint){
+            $map[$key . "_X"] = $geomPoint->getX();
+            $map[$key . "_Y"] = $geomPoint->getY();
+        }    
+        $map[$key] = $geomPoint;
     }
     
     /**
      * 
      * Create a string (with WKT format) from longitude and latitude
      * WKT format for point type: POINT(X Y) 
-     * 
+     * @return GeomPoint | @return null
      */
     public function getPoint($map, $key) {
         $value_X = $this->getValue($map, $key."_X");
         $value_Y = $this->getValue($map, $key."_Y");
-        if (isset($value_X) && $value_X != null && isset($value_Y) && $value_Y != null) {
-            // GeomFromText is a SQL function which creates geometric objects from a string
-            // 4326 is the code defining the projection used. In this case : WGS84
-            $value = "POINT(". $value_X ." ". $value_Y .")";
-            return $value;
+        if (isset($value_X) && isset($value_Y)) {
+            $wkt = "POINT(". $value_X ." ". $value_Y .")";
+            return new GeomPoint($wkt);
+        }else{
+            return null; 
+        }
+    }
+    
+    /**
+     * @param $map
+     * @param $key
+     * @param GeomPolygon $geomPolygon
+     */
+    public function setPolygon(&$map, $key, $geomPolygon) {
+        if($geomPolygon){
+            $map[$key] = $geomPolygon->toWKT();
+        }
+    }
+    
+    /**
+     * 
+     * Return a GeomPoint if the Block Geometry is specified in the map
+     * Otherwise return null
+     * 
+     * @param $map
+     * @param $key
+     * @return GeomPolygon | @return null
+     */
+    public function getPolygon($map, $key) {
+        $wkt = $this->getValue($map, $key);
+        if(!empty($wkt)){
+            return new GeomPolygon($wkt);
         }
         return null;
     }

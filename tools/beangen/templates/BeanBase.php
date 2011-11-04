@@ -30,14 +30,10 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
 <?php } ?>
     // Columns
 <?php
-  $isGeometricTable = false;
   foreach ($descriptor->xml->field as $field) {
 ?>
     const <?php echo $descriptor->fieldConstant($field) ?> = "<?php echo $field['column'] ?>";
 <?php
-    if ($field['type'] == "Point" || $field['type'] == "Polygon" ) {
-           $isGeometricTable = true;    
-    }
   }
 ?>
 
@@ -53,7 +49,7 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
   }
 ?>);
 
-<?php if($isGeometricTable){?>
+
     // All columns functions. Array used for queries. Define the sql function to use for each field. (In case of Null : no function)
     public static $functions = array(<?php
   $started = false;
@@ -69,8 +65,8 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
     
     $started = true;
   }
-?>);
-<?php }?>
+  ?>);
+
 
     // Fields
 <?php
@@ -90,14 +86,7 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
       }
       ?>;
 <?php
-     if ($field['type'] == "Point") { ?>
-    
-    // Extra geom
-    private $<?php echo $field['name']."X";?>;
-    private $<?php echo $field['name']."Y";?>;
-         
-<?php  }
-  }
+ }
 
   // Declare relationships (skips relationship to constant tables)
   $declaredRelationships = array();
@@ -144,40 +133,6 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
     public function <?php echo $descriptor->getterName($field) ?>() {
         return $this-><?php echo $field['name']?>;
     }
-    
-<?php if ($field["type"] == "Point") {?>
-    /**
-     * Function loading (X,Y) values (if there aren't loaded yet) from type Point and returning X
-     * 
-     * @return float longitude (decimal)
-     */
-    public function <?php echo "load".ucfirst($field["name"])."X"; ?>() {
-        if($this-><?php echo $field['name']."X";?> == null){
-            $XY = GeomUtils::findXYfromPoint($this-><?php echo $field['name'];?>);
-            if ($XY == null) { return null;}
-            $this-><?php echo $field['name']."X";?> = $XY[0];
-            $this-><?php echo $field['name']."Y";?> = $XY[1];
-        }
-        return $this-><?php echo $field['name']."X";?>;
-    }
-    
-    /**
-     * Function loading (X,Y) values (if there aren't loaded yet) from type Point and returning Y
-     * 
-     * @return float latitude (decimal)
-     */
-     public function <?php echo "load".ucfirst($field["name"])."Y"; ?>() {
-        if($this-><?php echo $field['name']."Y";?> == null){
-            $XY = GeomUtils::findXYfromPoint($this-><?php echo $field['name'];?>);
-            if ($XY == null) { return null;}
-            $this-><?php echo $field['name']."X";?> = $XY[0];
-            $this-><?php echo $field['name']."Y";?> = $XY[1];
-        }
-        return $this-><?php echo $field['name']."Y";?>;
-    }
-<?php
-  }
-?>
 
 <?php if ($comment) { ?>
     /**
@@ -193,7 +148,7 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
         $this-><?php echo $field["name"]?> = ($<?php echo $field["name"]?> != null && $<?php echo $field["name"]?> != 0 && $<?php echo $field["name"]?> != false);
 <?php
   }
-  else {
+  else{
 ?>
         $this-><?php echo $field["name"]?> = $<?php echo $field["name"]?>;
 <?php
@@ -481,10 +436,10 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
           $inputConverterMethodCall = 'setDouble($map, ' . $fieldConstant . ', ' . $value . ')';
       }
       else if ($type == "Polygon") {
-          $inputConverterMethodCall = 'setString($map, ' . $fieldConstant . ', ' . $value . ')';
+          $inputConverterMethodCall = 'setPolygon($map, ' . $fieldConstant . ', ' . $value . ')';
       }
       else if ($type == "Point") {
-          $inputConverterMethodCall = 'setPoint($map, ' . $fieldConstant . ', $this->load' . ucfirst($field["name"]) . 'X() , $this->load' . ucfirst($field["name"]) . 'Y())';
+          $inputConverterMethodCall = 'setPoint($map, ' . $fieldConstant . ',' . $value . ')';
       }
       else {
           throw new IllegalStateException("Unsupported type: $type");
@@ -544,12 +499,11 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
           $converterMethodCall = 'getDouble($map, ' . $key . ')';
       }
       if ($type == 'Polygon') {
-          $converterMethodCall = 'getString($map, ' . $key . ')';
+          $converterMethodCall = 'getPolygon($map, ' . $key . ')';
       }
       if ($type == 'Point') {
           $issetConstant = "isset(\$map[\$prefix . " . $constantName . " . \"_X\"]) && isset(\$map[\$prefix . " . $constantName . " . \"_Y\"])";
-          $converterMethodCallPoint = 'getPoint($map, ' . $key . ')';
-          $converterMethodCallString = 'getString($map, ' . $key . ')';
+          $converterMethodCall = 'getPoint($map, ' . $key . ')';
       }
       if ($type == 'Date') {
           $converterMethodCall = 'getDate($map, ' . $key . ')';
@@ -569,13 +523,12 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
       }
       if ($type == 'Point') {
 ?>
-    if (<?php echo $issetConstant?>) {
-         $this-><?php echo $setterName?>($inputConverter-><?php echo $converterMethodCallPoint?>);
-    }else if(isset(<?php echo $constant?>)){
-         $this-><?php echo $setterName?>($inputConverter-><?php echo $converterMethodCallString?>);
-    }
+    
+    if (<?php echo $issetConstant?>){
+         $this-><?php echo $setterName?>($inputConverter-><?php echo $converterMethodCall?>);
+        }
 <?php }else{ ?>        
-    if (isset(<?php echo $constant?>)) {
+    if (isset(<?php echo $constant?>)){
 <?php if ($converterMethodCall) {?>
 <?php     if ($measureConverterMethodCall) {?>
             if (isset(<?php echo $measureConstant?>)) {
