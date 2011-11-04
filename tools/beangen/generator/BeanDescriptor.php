@@ -95,9 +95,9 @@ class BeanDescriptor {
                 return "SQLUtils::convertTime(\$this->${field['name']})";
             case "Boolean":
                  return "SQLUtils::convertBoolean(\$this->${field['name']})";
-            case "Polygon":
+            case "GeomPolygon":
                  return "SQLUtils::convertGeom(\$this->${field['name']})";
-            case "Point":
+            case "GeomPoint":
                 return "SQLUtils::convertGeom(\$this->${field['name']})";
             default:
                 throw new Exception("Unknown field type: " . $field["type"]);

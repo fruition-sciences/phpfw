@@ -202,36 +202,34 @@ class InputConverter {
         $map[$key] = $value;
     }
 
-    /**
-     * 
+    /** 
      * Set longitude and latitude values into the map
+     * 
      * @param $map
      * @param $key
      * @param GeomPoint $geomPoint
      */
     public function setPoint(&$map, $key, $geomPoint) {
-        if($geomPoint){
+        if ($geomPoint) {
             $map[$key . "_X"] = $geomPoint->getX();
             $map[$key . "_Y"] = $geomPoint->getY();
         }    
         $map[$key] = $geomPoint;
     }
     
-    /**
-     * 
+    /** 
      * Create a string (with WKT format) from longitude and latitude
-     * WKT format for point type: POINT(X Y) 
-     * @return GeomPoint | @return null
+     * WKT format for point type: POINT(X Y)
+     *  
+     * @return GeomPoint of null if values are not set properly in the map.
      */
     public function getPoint($map, $key) {
-        $value_X = $this->getValue($map, $key."_X");
-        $value_Y = $this->getValue($map, $key."_Y");
-        if (isset($value_X) && isset($value_Y)) {
-            $wkt = "POINT(". $value_X ." ". $value_Y .")";
-            return new GeomPoint($wkt);
-        }else{
-            return null; 
+        $x = $this->getValue($map, $key . '_X');
+        $y = $this->getValue($map, $key . '_Y');
+        if (!is_numeric($x) && !is_numeric($y)) {
+            return null;
         }
+        return GeomPoint::fromXY($x, $y);;
     }
     
     /**
@@ -240,7 +238,7 @@ class InputConverter {
      * @param GeomPolygon $geomPolygon
      */
     public function setPolygon(&$map, $key, $geomPolygon) {
-        if($geomPolygon){
+        if ($geomPolygon) {
             $map[$key] = $geomPolygon->toWKT();
         }
     }
@@ -256,7 +254,7 @@ class InputConverter {
      */
     public function getPolygon($map, $key) {
         $wkt = $this->getValue($map, $key);
-        if(!empty($wkt)){
+        if (!empty($wkt)) {
             return new GeomPolygon($wkt);
         }
         return null;

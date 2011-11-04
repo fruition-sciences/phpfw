@@ -49,15 +49,14 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
   }
 ?>);
 
-
-    // All columns functions. Array used for queries. Define the sql function to use for each field. (In case of Null : no function)
+    // SQL Function for each of the columns. This is needed when there are fields of type 'GeomPoint' or 'GeomPolygon'.
     public static $functions = array(<?php
   $started = false;
   foreach ($descriptor->xml->field as $field) {
     if ($started) {
         echo ", ";
     }
-     if ($field['type'] == "Point" || $field['type'] == "Polygon" ) {
+     if ($field['type'] == "GeomPoint" || $field['type'] == "GeomPolygon" ) {
        echo '"AsText"';   
      }else{
         echo "null"; 
@@ -66,7 +65,6 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
     $started = true;
   }
   ?>);
-
 
     // Fields
 <?php
@@ -435,10 +433,10 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
       else if ($type == "double") {
           $inputConverterMethodCall = 'setDouble($map, ' . $fieldConstant . ', ' . $value . ')';
       }
-      else if ($type == "Polygon") {
+      else if ($type == "GeomPolygon") {
           $inputConverterMethodCall = 'setPolygon($map, ' . $fieldConstant . ', ' . $value . ')';
       }
-      else if ($type == "Point") {
+      else if ($type == "GeomPoint") {
           $inputConverterMethodCall = 'setPoint($map, ' . $fieldConstant . ',' . $value . ')';
       }
       else {
@@ -475,6 +473,12 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
         return $map;
     }
 
+    /**
+     * Populate this bean with values of the the given map.
+     *
+     * @param String $prefix (optional)
+     * @param Map $map
+     */
     public function setAttributes($map, $prefix='') {
         $user = Transaction::getInstance()->getUser();
         $inputConverter = new InputConverter($user->getTimezone(), $user->getLocale());
@@ -488,24 +492,25 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
       $measureConverterMethodCall = null;
       $setterName = $descriptor->setterName($field);
       $measureSetterName = null;
+      $issetCondition = "isset($constant)";
       $type = $field['type'];
       if ($type == 'id') {
           $converterMethodCall = 'getId($map, ' . $key . ')';
       }
-      if ($type == 'long') {
+      else if ($type == 'long') {
           $converterMethodCall = 'getLong($map, ' . $key . ')';
       }
-      if ($type == 'double') {
+      else if ($type == 'double') {
           $converterMethodCall = 'getDouble($map, ' . $key . ')';
       }
-      if ($type == 'Polygon') {
+      else if ($type == 'GeomPolygon') {
           $converterMethodCall = 'getPolygon($map, ' . $key . ')';
       }
-      if ($type == 'Point') {
-          $issetConstant = "isset(\$map[\$prefix . " . $constantName . " . \"_X\"]) && isset(\$map[\$prefix . " . $constantName . " . \"_Y\"])";
+      else if ($type == 'GeomPoint') { 
+          $issetCondition = "isset(\$map[\$prefix . " . $constantName . " . \"_X\"]) && isset(\$map[\$prefix . " . $constantName . " . \"_Y\"])";
           $converterMethodCall = 'getPoint($map, ' . $key . ')';
       }
-      if ($type == 'Date') {
+      else if ($type == 'Date') {
           $converterMethodCall = 'getDate($map, ' . $key . ')';
           $parsedConstant = "\$converter->parseDate($constant)";
       }
@@ -521,30 +526,28 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
           $measureConverterMethodCall = 'getMeasure($map, ' . $key . ')';
           $measureSetterName = $descriptor->unitSetterName($field);
       }
-      if ($type == 'Point') {
+
+      if ($converterMethodCall) {
+          $fieldValue = '$inputConverter->' . $converterMethodCall;
+      }
+      else {
+          $fieldValue = $parsedConstant;
+      }
 ?>
-    
-    if (<?php echo $issetConstant?>){
-         $this-><?php echo $setterName?>($inputConverter-><?php echo $converterMethodCall?>);
-        }
-<?php }else{ ?>        
-    if (isset(<?php echo $constant?>)){
-<?php if ($converterMethodCall) {?>
-<?php     if ($measureConverterMethodCall) {?>
+
+        if (<?php echo $issetCondition ?>) {
+<?php if ($measureConverterMethodCall) {?>
             if (isset(<?php echo $measureConstant?>)) {
                 $this-><?php echo $measureSetterName?>($inputConverter-><?php echo $measureConverterMethodCall?>);
-            }else{
-                $this-><?php echo $setterName?>($inputConverter-><?php echo $converterMethodCall?>);
+            } else {
+                $this-><?php echo $setterName?>(<?php echo $fieldValue?>);
             }
-<?php     }else{?>
-            $this-><?php echo $setterName?>($inputConverter-><?php echo $converterMethodCall?>);
-<?php     }?>
 <?php } else {?>
-            $this-><?php echo $setterName?>(<?php echo $parsedConstant?>);
+            $this-><?php echo $setterName?>(<?php echo $fieldValue?>);
 <?php }?>
         }
 <?php
-  }}
+  }
 ?>
     }
 
@@ -557,6 +560,9 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
         $format = Formatter::getInstance();
         return ''
 <?php
+  $len = count($descriptor->xml->field);
+  $i = 0;
+  $semiColon = '';
   foreach ($descriptor->xml->field as $field) {
       $fieldName = $field['name'];
       $getterName = $descriptor->getterName($field);
@@ -568,11 +574,16 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
       if ($field['type'] == 'time') {
           $valueExpression = '$format->secondsToTime(' . $valueExpression . ')';
       }
+      // Put semicolon only after the last line
+      if ($i == $len-1) {
+          $semiColon = ';';
+      }
+      $i++;
 ?>
-            . '<?php echo $fieldName ?>=<?php echo $q ?>' . <?php echo $valueExpression ?> . '<?php echo $q ?>; '
+            . '<?php echo $fieldName ?>=<?php echo $q ?>' . <?php echo $valueExpression ?> . '<?php echo $q ?>; '<?php echo $semiColon ?> 
 <?php
   }
-?>;
+?>
     }
 
     /**

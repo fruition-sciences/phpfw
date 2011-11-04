@@ -8,16 +8,6 @@ echo "<" . "?php";
  *
  * Generated on <?php echo date("F j, Y") ?>
  */
-
-<?php
-  $containGeometricField = false;
-  foreach ($descriptor->xml->field as $field) {
-        if ($field['type']=="Point" || $field['type']=="Polygon" ) {
-            $containGeometricField = true;
-            break;
-        }
-  }
-?>
                 
 abstract class <?php echo $descriptor->xml['name'] ?>BeanHomeBase {
 <?php if ($descriptor->xml['cache']) { ?>
@@ -110,10 +100,10 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanHomeBase {
             case 'double':
                 $rsMethod = "getDouble";
                 break;
-            case 'Point':
+            case 'GeomPoint':
                 $rsMethod = "getPoint";
                 break;
-            case 'Polygon':
+            case 'GeomPolygon':
                 $rsMethod = "getPolygon";
                 break;
             case 'String':
@@ -132,7 +122,7 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanHomeBase {
                 throw new Exception("Unrecognized data type (in BeanHomeBase.php): " . $field['type']);
         }
 ?>
-        $bean-><?php echo $descriptor->setterName($field) ?>($rs-><?php echo $rsMethod ?>(<?php if($field['type']=="Point" || $field['type']=="Polygon"){?>'AsText_'  . <?php }?>$prefix . <?php echo $descriptor->xml['name'] . "Bean::" . $descriptor->fieldConstant($field) . $extraParams ?>));
+        $bean-><?php echo $descriptor->setterName($field) ?>($rs-><?php echo $rsMethod ?>(<?php if($field['type']=="GeomPoint" || $field['type']=="GeomPolygon"){?>'AsText_'  . <?php }?>$prefix . <?php echo $descriptor->xml['name'] . "Bean::" . $descriptor->fieldConstant($field) . $extraParams ?>));
 <?php
   }
 ?>

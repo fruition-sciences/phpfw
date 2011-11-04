@@ -5,6 +5,7 @@
  */
 
 require_once("BeanDescriptor.php");
+require_once("classes/exception/IllegalStateException.php");
 
 /**
  * Generate a single bean, given a bean descriptor file.

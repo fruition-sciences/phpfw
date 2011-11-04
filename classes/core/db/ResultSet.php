@@ -56,6 +56,7 @@ class ResultSet {
         $converter = new DataConverter($timeZone);
         return $converter->parseDate($this->map[$key]);
     }
+
     public function setDate($key, $value) {
         // Assumes that DB and PHP are both in UTC
         $this->map[$key] = $value;
@@ -64,38 +65,34 @@ class ResultSet {
     public function getTime($key) {
         return DataConverter::parseTime($this->map[$key]);
     }
+
     public function setTime($key, $value) {
         $this->map[$key] = $value;
     }
-    
+
     /**
-     * Return a GeomPoint if longitude and latitude are specified
-     * Otherwise return null
+     * Return a GeomPoint representing the value associated with the given key.
+     * The value associated with the key is assumed to be a string in WKT format.
      * 
      * @param $key
-     * @return GeomPoint | @return null
+     * @return GeomPoint or null if the value associated with the given key is null.
      */
     public function getPoint($key) {
-        if(isset($this->map[$key])){
-            return new GeomPoint($this->map[$key]);
-        }
-        return null;
+        $val = $this->map[$key];
+        return $val === null ? null : GeomPoint::fromWKT($val); 
     }
-    
+
     /**
      * Return a GeomPolygon if block geometry is specified
      * Otherwise return null
      * 
      * @param $key
-     * @return GeomPolygon | @return null
+     * @return GeomPolygon or null if the value associated with the given key is null.
      */
     public function getPolygon($key) {
-        if(isset($this->map[$key])){
-            return new GeomPolygon($this->map[$key]);
-        }
-        return null;
+        $val = $this->map[$key];
+        return $val === null ? null : new GeomPolygon($val);
     }
-    
 
     public function containsKey($key) {
         return isset($this->map[$key]);

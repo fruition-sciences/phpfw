@@ -29,9 +29,10 @@ class SqlBuilder {
         $this->addColumns($alias, $columns, $functions);
     }
     
-    /**
-     * 
-     * Select all columns and functions relative to the bean object specified
+    /** 
+     * Select all columns from the table represented by the given bean.
+     * Uses the $functions variable of the bean so that specific SQL functions
+     * are being used if necessary.
      * 
      * @param String $beanClassName
      * @param String $alias
