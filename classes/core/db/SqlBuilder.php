@@ -16,10 +16,10 @@ class SqlBuilder {
 
     /**
      * Add a select for the given column and apply the given functions on the column
-     * @param $tableName
-     * @param $alias prefix to be used for all column aliases.
-     * @param $columns
-     * @param $functions (optional) Array of the same size as $columns which
+     * @param String $tableName
+     * @param String $alias prefix to be used for all column aliases.
+     * @param Array $columns
+     * @param Array $functions (optional) Array of the same size as $columns which
      *        contains SQL functions (such as max, avg, min) to apply on the
      *        corresponding column. A null entry in the array means no function
      *        should be apply on corresponding column.
