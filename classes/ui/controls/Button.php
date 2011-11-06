@@ -10,6 +10,7 @@ require_once("HtmlElement.php");
 class Button extends Control {
     private $href;
     private $title;
+    private $target; // Optional
     private $submit = true;
     private $onclick = array();
 
@@ -77,12 +78,18 @@ class Button extends Control {
     }
 
     private function setOnClick() {
-        if ($this->submit) {
-            $onclick = "button_submit('" . $this->href . "'); return false";
+        $params = array($this->href);
+        if ($this->target) {
+            $params[] = $this->target;
         }
-        else {
-            $onclick = "button_click('" . $this->href . "'); return false";
-        }
+        // Surround params with single quotes 
+        $params = array_map(function($str) {
+            return "'" . $str . "'";
+        }, $params);
+
+        $paramListString = implode(', ', $params);
+        $jsFunctionName = $this->submit ? 'button_submit' : 'button_click';
+        $onclick = "$jsFunctionName($paramListString); return false"; 
         $this->onclick[] = $onclick;
         $onclickStr = StringUtils::arrayToString($this->onclick, "; ", true);
         parent::set("onclick", $onclickStr);
@@ -94,5 +101,15 @@ class Button extends Control {
 
     public function getTitle() {
         return $this->title;
+    }
+
+    /**
+     * Allows opening the URL in a new window.
+     * 
+     * @param String $target the name of the new window.
+     */
+    public function setTarget($target) {
+        $this->target = $target;
+        return $this;
     }
 }
