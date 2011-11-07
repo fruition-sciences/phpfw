@@ -221,7 +221,7 @@ class InputConverter {
      * Create a string (with WKT format) from longitude and latitude
      * WKT format for point type: POINT(X Y)
      *  
-     * @return GeomPoint of null if values are not set properly in the map.
+     * @return GeomPoint|null if values are not set properly in the map.
      */
     public function getPoint($map, $key) {
         $x = $this->getValue($map, $key . '_X');
@@ -250,7 +250,7 @@ class InputConverter {
      * 
      * @param $map
      * @param $key
-     * @return GeomPolygon | @return null
+     * @return GeomPolygon|null
      */
     public function getPolygon($map, $key) {
         $wkt = $this->getValue($map, $key);
