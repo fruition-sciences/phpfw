@@ -15,6 +15,24 @@ class PagingInfo {
         $this->recordsPerPage = Config::getInstance()->getInt("tablePaging/rowsPerPage", 10);
     }
 
+    /**
+     * Creates a new PaginInfo object which sorts by the given column.
+     * Records per page is set to a large-enough number.
+     * This method can be used when you need a certain finder method to sort
+     * by a specific field. 
+     * 
+     * @param String $orderByColumn
+     * @param Boolean $orderByAscending
+     * @return PagingInfo
+     */
+    public static function newSorter($orderByColumn, $orderByAscending=true) {
+        $pagingInfo = new PagingInfo();
+        $pagingInfo->setRecordsPerPage(1000);
+        $pagingInfo->setOrderByColumn($orderByColumn);
+        $pagingInfo->setOrderByAscending($orderByAscending);
+        return $pagingInfo;
+    }
+
     public function setPageNumber($pageNumber) {
         $this->pageNumber = $pageNumber;
     }
