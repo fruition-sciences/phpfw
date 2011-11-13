@@ -133,7 +133,7 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanHomeBase {
         $beans = array();
         $sb = new SQLBuilder();
         $sb->selectAll('<?php echo $descriptor->xml['name'] ?>Bean', 't');
-        $db->query($sb);
+        $db->query($sb, $paging);
         while ($row = $db->fetch_row()) {
             $beans[] = self::create($row,'t');
         }
