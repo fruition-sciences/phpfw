@@ -41,16 +41,11 @@ class DataConverter {
         if (!$formattedDate) {
             return null;
         }
-        $originalDefaulyTimezone = date_default_timezone_get();
-        // Temporarily change time zone.
-        date_default_timezone_set($this->timezoneName);
 
         $date = new DateTime($formattedDate);
         $tz = new DateTimeZone($this->timezoneName);
         $date->setTimezone($tz);
 
-        // Set default time zone back
-        date_default_timezone_set($originalDefaulyTimezone);
         return $date->format('U');
     }
     
