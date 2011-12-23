@@ -112,6 +112,8 @@ class Application {
         }
         $ctx->setControllerAlias($tokens[0]);
         $methodName = $tokens[1];
+        // Allow dashes in method name (for SEO purposes). Converts to camelCase.
+        $methodName = $this->camelize($methodName);
         $class = new ReflectionClass($controllerName);
         $obj = $class->newInstance();
         if (!$this->checkAccess($class, $obj, $ctx)) {
@@ -316,5 +318,32 @@ class Application {
         $exp = Config::getInstance()->getString('webapp/errorHandling/reportLevel', 'E_ALL | E_STRICT');
         eval("\$level = $exp;");
         return $level;
+    }
+
+    /**
+     * Ensure that the given method name does not have any illegal characters.
+     * Fix it if necessary.
+     * Currently, it only gets rid of dashes ('-') and replaces them with the
+     * camelCase notation.
+     * 
+     * @param String $methodName the fixed method name.
+     */
+    private function fixMethodName($methodName) {
+        
+    }
+
+    /**
+     * Change the given variable name into a camelCase form, (getting rid of
+     * dashes).
+     * 
+     * @param String $varName
+     */
+    private function camelize($varName) {
+        $varName = str_replace('-', ' ', $varName);
+        $varName = ucwords($varName);
+        $varName = str_replace(' ', '', $varName);
+        $varName = lcfirst($varName);
+    
+        return $varName;
     }
 }

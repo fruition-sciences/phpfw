@@ -288,12 +288,23 @@ class Form {
         if ($this->forUpload) {
             echo " enctype=\"multipart/form-data\"";
         }
-        echo " onkeypress=\"return formKeyPress(event);\"";
         echo ">";
     }
 
     public function end() {
         echo "</form>";
+        echo '
+        <script type="text/javascript">
+          jQuery(document).ready(function(e) {
+              jQuery("input").keypress(function(e) {
+                  if (e.which == 13) {
+                      ui_pressDefaultButton(e);
+                      e.preventDefault();
+                  }
+              });
+          });
+        </script>
+        ';
     }
 
     public function setForUpload($forUpload) {

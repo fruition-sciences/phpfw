@@ -56,91 +56,25 @@ function focusOnFirst() {
     }
 }
 
-function formKeyPress(e) {
-    var key = null;
-    var control = null;
-    if (e.target) { // FireFox
-        key = e.which;
-        control = e.target;
-    }
-    else { //IE
-        key = window.event.keyCode;
-        control = e.srcElement;
-    }
-    //alert(control.nodeName);
-    //alert(control.type);
-    if (control.nodeName == 'SELECT' || control.nodeName == 'INPUT' && (control.type == 'text' || control.type == 'password' || control.type == 'checkbox' || control.type == 'radio')) {
-        if (key == 13 || key == 3) {
-            var button = getFirstButton(control);
-            if (button) {
-                button.onclick();
-            }
-            return false;
-        }
-    }
-    return true;
-}
-
 /**
- * Get the first button in the same container as the given element.
- * A container, in this context, is either a form or an element that has the
- * 'group' attribute.
+ * Press the default (or most appropriate) button.
  * 
- * @param HTMLElement element
- * @return the first button, or null if no button was found.
+ * @param e jQuery event
  */
-function getFirstButton(element) {
-    var container = findContainer(element);
-    if (!container) {
-        return null;
-    }
-    return getFirstButtonChild(container);
-}
-
-/**
- * Find the first child button of the given element.
- * 
- * @param HTMLElement element
- * @return the first button.
- */
-function getFirstButtonChild(element) {
-    var nodes = element.getElementsByTagName('button');
-    if (nodes.length > 0) {
-        return nodes[0];
-    }
-    // Look for 'span' with 'button' attribute.
-    var nodes = element.getElementsByTagName('span');
-    for (var i=0; i<nodes.length; i++) {
-        var node = nodes.item(i);
-        if (node.getAttribute('button')) {
-            return node;
+function ui_pressDefaultButton(e) {
+    var input = jQuery(e.target);
+    var parents = input.parents('form, div, fieldset');
+    
+    parents.each(function(i, element) { 
+        // Find first button (or element with attribute button="1")
+        // TODO: We may want to give priority to primary button
+        var button = jQuery(element).find('button, [button="1"]').first();
+        if (button.length == 0) {
+            return true; // continue
         }
-    }
-    // Same with 'img' tag. TODO: Change to look for any type.
-    var nodes = element.getElementsByTagName('img');
-    for (var i=0; i<nodes.length; i++) {
-        var node = nodes.item(i);
-        if (node.getAttribute('button')) {
-            return node;
-        }
-    }
-    return null;
-}
-
-/**
- * Find the container of the given element. A container, in this context, is
- * either a form or an element that has the 'group' attribute.
- * 
- * @param HTMLElement element
- * @return the container of the given element.
- */
-function findContainer(element) {
-    while ((element = element.parentNode) != null) {
-        if (element.nodeName == 'FORM') {
-            return element;
-        }
-    }
-    return null;
+        jQuery(button).click();
+        return false; // break
+    });
 }
 
 /**
