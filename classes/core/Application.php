@@ -321,18 +321,6 @@ class Application {
     }
 
     /**
-     * Ensure that the given method name does not have any illegal characters.
-     * Fix it if necessary.
-     * Currently, it only gets rid of dashes ('-') and replaces them with the
-     * camelCase notation.
-     * 
-     * @param String $methodName the fixed method name.
-     */
-    private function fixMethodName($methodName) {
-        
-    }
-
-    /**
      * Change the given variable name into a camelCase form, (getting rid of
      * dashes).
      * 
