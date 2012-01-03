@@ -41,11 +41,7 @@ class DataConverter {
         if (!$formattedDate) {
             return null;
         }
-
-        $date = new DateTime($formattedDate);
-        $tz = new DateTimeZone($this->timezoneName);
-        $date->setTimezone($tz);
-
+        $date = new DateTime($formattedDate, new DateTimeZone($this->timezoneName));
         return $date->format('U');
     }
     
