@@ -102,7 +102,7 @@ class InputConverter {
      * @param $value 
      */
     public function setTime(&$map, $key, $value) {
-        $map[$key] = $this->formatter->secondsToTime();
+        $map[$key] = $this->formatter->secondsToTime($value);
     }
 
     /**
