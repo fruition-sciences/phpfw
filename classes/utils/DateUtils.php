@@ -37,7 +37,7 @@ class DateUtils {
         if (!$timezone) {
             $timezone = Transaction::getInstance()->getUser()->getTimezone();
         }
-        $date = new DateTime(date('c', $timestamp));
+        $date = new DateTime("@$timestamp");
         $tz = new DateTimeZone($timezone);
         $date->setTimezone($tz);
         if ($hours !== null || $minutes !== null || $seconds !== null) {

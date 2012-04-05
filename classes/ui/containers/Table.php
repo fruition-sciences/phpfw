@@ -8,10 +8,11 @@
 require_once("PagingInfoPrefs.php");
 
 class Table extends HtmlElement {
-    private $rowCount = 0;
-    private $inHead = false;
-    private $inRow = false;
-    private $noDataMessage;
+    protected $inHead = false;
+    protected $inRow = false;
+    protected $rowCount = 0;
+    protected $noDataMessage;
+    
     private $pagingInfo;
 
     public function __construct($name, $className='', $ctx=null) {
@@ -35,7 +36,7 @@ class Table extends HtmlElement {
     }
 
     /**
-     * Return a TD element that serves as a header for a column. Can be used
+     * Return a TH element that serves as a header for a column. Can be used
      * for either sortable or non-sortable columns.
      * 
      * @param String $title the displayable title for the column.
@@ -44,7 +45,7 @@ class Table extends HtmlElement {
      *        this column will be sorted in descending order. (false by default). 
      */
     public function columnHeader($title, $column=null, $descendByDefault=false) {
-        $td = new HTMLElement("th");
+        $th = new HTMLElement("th");
         // If this column is sortable
         if ($column) {
             $href = Href::current();
@@ -56,12 +57,12 @@ class Table extends HtmlElement {
                 $className = $this->pagingInfo->isOrderByAscending() ? "orderAsc" : "orderDesc";
             }
             $href->set(PagingInfoPrefs::getOrderByAscendingParamName($this->getName()), $newSortOrder);
-            $td->set('class', $className);
-            $td->set('onclick', "button_click('$href')");
+            $th->set('class', $className);
+            $th->set('onclick', "button_click('$href')");
         } 
-        $td->setBody($title);
+        $th->setBody($title);
 
-        return $td;
+        return $th;
     }
 
     /**
@@ -136,7 +137,7 @@ class Table extends HtmlElement {
      * Write the links to the various pages, including the 'prev' and 'next'
      * links.
      */
-    private function writePageLinks() {
+    protected function writePageLinks() {
         $linksCount = Config::getInstance()->getInt("tablePaging/maxLinksCount", 10);
         $pageNumParamName =  PagingInfoPrefs::getPageNumberParamName($this->getName());
         $recordsPerPageParamName = PagingInfoPrefs::getRecordsPerPageParamName($this->getName());

@@ -9,17 +9,30 @@ require_once("controls/HtmlElement.php");
 require_once("controls/Control.php");
 require_once("controls/Button.php");
 require_once("containers/Table.php");
+require_once("containers/TableCSS3.php");
 require_once("containers/Section.php");
 require_once("ErrorManager.php");
 
 abstract class UI {
+    /**
+     * @var Context
+     */
     protected $ctx;
+    /**
+     * @var ErrorManager
+     */
     private $errorManager;
 
     public function __construct($ctx) {
         $this->ctx = $ctx;
     }
 
+    /**
+     * 
+     * @param String $title
+     * @param String $action Action name
+     * @return Button
+     */
     public function button($title, $action=null) {
         $button = new Button($title);
         if (isset($action)) {
@@ -28,6 +41,12 @@ abstract class UI {
         return $button;
     }
 
+    /**
+     * 
+     * @param String|Href $url
+     * @param String $title
+     * @return Link
+     */
     public function link($url, $title = '') {
         $href = null;
         if ($url) {
@@ -63,8 +82,24 @@ abstract class UI {
         return $this->errorManager;
     }
 
+    /**
+     * 
+     * @param String $name Name of the table
+     * @param String $className Class of the table (default : listStyle1)
+     * @return Table
+     */
     public function newTable($name, $className='listStyle1') {
         return new Table($name, $className, $this->ctx);
+    }
+    
+    /**
+     * 
+     * @param String $name Name of the table
+     * @param String $className Class of the table (default : css3)
+     * @return TableCSS3
+     */
+    public function newTableCSS3($name, $className='css3') {
+        return new TableCSS3($name, $className, $this->ctx);
     }
 
     /**
@@ -77,6 +112,11 @@ abstract class UI {
         return new Section($title, $bookmark);
     }
 
+    /**
+     * 
+     * @throws ConfigurationException
+     * @return string
+     */
     public function getDefaultURL() {
         $config = Config::getInstance();
         $result = $config->get('webapp/defaultURL');
@@ -87,6 +127,9 @@ abstract class UI {
         return (string)$url;
     }
 
+    /**
+     * @return Formatter
+     */
     public function getFormatter() {
         return Formatter::getInstance();
     }
