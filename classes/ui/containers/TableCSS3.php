@@ -92,14 +92,11 @@ class TableCSS3 extends Table {
     
     private function showRecordsPerPage(){
         $numbers = array(Config::getInstance()->getInt("tablePaging/rowsPerPage", 10), 50, 100, 200);
-        if($this->getPaging()->getTotalRows() < $numbers[1]){
+        if($this->getPaging()->getTotalRows() < $numbers[0]){
             return;
         }
         $body = "Show:";
         foreach($numbers as $number){
-            if($this->getPaging()->getTotalRows() < $number){
-                break;
-            }
             if($number == $this->getPaging()->getRecordsPerPage()){
                 $recordsNumber = new HTMLElement("span");
                 $recordsNumber->setBody($number);
@@ -109,6 +106,9 @@ class TableCSS3 extends Table {
                 $recordsNumber->setTitle($number)->setParam(PagingInfoPrefs::getRecordsPerPageParamName($this->getName()), $number);
             }
             $body .= $recordsNumber;
+            if($this->getPaging()->getTotalRows() < $number){
+                break;
+            }
         }
         $recordsPerPageSpan = new HTMLElement("span");
         $recordsPerPageSpan->set("class", "recordsPerPage");
