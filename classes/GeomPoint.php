@@ -10,6 +10,9 @@
  *
  */
 class GeomPoint {
+    const NORTHERN_HEMISPHERE = 1;
+    const SOUTHERN_HEMISPHERE = 2;
+    
     /**
      * Longitude
      * @var Double
@@ -68,5 +71,12 @@ class GeomPoint {
     
     public function getY() {
         return $this->y;
+    }
+    
+    public function getHemisphere(){
+        if($this->getY() >= 0){
+            return self::NORTHERN_HEMISPHERE;
+        }
+        return self::SOUTHERN_HEMISPHERE;
     }
 }
