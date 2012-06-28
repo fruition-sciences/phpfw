@@ -238,9 +238,7 @@ class InputConverter {
      * @param GeomPolygon $geomPolygon
      */
     public function setPolygon(&$map, $key, $geomPolygon) {
-        if ($geomPolygon) {
-            $map[$key] = $geomPolygon->toWKT();
-        }
+        $map[$key] = $geomPolygon ? $geomPolygon->toWKT() : null;
     }
     
     /**
