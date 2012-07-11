@@ -329,4 +329,42 @@ class DateUtils {
         $date->add(new DateInterval("PT".$duration."S"));
         return $date->getTimestamp();
     }
+    
+    /**
+     * Convert from an Excel decimal datetime number to a unix timestamp.
+     * 
+     * Excel holds date values as the "real" number of days since a base date, which 
+     * can be either 1st January 1900 (the default for Windows versions of Excel) or 
+     * 1st January 1904 (the default for Mac versions of Excel): 
+     * the time is the fractional part, so midday on any given date is 0.5 greater 
+     * than midnight. To add to the misery, Feb29th 1900 is a valid date for the 
+     * Windows 1900 calendar.
+     * 
+     * @see http://stackoverflow.com/questions/9298429/date-from-excel-changes-when-uploaded-into-mysql
+     * @param float $excelDateTime
+     * @param boolean $isMacExcel
+     * @return long Unix Timestamp
+     */
+    public static function excelToTimestamp($excelDateTime, $isMacExcel=false) {
+        $myExcelBaseDate = $isMacExcel ? 24107 : 25569; // 1st jan 1904 or 1st jan 1900
+        if (!$isMacExcel && $excelDateTime < 60) {
+            //  Adjust for the spurious 29-Feb-1900 (Day 60)
+            --$myExcelBaseDate;
+        }
+        // Perform conversion
+        if ($excelDateTime >= 1) {
+            $timestampDays = $excelDateTime - $myExcelBaseDate;
+            $timestamp = round($timestampDays * 86400);
+            if (($timestamp <= PHP_INT_MAX) && ($timestamp >= -PHP_INT_MAX)) {
+                $timestamp = intval($timestamp);
+            }
+        } else {
+            $hours = round($excelDateTime * 24);
+            $mins = round($excelDateTime * 1440) - round($hours * 60);
+            $secs = round($excelDateTime * 86400) - round($hours * 3600) - round($mins * 60);
+            $timestamp = (integer) gmmktime($hours, $mins, $secs);
+        }
+        return $timestamp;
+    }
+    
 }
