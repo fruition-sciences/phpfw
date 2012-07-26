@@ -8,8 +8,9 @@
 class Dropdown extends Control {
     private $options = array();
     private $optgroups = array();
-    private $value;
+    private $values = array();
     private $readonlyLink;
+    private $multiSelectReadonlySeparator = ", ";
 
     public function __construct($name) {
         parent::__construct("select", $name);
@@ -55,37 +56,37 @@ class Dropdown extends Control {
         $this->readonlyLink = $readonlyLink;
     }
 
-    public function __toString()
-    {
+    public function __toString() {
         $this->setBody($this->options_as_string());
         return parent::__toString();
     }
 
     public function toString() {
+        $ret = "";
         $options = $this->options;
         foreach ($this->optgroups as $optgroup) {
             $options = array_merge($options, $optgroup->getOptions());
         }
         foreach($options as $option) {
-            if ($option->get("value") == $this->value) {
+            if (in_array($option->get("value"), $this->values)) {
+                $separator = empty($ret) ? "" : $this->multiSelectReadonlySeparator;
                 if ($this->readonlyLink) {
-                    return $this->readonlyLink->setTitle($option->__toString())->__toString();
-                }
-                else {
-                    return $option->__toString();
+                    $ret .= $separator . $this->readonlyLink->setTitle($option->__toString())->__toString();
+                } else {
+                    $ret .= $separator . $option->__toString();
                 }
             }
         }
-        return "";
+        return $ret;
     }
 
     private function options_as_string() {
         $html = "";
         for ($i = 0; $i < sizeof($this->options); $i++) {
-            $html .= $this->options[$i]->asString($this->value);
+            $html .= $this->options[$i]->asString($this->values);
         }
         for ($i = 0; $i < sizeof($this->optgroups); $i++) {
-            $html .= $this->optgroups[$i]->asString($this->value);
+            $html .= $this->optgroups[$i]->asString($this->values);
         }
         return $html;
     }
@@ -98,8 +99,18 @@ class Dropdown extends Control {
      * @param String $value the value.
      */
     public function setValue($value) {
-        $this->value = $value;
+        $this->values = is_array($value) ? $value : array($value);
         return $this;
+    }
+    
+    /**
+     * The Multi Select Readonly separator is used to separate all the selected values
+     * of a multi select field in read-only mode.
+     * 
+     * @param String $multiSelectReadonlySeparator
+     */
+    public function setMultiSelectReadonlySeparator($multiSelectReadonlySeparator){
+        $this->multiSelectReadonlySeparator = $multiSelectReadonlySeparator;
     }
 }
 
@@ -114,12 +125,12 @@ class Dropdown_Option extends Control {
      * String representation of this option, given a value. If the value is the
      * same as this option's value then this option will be selected.
      *
-     * @param String $value the value of the containing 'select'. If it's equal
-     *        to the value of this option, the option will be marked as selected.
+     * @param Array $values the value(s) of the containing 'select' (or multi select).
+     * If it's equal to the value of this option, the option will be marked as selected.
      */
-    public function asString($value) {
+    public function asString($values) {
         $v = $this->get('value');
-        if ($v == $value) {
+        if (in_array($v, $values)) {
             $this->set('selected','selected');
         }
         else {
@@ -149,8 +160,8 @@ class Dropdown_Optgroup extends Control {
         return $this;
     }
     
-    public function asString($value){
-        $this->setBody($this->options_as_string($value));
+    public function asString($values){
+        $this->setBody($this->options_as_string($values));
         return parent::__toString();
     }
 
@@ -158,10 +169,10 @@ class Dropdown_Optgroup extends Control {
         return $this->get('label');
     }
     
-    private function options_as_string($value) {
+    private function options_as_string($values) {
         $html = "";
         for ($i = 0; $i < sizeof($this->options); $i++) {
-            $html .= $this->options[$i]->asString($value);
+            $html .= $this->options[$i]->asString($values);
         }
         return $html;
     }

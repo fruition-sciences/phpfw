@@ -393,11 +393,14 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
      *        1. Measure will be represented as 2 fields: value & unit
      *        Well, that's the only example for now.
      *        TODO: Do the same with Date
+     * @param InputConverter $inputConverter (optional) The input converter tu use. If not
+     * provided, we will use the timezone and the locale of the current user.
      */
-    public function getAttributes($dateTime=false, $expanded=true) {
-        $user = Transaction::getInstance()->getUser();
-        $inputConverter = new InputConverter($user->getTimezone(), $user->getLocale());        
-
+    public function getAttributes($dateTime=false, $expanded=true, $inputConverter=null) {
+        if(!$inputConverter){
+            $user = Transaction::getInstance()->getUser();
+            $inputConverter = new InputConverter($user->getTimezone(), $user->getLocale());        
+        }
         $map = array();
 <?php
   foreach ($descriptor->xml->field as $field) {
@@ -476,12 +479,16 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
     /**
      * Populate this bean with values of the the given map.
      *
-     * @param String $prefix (optional)
      * @param Map $map
+     * @param String $prefix (optional)
+     * @param InputConverter $inputConverter (optional) The input converter tu use. If not
+     * provided, we will use the timezone and the locale of the current user.
      */
-    public function setAttributes($map, $prefix='') {
-        $user = Transaction::getInstance()->getUser();
-        $inputConverter = new InputConverter($user->getTimezone(), $user->getLocale());
+    public function setAttributes($map, $prefix='', $inputConverter=null) {
+        if(!$inputConverter){
+            $user = Transaction::getInstance()->getUser();
+            $inputConverter = new InputConverter($user->getTimezone(), $user->getLocale());
+        }
 <?php
   foreach ($descriptor->xml->field as $field) {
       $constantName = 'self::' . $descriptor->fieldConstant($field);
