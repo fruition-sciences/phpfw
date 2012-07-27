@@ -385,16 +385,16 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
      * The strings will be formatted according to the current user's timezone
      * and locale.
      * 
-     * @param $dateTime boolean. If true, date fields will be formatted as date time.
-     * @param $expanded boolean. If true, more complex data types will be expanded
+     * @param Boolean $dateTime If true, date fields will be formatted as date time.
+     * @param Boolean $expanded If true, more complex data types will be expanded
      *        into more than 1 parameter. The extra parameters would have a name
      *        similar to the original parameter name + a prefix (such as '__unit').
      *        For example: 
      *        1. Measure will be represented as 2 fields: value & unit
      *        Well, that's the only example for now.
      *        TODO: Do the same with Date
-     * @param InputConverter $inputConverter (optional) The input converter tu use. If not
-     * provided, we will use the timezone and the locale of the current user.
+     * @param InputConverter $inputConverter (optional) The input converter to use. If not
+     *        provided, we will use the timezone and the locale of the current user.
      */
     public function getAttributes($dateTime=false, $expanded=true, $inputConverter=null) {
         if(!$inputConverter){
@@ -479,9 +479,9 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
     /**
      * Populate this bean with values of the the given map.
      *
-     * @param Map $map
+     * @param Array $map
      * @param String $prefix (optional)
-     * @param InputConverter $inputConverter (optional) The input converter tu use. If not
+     * @param InputConverter $inputConverter (optional) The input converter to use. If not
      * provided, we will use the timezone and the locale of the current user.
      */
     public function setAttributes($map, $prefix='', $inputConverter=null) {

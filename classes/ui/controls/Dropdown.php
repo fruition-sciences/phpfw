@@ -6,10 +6,24 @@
  */
 
 class Dropdown extends Control {
+    /**
+     * @var Dropdown_Option[]
+     */
     private $options = array();
+    /**
+     * @var Dropdown_Optgroup[]
+     */
     private $optgroups = array();
     private $values = array();
+    /**
+     * @var Link
+     */
     private $readonlyLink;
+    /**
+     * The separator to use in read-only mode for
+     * multi select dropdown.
+     * @var String
+     */
     private $multiSelectReadonlySeparator = ", ";
 
     public function __construct($name) {
@@ -33,12 +47,20 @@ class Dropdown extends Control {
         return $this;
     }
     
+    /**
+     * @param String $label
+     * @return Dropdown
+     */
     public function addOptgroup($label) {
         $optgroup = new Dropdown_Optgroup($label);
         $optgroup->setForm($this->getForm());
         return $this->addOptgroupObject($optgroup);
     }
     
+    /**
+     * @param Dropdown_Optgroup $optgroup
+     * @return Dropdown
+     */
     public function addOptgroupObject($optgroup) {
         $optgroup->setForm($this->getForm());
         $this->optgroups[] = $optgroup;
@@ -80,6 +102,9 @@ class Dropdown extends Control {
         return $ret;
     }
 
+    /**
+     * @return string
+     */
     private function options_as_string() {
         $html = "";
         for ($i = 0; $i < sizeof($this->options); $i++) {
@@ -96,10 +121,11 @@ class Dropdown extends Control {
      * private. It will be used in order to mark the 'option' who's got this
      * value as selected.
      *
-     * @param String $value the value.
+     * @param array | String $values the value for a select or the array of values
+     * for a multi select.
      */
-    public function setValue($value) {
-        $this->values = is_array($value) ? $value : array($value);
+    public function setValue($values) {
+        $this->values = is_array($values) ? $values : array($values);
         return $this;
     }
     
@@ -145,6 +171,9 @@ class Dropdown_Option extends Control {
 }
 
 class Dropdown_Optgroup extends Control {
+    /**
+     * @var Dropdown_Option[]
+     */
     private $options = array();
     
     public function __construct($label, $form=null) {
@@ -176,6 +205,9 @@ class Dropdown_Optgroup extends Control {
         }
         return $html;
     }
+    /**
+     * @return Dropdown_Option[]
+     */
     public function getOptions(){
         return $this->options;
     }
