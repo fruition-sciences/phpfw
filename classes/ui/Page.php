@@ -16,6 +16,9 @@ abstract class Page {
     public $mode;
     private $crumbs;
     private $noMenu = false;
+    /**
+     * @var Context
+     */
     public $ctx;
     public $onload = array();
     public $onunload = array();
@@ -24,9 +27,14 @@ abstract class Page {
     public $pageTemplateFile;
     private $menuItemName;
     private $attributes = array();
+    /**
+     * @var ITranslator
+     */
+    private $translator;
 
-    public function __construct($pageTemplateFile) {
+    public function __construct($pageTemplateFile, ITranslator $translator=null) {
         $this->pageTemplateFile = $pageTemplateFile;
+        $this->translator = $translator;
     }
 
     /**
@@ -108,6 +116,25 @@ abstract class Page {
             return $this->attributes[$key];
         }
         return null;
+    }
+    
+    /**
+     * Return the translated passed string
+     * @param string $sentence
+     * @return string|string
+     */
+    public function _($sentence) {
+        if ($this->translator != null && $this->translator instanceof ITranslator) {
+            return $this->translator->_($sentence);
+        }
+        return $sentence;
+    }
+    
+    /**
+     * @return ITranslator
+     */
+    public function getTranslator() {
+        return $this->translator;
     }
 }
 

@@ -29,6 +29,10 @@ abstract class BaseView implements View {
      * @var Page
      */
     private $page;
+    /**
+     * @var ITranslator
+     */
+    private $translator = null;
 
     /**
      * @param Context $ctx
@@ -97,6 +101,9 @@ abstract class BaseView implements View {
 
     public function addComponent($name, $component) {
         $this->components[$name] = $component;
+        if ($component instanceof View) {
+            $component->setTranslator($this->translator);
+        }
         $component->setParentView($this);
     }
 
@@ -118,22 +125,49 @@ abstract class BaseView implements View {
 
     private function initChildComponents($ctx) {
         foreach ($this->components as $name=>$component) {
+            $component->setTranslator($this->translator);
             $component->init($ctx);
         }
     }
 
     public function getPage() {
         if (!$this->page) {
-            $this->page = $this->newPage();
+            $this->page = $this->newPage($this->translator);
             $this->page->ctx = $this->ctx;
         }
         return $this->page;
     }
 
-    protected function newPage() {
+    protected function newPage(ITranslator $translator=null) {
         global $ui;
         $ui = $this->ctx->getUIManager();
-        return $ui->newPage();
+        return $ui->newPage($translator);
+    }
+    
+    /**
+     * Set a translation module : $translator must be
+     * an instance of a class which implements ITranslator
+     * @param ITranslator $translator
+     */
+    public function setTranslator(ITranslator $translator) {
+        $this->translator = $translator;
+        return $this;
+    }
+    
+    public function getTranslator() {
+        return $this->translator;
+    }
+    
+    /**
+     * Return the translated sentence
+     * @param string $sentence
+     * @return string
+     */
+    public function _($sentence) {
+        if ($this->translator === null) {
+            return $sentence;
+        }
+        return $this->translator->_($sentence);
     }
 
     public function __toString() {

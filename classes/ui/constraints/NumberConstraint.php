@@ -18,27 +18,22 @@ class NumberConstraint extends Constraint {
         $format = new Formatter($ctx->getUser()->getTimezone(), $ctx->getUser()->getLocale());
         $value = $format->getNumber($formattedValue);
         if ($value === false) {
-            $msg = I18nUtil::lookupString('NUMBER_CONSTRAINT_MSG');
-            $msg->set('fieldName', $this->getLabel());
-            $this->addFieldError($ctx, $this->getName(), $msg->__toString());
+            $msg = sprintf(Application::getTranslator()->_('The field %1$s must be a valid number'), $this->getLabel());
+            $this->addFieldError($ctx, $this->getName(), $msg);
             return false;
         }
         if ($this->minValue) {
             if ($this->minValue->isExclusive()) {
                 if ($value <= $this->minValue->getValue()) {
-                    $msg = I18nUtil::lookupString('NUMBER_CONSTRAINT_MIN_VALUE_EXCLUSIVE_MSG');
-                    $msg->set('fieldName', $this->getLabel());
-                    $msg->set('value', $this->minValue->getValue());
-                    $this->addFieldError($ctx, $this->getName(), $msg->__toString());
+                    $msg = sprintf(Application::getTranslator()->_('The value of the %1$s field must be greater than %2$s'), $this->getLabel(), $this->minValue->getValue());
+                    $this->addFieldError($ctx, $this->getName(), $msg);
                     return false;
                 }
             }
             else {
                 if ($value < $this->minValue->getValue()) {
-                    $msg = I18nUtil::lookupString('NUMBER_CONSTRAINT_MIN_VALUE_INCLUSIVE_MSG');
-                    $msg->set('fieldName', $this->getLabel());
-                    $msg->set('value', $this->minValue->getValue());
-                    $this->addFieldError($ctx, $this->getName(), $msg->__toString());
+                    $msg = sprintf(Application::getTranslator()->_('The value of the %1$s field must be greater or equal to %2$s'), $this->getLabel(), $this->minValue->getValue());
+                    $this->addFieldError($ctx, $this->getName(), $msg);
                     return false;
                 }
             }
@@ -46,19 +41,15 @@ class NumberConstraint extends Constraint {
         if ($this->maxValue) {
             if ($this->maxValue->isExclusive()) {
                 if ($value >= $this->maxValue->getValue()) {
-                    $msg = I18nUtil::lookupString('NUMBER_CONSTRAINT_MAX_VALUE_EXCLUSIVE_MSG');
-                    $msg->set('fieldName', $this->getLabel());
-                    $msg->set('value', $this->maxValue->getValue());
-                    $this->addFieldError($ctx, $this->getName(), $msg->__toString());
+                    $msg = sprintf(Application::getTranslator()->_('The value of the %1$s field must be smaller than %2$s'), $this->getLabel(), $this->maxValue->getValue());
+                    $this->addFieldError($ctx, $this->getName(), $msg);
                     return false;
                 }
             }
             else {
                 if ($value > $this->maxValue->getValue()) {
-                    $msg = I18nUtil::lookupString('NUMBER_CONSTRAINT_MAX_VALUE_INCLUSIVE_MSG');
-                    $msg->set('fieldName', $this->getLabel());
-                    $msg->set('value', $this->maxValue->getValue());
-                    $this->addFieldError($ctx, $this->getName(), $msg->__toString());
+                    $msg = sprintf(Application::getTranslator()->_('The value of the %1$s field must be smaller or equal to %2$s'), $this->getLabel(), $this->maxValue->getValue());
+                    $this->addFieldError($ctx, $this->getName(), $msg);
                     return false;
                 }
             }

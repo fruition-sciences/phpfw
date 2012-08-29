@@ -11,4 +11,13 @@ interface View {
     public function prepare($ctx);
 
     public function render($ctx);
+    
+    public function setTranslator(ITranslator $translator);
+
+    /**
+     * Return the translated sentence using the set translator.
+     * @param string $sentence
+     * @return string
+     */
+    public function _($sentence);
 }

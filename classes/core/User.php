@@ -11,8 +11,14 @@ class User {
     private $name;
     private $isAdmin;
     private $groupId;
-    private $timezone; // String. For example: 'America/Los_Angeles'
-    private $locale = 'en_US'; // String. For example: 'en_US'
+    /**
+     * @var string For example: 'America/Los_Angeles'
+     */
+    private $timezone;
+    /**
+     * @var string For example: 'en_US'
+     */
+    private $locale = 'en_US';
 
     public function setId($id) {
         $this->id = $id;

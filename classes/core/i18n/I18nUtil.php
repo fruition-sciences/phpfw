@@ -4,13 +4,16 @@
  * Author: Yoni Rosenbaum
  * 
  */
-
+require_once('classes/core/i18n/ITranslator.php');
 require_once("classes/core/i18n/LocalizedString.php");
 
-class I18nUtil {
+class I18nUtil implements ITranslator {
     const UNDEFINED = "___UNDEFINED___";
-    private static $bundles = array(); // map bundlePath -> Map(string->string)
-    
+    /**
+     * @var Array map bundlePath -> Map(string->string)
+     */
+    private static $bundles = array();
+    private static $bundleLocale = 'en';
     /**
      * Retrieve the string corresponding to the given stringId and bundleName.
      * If stringId is not available but $defaultVal is pass return the default value.
@@ -20,7 +23,16 @@ class I18nUtil {
      * @return LocalizedString
      */
     public static function lookup($bundleName, $stringId, $defaultVal=self::UNDEFINED) {
-        $bundlePath = "application/i18n/en/" . $bundleName . ".xml";
+        $locale = self::$bundleLocale;
+        if (isset($_SESSION['user'])) {
+            $user = $_SESSION['user'];
+            $locale = $user->getLocale();
+        }
+        $bundlePath = "application/i18n/". $locale .'/'. $bundleName . ".xml";
+        // If the file doesn't exist in the user locale, we put the default locale back.
+        if (FileUtils::existsInIncludePath($bundlePath) === false) {
+            $bundlePath = "application/i18n/". self::$bundleLocale .'/'. $bundleName . ".xml";
+        }
         if (!isset(self::$bundles[$bundlePath])) {
             self::loadResourceBundle($bundleName, $bundlePath);
         }
@@ -73,5 +85,17 @@ class I18nUtil {
             return false;
         }
         return true;
+    }
+    
+    public function setLocale($locale) {
+        self::$bundleLocale = (string)$locale;
+    }
+    
+    public static function setDefaultLocale($locale) {
+        self::$bundleLocale = (string)$locale;
+    }
+    
+    public function _($sentence) {
+        return self::lookupString($sentence);
     }
 }

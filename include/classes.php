@@ -36,6 +36,7 @@ require_once("classes/ui/JSONView.php");
 require_once("classes/ui/Component.php");
 require_once("classes/core/User.php");
 require_once("classes/core/i18n/I18nUtil.php");
+require_once("classes/core/i18n/GettextZendTranslator.php");
 require_once("classes/core/TimeLogger.php");
 require_once("classes/core/Application.php");
 require_once("classes/ui/DataConverter.php");

@@ -8,9 +8,22 @@
  */
 
 class Application {
+    /**
+     * @var Context
+     */
     private $ctx;
+    /**
+     * @var string
+     */
     private $sessionName;
+    /**
+     * @var TimeLogger
+     */
     private $timeLogger;
+    /**
+     * @var ITranslator
+     */
+    private static $translator;
 
     public function init() {
         // Register error handler
@@ -42,6 +55,7 @@ class Application {
             session_name($this->sessionName);
             Zend_Session::start();
             $this->includeFiles();
+            $this->initTranslator($this->getContext());
             $this->validate();
             $this->invokeControllerMethod();
         }
@@ -66,7 +80,7 @@ class Application {
     private function handleException($e) {
         // Variables set in this method can be accessed by the template.
         if ($e instanceof ErrorException) {
-            $severety = $e->getSeverity();
+            $severity = $e->getSeverity();
         }
         if ($e instanceof EndOfResponseException) {
             // Happens after redirect. Ignore this exception.
@@ -137,12 +151,39 @@ class Application {
             if ($ctx->getUIManager()->getErrorManager()->hasErrors()) {
                 $ctx->getForm()->setValues($ctx->getAttributes());
             }
+            if (self::$translator) {
+                $view->setTranslator(self::$translator);
+            }
             $view->init($ctx);
             global $form;
             $view->render($ctx);
         }
     }
+    
+    /**
+     * Get the locale of the user in the given context.
+     * If the 'locale' parameter is in the request, sets its value into the user
+     * 
+     * @param Context $ctx
+     */
+    public static function getUserLocale(Context $ctx) {
+        $locale = $ctx->getRequest()->getString('locale', null);
+        if ($locale) {
+            self::setUserLocale($ctx, $locale);
+        }
+        return $ctx->getUser()->getLocale();
+    }
 
+    /**
+     * Set the locale for the user in the given context.
+     * Sets it into the User object (in the session)
+     * 
+     * @param Context $ctx
+     * @param String $locale
+     */
+    public static function setUserLocale(Context $ctx, $locale) {
+        $ctx->getUser()->setLocale($locale);
+    }
     /**
      * Get the path info, which is everything that follows the application
      * node in the URL. (without query info).
@@ -196,15 +237,21 @@ class Application {
         }
         else {
             $ctx->setUser($this->createAnonymousUser());
+            $ctx->getSession()->set('user', $ctx->getUser());
         }
         return $ctx;
     }
-
+    /**
+     * Create a new User object and fill it with default parameters.
+     * The Zend_Locale with no parameter detects automatically the user locale
+     */
     private function createAnonymousUser() {
         $user = new User();
         $user->setId(0);
         $timezone = Config::getInstance()->getString("properties/anonymousUserTimezone");
         $user->setTimezone($timezone);
+        $zend_locale = new Zend_Locale();
+        $user->setLocale($zend_locale->toString());
         return $user;
     }
 
@@ -333,5 +380,31 @@ class Application {
         $varName = lcfirst($varName);
     
         return $varName;
+    }
+
+    /**
+     * Init the translator of the application.
+     * @param Context $ctx
+     */
+    private function initTranslator($ctx) {
+        $translatorClassName = Config::getInstance()->getString('properties/translator', 'I18nUtil');
+        if (class_exists($translatorClassName)) {
+            $translator = new $translatorClassName();
+            if ($translator instanceof ITranslator) {
+                self::$translator = $translator;
+                self::$translator->setLocale(self::getUserLocale($ctx));
+            } else {
+                throw new ConfigurationException("The properties/translator configuration class does not implement ITranslator interface.");
+            }
+        } else {
+            throw new ConfigurationException("The properties/translator configuration parameter is invalid.");
+        }
+    }
+    
+    /**
+     * @return iTranslator
+     */
+    public static function getTranslator() {
+        return self::$translator;
     }
 }

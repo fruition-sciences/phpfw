@@ -74,4 +74,20 @@ class FileUtils {
   		
     	//return round($bytes, $precision) . ' ' . $units[$pow];
 	}
+	
+	/**
+	 * Check if the file exists in include paths or in current directory.
+	 * string $filename The file name to lookup
+	 * @param string $filename
+	 * @return bool
+	 */
+	public static function existsInIncludePath($filename) {
+	    $paths = explode(PATH_SEPARATOR, get_include_path());
+	    foreach ($paths as $path) {
+	        if (file_exists($path .'/'. $filename)) {
+	            return true;
+	        }
+	    }
+	    return file_exists($filename);
+	}
 }
