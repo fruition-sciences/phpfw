@@ -78,7 +78,8 @@ class GettextZendTranslator extends Zend_Translate implements ITranslator {
      * @return string
      */
     public function getLanguage() {
-        return preg_replace('#^([a-zA-Z]+).*$#', '$1', $this->locale);
+        $locale = explode('_', $this->locale);
+        return $locale[0];
     }
     
     public function setLocale($locale) {

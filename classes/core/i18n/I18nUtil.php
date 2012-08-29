@@ -9,11 +9,12 @@ require_once("classes/core/i18n/LocalizedString.php");
 
 class I18nUtil implements ITranslator {
     const UNDEFINED = "___UNDEFINED___";
+    const DEFAULT_LOCALE = "en";
     /**
      * @var Array map bundlePath -> Map(string->string)
      */
     private static $bundles = array();
-    private static $bundleLocale = 'en';
+    private static $bundleLocale = self::DEFAULT_LOCALE;
     /**
      * Retrieve the string corresponding to the given stringId and bundleName.
      * If stringId is not available but $defaultVal is pass return the default value.
@@ -23,16 +24,7 @@ class I18nUtil implements ITranslator {
      * @return LocalizedString
      */
     public static function lookup($bundleName, $stringId, $defaultVal=self::UNDEFINED) {
-        $locale = self::$bundleLocale;
-        if (isset($_SESSION['user'])) {
-            $user = $_SESSION['user'];
-            $locale = $user->getLocale();
-        }
-        $bundlePath = "application/i18n/". $locale .'/'. $bundleName . ".xml";
-        // If the file doesn't exist in the user locale, we put the default locale back.
-        if (FileUtils::existsInIncludePath($bundlePath) === false) {
-            $bundlePath = "application/i18n/". self::$bundleLocale .'/'. $bundleName . ".xml";
-        }
+        $bundlePath = self::getBundlePath($bundleName);
         if (!isset(self::$bundles[$bundlePath])) {
             self::loadResourceBundle($bundleName, $bundlePath);
         }
@@ -57,6 +49,24 @@ class I18nUtil implements ITranslator {
      */
     public static function lookupString($stringId, $defaultVal=self::UNDEFINED) {
         return self::lookup('strings', $stringId, $defaultVal);
+    }
+    
+    /**
+     * Return the bundle path
+     * @param string $bundleName
+     * @return string
+     */
+    private static function getBundlePath($bundleName) {
+        $bundlePath = "application/i18n/". self::$bundleLocale .'/'. $bundleName . ".xml";
+        // If the locale is "fr_FR", we check if the dir "fr_FR" exists, else we use only the language ("fr")
+        if (FileUtils::existsInIncludePath($bundlePath) === false) {
+            $bundlePath = "application/i18n/". self::getDefaultLanguage() .'/'. $bundleName . ".xml";
+        }
+        // if it still doesn't exists, we use the default locale which we're pretty sure it exists.
+        if (FileUtils::existsInIncludePath($bundlePath) === false) {
+            $bundlePath = "application/i18n/". self::DEFAULT_LOCALE .'/'. $bundleName . ".xml";
+        }
+        return $bundlePath;
     }
     
     private static function loadResourceBundle($bundleName, $bundlePath) {
@@ -87,8 +97,22 @@ class I18nUtil implements ITranslator {
         return true;
     }
     
+    /**
+     * Return the language defined in the locale.
+     * By example if the locale is "en_US", this method returns "en"
+     * @return string
+     */
+    public function getLanguage() {
+        return self::getDefaultLanguage();
+    }
+    
+    public static function getDefaultLanguage() {
+        $locale = explode('_', self::$bundleLocale);
+        return $locale[0];
+    }
+    
     public function setLocale($locale) {
-        self::$bundleLocale = (string)$locale;
+        self::setDefaultLocale($locale);
     }
     
     public static function setDefaultLocale($locale) {

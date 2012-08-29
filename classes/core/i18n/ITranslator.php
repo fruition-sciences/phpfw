@@ -13,7 +13,13 @@ interface ITranslator {
      * Set the wanted locale
      */
     public function setLocale($locale);
-
+    
+    /**
+     * Return the language defined in the locale.
+     * By example if the locale is "en_US", this method returns "en"
+     * @return string
+     */
+    public function getLanguage();
     /**
      * Return the translated sentence
      * @param string $sentence
