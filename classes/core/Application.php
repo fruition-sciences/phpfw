@@ -167,7 +167,7 @@ class Application {
      * @param Context $ctx
      */
     public static function getUserLocale(Context $ctx) {
-        $locale = $ctx->getRequest()->getString('locale', null);
+        $locale = $ctx->getRequest()->getString('__locale__', null);
         if ($locale) {
             self::setUserLocale($ctx, $locale);
         }
