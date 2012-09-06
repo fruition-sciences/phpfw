@@ -120,6 +120,6 @@ class I18nUtil implements ITranslator {
     }
     
     public function _($sentence) {
-        return self::lookupString($sentence);
+        return self::lookupString($sentence, $sentence);
     }
 }
