@@ -32,7 +32,7 @@ class GettextZendTranslator extends Zend_Translate implements ITranslator {
         $path = self::DIR_LOCALES . self::DEFAULT_LOCALE .'/'. $this->filename;
         parent::__construct(self::GETTEXT, $path, self::DEFAULT_LOCALE);
         // Adding other existing locales
-        $locales = $this->getLocales();
+        $locales = $this->getAvailableLocales();
         foreach ($locales as $locale) {
             if ($locale != self::DEFAULT_LOCALE) {
                 parent::addTranslation(self::DIR_LOCALES . $locale .'/'. $this->filename, $locale);
@@ -54,7 +54,7 @@ class GettextZendTranslator extends Zend_Translate implements ITranslator {
      * Get all the locales available in the self::DIR_LOCALES directory
      * @return array
      */
-    public function getLocales() {
+    public function getAvailableLocales() {
         $items = glob(self::DIR_LOCALES .'*');
         $locales = array();
         foreach ($items as $item) {

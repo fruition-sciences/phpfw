@@ -13,8 +13,14 @@ class Formatter {
 
     /**
      * @var DateTimeZone
+     * @deprecated most likely will be removed
      */
     private $timezone;
+
+    /**
+     * @var String
+     */
+    private $timezoneName;
 
     /**
      * @var Zend_Locale
@@ -36,6 +42,7 @@ class Formatter {
         if (!$localeName) {
             $localeName = Transaction::getInstance()->getUser()->getLocale();
         }
+        $this->timezoneName = $timezoneName;
         $this->timezone = new DateTimeZone($timezoneName);
         $this->zendLocale = new Zend_Locale($localeName);
     }
@@ -58,11 +65,12 @@ class Formatter {
      * Format the given timestamp as date.
      *
      * @param long $timestamp unix timestamp
+     * @param String $default value to return if the given timestamp is null
      * @return String formatted date, of the given timestamp in the timezone set
      *         for this Formatter object.
      */
-    public function date($timestamp) {
-        return $this->dateFormat($timestamp, "m/d/y");
+    public function date($timestamp, $default='') {
+         return $this->zendDate($timestamp, Zend_Date::DATE_SHORT, $default);
     }
 
     /**
@@ -72,24 +80,49 @@ class Formatter {
      *         timezone set for this Formatter object.
      */
     public function dateTime($timestamp, $newLine=false, $showSeconds=false) {
-        $time = $showSeconds ? "g:i:s" : "g:i";
-        return $this->dateFormat($timestamp, $newLine ? "m/d/y<b\\r/>$time a" : "m/d/y $time a");
+        return $this->zendDate($timestamp, Zend_Date::DATETIME_SHORT, '');
     }
 
+    /**
+     * @deprecated not locale-aware
+     * @param unknown_type $timestamp
+     */
     public function dateTime24($timestamp) {
         return $this->dateFormat($timestamp, "m/d/Y H:i:s");
     }
 
     /**
      * Format the given timestamp as time.
-     *
+     * 
+     * @param long $timestamp
+     * @param boolean $showSeconds whether seconds should be included.
      * @return String formatted time, of the given timestamp in the
      *         timezone set for this Formatter object.
      */
-    public function time($timestamp) {
-        return $this->dateFormat($timestamp, "g:i a");
+    public function time($timestamp, $showSeconds=false) {
+        $zendFormat = $showSeconds ? Zend_Date::TIME_MEDIUM : Zend_Date::TIME_SHORT;
+        return $this->zendDate($timestamp, $zendFormat, '');
     }
-    
+
+    /**
+     * Format the given timestamp using the given zend format.
+     * Uses the 'zendLocale' field.
+     * If the given timestamp is null, returns an empty string.
+     * @see Zend_Date
+     *
+     * @param long $timestamp
+     * @param String $zendFormat
+     * @param String $default value to return if the given timestamp is null
+     */
+    private function zendDate($timestamp, $zendFormat, $default) {
+        if (!$timestamp) {
+            return $default;
+        }
+        $zendDate = new Zend_Date($timestamp, Zend_Date::TIMESTAMP, $this->zendLocale);
+        $zendDate->setTimezone($this->timezoneName);
+        return $zendDate->toString($zendFormat);
+    }
+
     public function secondsToTime($seconds) {
         $timeStr = substr(SQLUtils::convertTime($seconds), 1, -1);
         return $timeStr == "null" ? "" : $timeStr;
@@ -97,6 +130,7 @@ class Formatter {
 
     /**
      * Format the given timestamp using the given format string.
+     * Note: This method is not locale aware
      *
      * @return String formatted date of the given timestamp in the timezone set
      *         for this Formatter object.

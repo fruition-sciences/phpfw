@@ -26,5 +26,12 @@ interface ITranslator {
      * @return string
      */
     public function _($sentence);
+    
+    /**
+     * Return an array which contains all the available locales
+     * @return array of locales
+     */
+    public function getAvailableLocales();
+    
 }
 ?>

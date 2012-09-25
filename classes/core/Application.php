@@ -55,6 +55,8 @@ class Application {
             session_name($this->sessionName);
             Zend_Session::start();
             $this->includeFiles();
+            $transaction = Transaction::getInstance();
+            $transaction->setUser($this->getContext()->getUser());
             $this->initTranslator($this->getContext());
             $this->validate();
             $this->invokeControllerMethod();
@@ -108,30 +110,65 @@ class Application {
 
     private function invokeControllerMethod() {
         $ctx = $this->getContext();
-        $transaction = Transaction::getInstance();
-        $transaction->setUser($ctx->getUser());
         $pathInfo = self::getPathInfo();
         $this->timeLogger->setText($pathInfo);
-        $tokens = explode('/', $pathInfo);
-        if (sizeof($tokens) < 2 || $tokens[1] === '') {
+        $tokens = $this->explodePath($pathInfo);
+        if (empty($tokens['controller']) && empty($tokens['method'])) {
+            /* if there's no controller nor method, we redirect permanently to the default page.
+             * If there's a defined locale, we keep it.
+             */
+            $page = Config::getInstance()->getString('webapp/defaultURL');
+            if (substr($page, 0, 1) != '/') {
+                $page = '/'. $page;
+            }
+            if ($tokens['locale'] != null) {
+                $page = '/'. $tokens['locale'] . $page;
+            }
+            $ctx->redirect($page, Context::REDIRECT_PERMANENT);
+        } else if (empty($tokens['controller']) || empty($tokens['method'])) {
             $defaultUrl = $ctx->getUIManager()->getDefaultURL();
             $ctx->redirect($defaultUrl);
             return;
         }
         try {
-            $controllerName = $this->controllerNameFromAlias($tokens[0]);
+            $controllerName = $this->controllerNameFromAlias($tokens['controller']);
         }
         catch (IllegalArgumentException $e) {
             throw new PageNotFoundException($e->getMessage(), 0, $e);
         }
-        $ctx->setControllerAlias($tokens[0]);
-        $methodName = $tokens[1];
+        $ctx->setControllerAlias($tokens['controller']);
+        $methodName = $tokens['method'];
         // Allow dashes in method name (for SEO purposes). Converts to camelCase.
         $methodName = $this->camelize($methodName);
         $class = new ReflectionClass($controllerName);
         $obj = $class->newInstance();
         if (!$this->checkAccess($class, $obj, $ctx)) {
             return;
+        }
+        if (
+            ($obj->getLocaleSupport() == true && !empty($tokens['locale']) && !in_array($tokens['locale'], self::$translator->getAvailableLocales())) 
+            || (!$obj->getLocaleSupport() && !empty($tokens['locale']))
+           ) {
+            /*
+             * If a locale is required, set, but doesn't exist,
+             * or if a locale is defined but not required,
+             * we say the page doesn't exist and display a 404 error.
+             */
+            throw new PageNotFoundException(Application::getTranslator()->_("Invalid URL."), 0);
+        }
+        if ($obj->getLocaleSupport()) {
+            if (empty($tokens['locale'])) {
+                $ctx->redirect('/'. $this->getSupportedLocale($ctx->getUser()->getLocale()) .'/'. $pathInfo, Context::REDIRECT_PERMANENT);
+            }
+            if ($ctx->getUser()->getLocale() != $tokens['locale']) {
+                $ctx->getUser()->setLocale($tokens['locale']);
+                Zend_Session::setOptions(array('cookie_httponly'=>'on'));
+                Zend_Session::registerValidator(new Fruition_Session_Validator_HttpUserAgent());
+                Zend_Session::RememberMe(1209600);
+            }
+           self::$translator->setLocale($tokens['locale']);
+        } else {
+            self::$translator->setLocale($this->getSupportedLocale($ctx->getUser()->getLocale()));
         }
         try {
             $method = $class->getMethod($methodName);
@@ -161,29 +198,48 @@ class Application {
     }
     
     /**
+     * Return an array filled with url values
+     * @param string $tokens
+     * @return array of params
+     */
+    private function explodePath($pathInfo) {
+        $tokens = explode('/', $pathInfo);
+        $params = array(
+            'locale' => null,
+            'controller' => null,
+            'method' => null);
+        $nbr_tokens = count($tokens);
+        if ($nbr_tokens > 3) {
+            return $params;
+        }
+        if ($nbr_tokens == 3 || $nbr_tokens == 1) {
+            $params['locale'] = $tokens[0];
+        }
+        if ($nbr_tokens >= 2) {
+            $params['controller'] = $tokens[$nbr_tokens - 2];
+            $params['method'] = $tokens[$nbr_tokens - 1];
+        }
+        return $params;
+    }
+    
+    /**
      * Get the locale of the user in the given context.
      * If the 'locale' parameter is in the request, sets its value into the user
      * 
      * @param Context $ctx
      */
-    public static function getUserLocale(Context $ctx) {
-        $locale = $ctx->getRequest()->getString('__locale__', null);
-        if ($locale) {
-            self::setUserLocale($ctx, $locale);
+    public static function getSupportedLocale($locale) {
+        $supported_locales = self::$translator->getAvailableLocales();
+        if (in_array($locale, $supported_locales)) {
+            return $locale;
         }
-        return $ctx->getUser()->getLocale();
+        $user_locale = explode('_', $locale);
+        if (in_array($user_locale[0], $supported_locales)) {
+            return $user_locale[0];
+        }
+        return Config::getInstance()->getString('webapp/defaultLocale', 'en');
     }
 
-    /**
-     * Set the locale for the user in the given context.
-     * Sets it into the User object (in the session)
-     * 
-     * @param Context $ctx
-     * @param String $locale
-     */
-    public static function setUserLocale(Context $ctx, $locale) {
-        $ctx->getUser()->setLocale($locale);
-    }
     /**
      * Get the path info, which is everything that follows the application
      * node in the URL. (without query info).
@@ -392,7 +448,7 @@ class Application {
             $translator = new $translatorClassName();
             if ($translator instanceof ITranslator) {
                 self::$translator = $translator;
-                self::$translator->setLocale(self::getUserLocale($ctx));
+                self::$translator->setLocale(self::getSupportedLocale($ctx->getUser()->getLocale()));
             } else {
                 throw new ConfigurationException("The properties/translator configuration class does not implement ITranslator interface.");
             }
@@ -402,7 +458,7 @@ class Application {
     }
     
     /**
-     * @return iTranslator
+     * @return ITranslator
      */
     public static function getTranslator() {
         return self::$translator;

@@ -6,6 +6,9 @@
  */
 
 class Context {
+    
+    const REDIRECT_PERMANENT = true;
+    
     private $form;
     private $user;
     private $controllerAlias;
@@ -81,9 +84,14 @@ class Context {
     /**
      * Redirect to another URL. If the given path starts with '/', the path is
      * assumed to be absolute under this application.
+     * @param string $path Path to the new URL
+     * @param Boolean $permanent Set if the redirection is permanent or not
      */
-    public function redirect($path) {
+    public function redirect($path, $permanent=false) {
         $newPath = self::normalizePath($path);
+        if ($permanent) {
+            header("HTTP/1.1 301 Moved Permanently");
+        }
         header('Location: ' . $newPath);
         throw new EndOfResponseException();
     }

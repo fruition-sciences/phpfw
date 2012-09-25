@@ -43,4 +43,27 @@ abstract class Controller {
         $form->addFieldError($fieldName, $errorTag);
         $ctx->getUIManager()->getErrorManager()->addError($errorTag);
     }
+    
+    /**
+     * This method can not be overrided, if you want to enable/disable locale support,
+     * please change the urlLocale parameter value in the config.xml file.
+     * @return boolean
+     */
+    final public function getLocaleSupport() {
+        $config = Config::getInstance();
+        $result = $config->get('webapp/controllers/controller');
+        if (sizeof($result) == 0) {
+            throw new ConfigurationException("Missing controllers definition in config file");
+        }
+        foreach ($result as $controllerEntry) {
+            if (get_class($this) == $controllerEntry['class']) {
+                if (isset($controllerEntry['urlLocale']) && $controllerEntry['urlLocale'] == 'true') {
+                    return true;
+                }
+                return false;
+            }
+        }
+        return false;
+    }
+    
 }

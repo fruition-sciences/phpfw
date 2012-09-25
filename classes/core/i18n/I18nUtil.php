@@ -10,6 +10,8 @@ require_once("classes/core/i18n/LocalizedString.php");
 class I18nUtil implements ITranslator {
     const UNDEFINED = "___UNDEFINED___";
     const DEFAULT_LOCALE = "en";
+    const DIR_LOCALES = '../application/i18n/';
+    const DEFAULT_BUNDLENAME = 'strings.xml';
     /**
      * @var Array map bundlePath -> Map(string->string)
      */
@@ -121,5 +123,23 @@ class I18nUtil implements ITranslator {
     
     public function _($sentence) {
         return self::lookupString($sentence, $sentence);
+    }
+    
+    /**
+     * Get all the locales available in the self::DIR_LOCALES directory
+     * @return array
+     */
+    public function getAvailableLocales() {
+        $items = glob(self::DIR_LOCALES .'*');
+        $locales = array();
+        foreach ($items as $item) {
+            if (is_dir($item)) {
+                $locale = substr($item, strrpos($item, '/') + 1);
+                if (file_exists(self::DIR_LOCALES . $locale .'/'. self::DEFAULT_BUNDLENAME)) {
+                    $locales[] = $locale;
+                }
+            }
+        }
+        return $locales;
     }
 }
