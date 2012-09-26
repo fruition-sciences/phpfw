@@ -118,7 +118,7 @@ class Formatter {
         if (!$timestamp) {
             return $default;
         }
-        $zendDate = new Zend_Date($timestamp, Zend_Date::TIMESTAMP, $this->zendLocale);
+        $zendDate = new Zend_Date($timestamp, Zend_Date::TIMESTAMP, new Zend_Locale('en_US'));
         $zendDate->setTimezone($this->timezoneName);
         return $zendDate->toString($zendFormat);
     }
