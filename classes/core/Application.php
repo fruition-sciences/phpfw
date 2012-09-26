@@ -166,8 +166,10 @@ class Application {
                 Zend_Session::registerValidator(new Fruition_Session_Validator_HttpUserAgent());
                 Zend_Session::RememberMe(1209600);
             }
-           self::$translator->setLocale($tokens['locale']);
+            I18nUtil::setDefaultLocale($tokens['locale']);
+            self::$translator->setLocale($tokens['locale']);
         } else {
+            I18nUtil::setDefaultLocale($this->getSupportedLocale($ctx->getUser()->getLocale()));
             self::$translator->setLocale($this->getSupportedLocale($ctx->getUser()->getLocale()));
         }
         try {
