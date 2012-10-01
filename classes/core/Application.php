@@ -125,16 +125,17 @@ class Application {
                 $page = '/'. $tokens['locale'] . $page;
             }
             $ctx->redirect($page, Context::REDIRECT_PERMANENT);
-        } else if (empty($tokens['controller']) || empty($tokens['method'])) {
-            $defaultUrl = $ctx->getUIManager()->getDefaultURL();
-            $ctx->redirect($defaultUrl);
-            return;
         }
         try {
             $controllerName = $this->controllerNameFromAlias($tokens['controller']);
         }
         catch (IllegalArgumentException $e) {
             throw new PageNotFoundException($e->getMessage(), 0, $e);
+        }
+        if (empty($tokens['method'])) {
+            $defaultUrl = $ctx->getUIManager()->getDefaultURL();
+            $ctx->redirect($defaultUrl);
+            return;
         }
         $ctx->setControllerAlias($tokens['controller']);
         $methodName = $tokens['method'];
@@ -200,7 +201,7 @@ class Application {
     }
     
     /**
-     * Return an array filled with url values
+     * Return an array filled with good url values
      * @param string $tokens
      * @return array of params
      */
@@ -210,16 +211,23 @@ class Application {
             'locale' => null,
             'controller' => null,
             'method' => null);
-        $nbr_tokens = count($tokens);
-        if ($nbr_tokens > 3) {
+        if (($nbr_tokens = count($tokens)) == 0) {
             return $params;
+        } 
+        $posController = 0;
+        try {
+            $this->controllerNameFromAlias($tokens[0]);
+        } catch (IllegalArgumentException $e) {
+            if ($nbr_tokens > 2) {
+                $posController = 1;
+            }
         }
-        if ($nbr_tokens == 3 || $nbr_tokens == 1) {
+        $params['controller'] = $tokens[$posController];
+        if ($posController != 0) {
             $params['locale'] = $tokens[0];
         }
-        if ($nbr_tokens >= 2) {
-            $params['controller'] = $tokens[$nbr_tokens - 2];
-            $params['method'] = $tokens[$nbr_tokens - 1];
+        if (isset($tokens[$posController + 1]) && !empty($tokens[$posController + 1])) {
+            $params['method'] = $tokens[$posController + 1];
         }
         return $params;
     }
