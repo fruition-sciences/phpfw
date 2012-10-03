@@ -173,6 +173,7 @@ class Application {
             I18nUtil::setDefaultLocale($this->getSupportedLocale($ctx->getUser()->getLocale()));
             self::$translator->setLocale($this->getSupportedLocale($ctx->getUser()->getLocale()));
         }
+        header('Content-Language: '. self::$translator->getLocale());
         try {
             $method = $class->getMethod($methodName);
         }
