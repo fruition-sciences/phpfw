@@ -124,7 +124,7 @@ class Application {
             if ($tokens['locale'] != null) {
                 $page = '/'. $tokens['locale'] . $page;
             }
-            $ctx->redirect($page, Context::REDIRECT_PERMANENT);
+            $ctx->redirect($page, true);
         }
         try {
             $controllerName = $this->controllerNameFromAlias($tokens['controller']);
@@ -159,7 +159,7 @@ class Application {
         }
         if ($obj->getLocaleSupport()) {
             if (empty($tokens['locale'])) {
-                $ctx->redirect('/'. $this->getSupportedLocale($ctx->getUser()->getLocale()) .'/'. $pathInfo, Context::REDIRECT_PERMANENT);
+                $ctx->redirect('/'. $this->getSupportedLocale($ctx->getUser()->getLocale()) .'/'. $pathInfo, true);
             }
             if ($ctx->getUser()->getLocale() != $tokens['locale']) {
                 $ctx->getUser()->setLocale($tokens['locale']);
@@ -340,16 +340,14 @@ class Application {
     private function controllerNameFromAlias($alias) {
         $config = Config::getInstance();
         $result = $config->get('webapp/controllers/controller');
-        if (sizeof($result) == 0) {
+        if (count($result) == 0) {
             throw new ConfigurationException("Missing controllers definition in config file");
         }
-        foreach ($result as $controllerEntry) {
-            if ($alias == $controllerEntry['alias']) {
-                $className = (string)$controllerEntry['class'];
-                return $className;
-            }
+        $className = $config->getString("webapp/controllers/controller[@alias='$alias']/@class", null);
+        if (!$className) {
+            throw new IllegalArgumentException("Unknown alias - " . $alias);
         }
-        throw new IllegalArgumentException("Unknown alias - " . $alias);
+        return $className;
     }
 
     private function includeFiles() {

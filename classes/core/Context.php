@@ -6,9 +6,7 @@
  */
 
 class Context {
-    
-    const REDIRECT_PERMANENT = true;
-    
+
     private $form;
     private $user;
     private $controllerAlias;
