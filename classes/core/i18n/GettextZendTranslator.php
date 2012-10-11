@@ -12,12 +12,17 @@ require_once('ITranslator.php');
 class GettextZendTranslator extends Zend_Translate implements ITranslator {
 
     const GETTEXT = 'gettext';
-    const DIR_LOCALES = '../application/i18n/';
+    /**
+     * Relative (from your application root directory) path to the locale directory
+     * @var string
+     */
+    const DIR_LOCALES = '/application/i18n/';
     const DEFAULT_LOCALE = 'en';
     protected $filename = 'default.mo';
     protected $locale = self::DEFAULT_LOCALE;
 
     private static $instance = null;
+    protected static $absolutePath = self::DIR_LOCALES;
 
     /**
      * Create a new GettextZendTranslator and configure it with passed params
@@ -29,13 +34,14 @@ class GettextZendTranslator extends Zend_Translate implements ITranslator {
         if ($filename != null) {
             $this->filename = $filename;
         }
-        $path = self::DIR_LOCALES . self::DEFAULT_LOCALE .'/'. $this->filename;
+        self::$absolutePath = Config::getInstance()->getString('appRootDir') . self::DIR_LOCALES;
+        $path = self::$absolutePath . self::DEFAULT_LOCALE .'/'. $this->filename;
         parent::__construct(self::GETTEXT, $path, self::DEFAULT_LOCALE);
         // Adding other existing locales
         $locales = $this->getAvailableLocales();
         foreach ($locales as $locale) {
             if ($locale != self::DEFAULT_LOCALE) {
-                parent::addTranslation(self::DIR_LOCALES . $locale .'/'. $this->filename, $locale);
+                parent::addTranslation(self::$absolutePath . $locale .'/'. $this->filename, $locale);
             }
         }
         if ($given_locale == null) {
@@ -55,12 +61,12 @@ class GettextZendTranslator extends Zend_Translate implements ITranslator {
      * @return array
      */
     public function getAvailableLocales() {
-        $items = glob(self::DIR_LOCALES .'*');
+        $items = glob(self::$absolutePath .'*');
         $locales = array();
         foreach ($items as $item) {
             if (is_dir($item)) {
                 $locale = substr($item, strrpos($item, '/') + 1);
-                if (file_exists(self::DIR_LOCALES . $locale .'/'. $this->filename)) {
+                if (file_exists(self::$absolutePath . $locale .'/'. $this->filename)) {
                     $locales[] = $locale;
                 }
             }

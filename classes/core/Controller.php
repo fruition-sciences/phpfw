@@ -45,12 +45,15 @@ abstract class Controller {
     }
     
     /**
-     * This method can not be overrided, if you want to enable/disable locale support,
-     * please change the urlLocale parameter value in the config.xml file.
-     * This method returns true if this controller must have the locale in the url and false if not.
-     * @return boolean
+     * Checks whether this controller requires the URL to contain the locale
+     * parameter.
+     * This is determined based on the 'urlLocale' attribute of this controller
+     * in the Config file.
+     * 
+     * @return boolean Whether this controller requires the URL to contain the
+     * locale parameter.
      */
-    final public function getLocaleSupport() {
+    final public function isLocaleSupported() {
         $config = Config::getInstance();
         $result = $config->getBoolean("webapp/controllers/controller[@class='". get_class($this) ."']/@urlLocale", false);
         return $result;

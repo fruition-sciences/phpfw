@@ -57,7 +57,7 @@ class Application {
             $this->includeFiles();
             $transaction = Transaction::getInstance();
             $transaction->setUser($this->getContext()->getUser());
-            $this->initTranslator($this->getContext());
+            self::initTranslator($this->getContext()->getUser()->getLocale());
             $this->validate();
             $this->invokeControllerMethod();
         }
@@ -146,18 +146,25 @@ class Application {
         if (!$this->checkAccess($class, $obj, $ctx)) {
             return;
         }
+        /*
+         * If a locale is required, set, but doesn't exist,
+        * or if a locale is defined but not required,
+        * we say the page doesn't exist and display a 404 error.
+        */
         if (
-            ($obj->getLocaleSupport() == true && !empty($tokens['locale']) && !in_array($tokens['locale'], self::$translator->getAvailableLocales())) 
-            || (!$obj->getLocaleSupport() && !empty($tokens['locale']))
+            ($obj->isLocaleSupported() == true && !empty($tokens['locale']) && !in_array($tokens['locale'], self::$translator->getAvailableLocales())) 
+            || (!$obj->isLocaleSupported() && !empty($tokens['locale']))
            ) {
-            /*
-             * If a locale is required, set, but doesn't exist,
-             * or if a locale is defined but not required,
-             * we say the page doesn't exist and display a 404 error.
-             */
             throw new PageNotFoundException(Application::getTranslator()->_("Invalid URL."), 0);
         }
-        if ($obj->getLocaleSupport()) {
+        /*
+         * If the controller requires a locale :
+         * - If it is not in the url, we redirect the user to his own locale
+         * - If it is and the locale is different than the saved locale, we save it in a cookie
+         * - We set the locale to the default translator and I18nUtil 
+         * Else, we set the user locale to default translator and I18nUtil.
+         */
+        if ($obj->isLocaleSupported()) {
             if (empty($tokens['locale'])) {
                 $ctx->redirect('/'. $this->getSupportedLocale($ctx->getUser()->getLocale()) .'/'. $pathInfo, true);
             }
@@ -167,12 +174,12 @@ class Application {
                 Zend_Session::registerValidator(new Fruition_Session_Validator_HttpUserAgent());
                 Zend_Session::RememberMe(1209600);
             }
-            I18nUtil::setDefaultLocale($tokens['locale']);
-            self::$translator->setLocale($tokens['locale']);
+            $locale = $tokens['locale'];
         } else {
-            I18nUtil::setDefaultLocale($this->getSupportedLocale($ctx->getUser()->getLocale()));
-            self::$translator->setLocale($this->getSupportedLocale($ctx->getUser()->getLocale()));
+            $locale = $ctx->getUser()->getLocale();
         }
+        I18nUtil::setDefaultLocale($this->getSupportedLocale($locale));
+        self::$translator->setLocale($this->getSupportedLocale($locale));
         header('Content-Language: '. self::$translator->getLocale());
         try {
             $method = $class->getMethod($methodName);
@@ -201,10 +208,18 @@ class Application {
         }
     }
     
-    /**
-     * Return an array filled with good url values
-     * @param string $tokens
-     * @return array of params
+     /**
+     * Breaks the path info into its various components, which are:
+     * - locale
+     * - controller : the alias of the controller
+     * - method : the controller method to call
+     * 
+     * The allowed combination of the path info components are:
+     * 1. controller/method
+     * 2. locale/controller/method 
+     * 
+     * @param String $pathInfo
+     * @return Array a map with the following keys: locale, controller, method.
      */
     private function explodePath($pathInfo) {
         $tokens = explode('/', $pathInfo);
@@ -212,14 +227,14 @@ class Application {
             'locale' => null,
             'controller' => null,
             'method' => null);
-        if (($nbr_tokens = count($tokens)) == 0) {
+        if (($tokensCount = count($tokens)) == 0) {
             return $params;
         } 
         $posController = 0;
         try {
             $this->controllerNameFromAlias($tokens[0]);
         } catch (IllegalArgumentException $e) {
-            if ($nbr_tokens > 2) {
+            if ($tokensCount > 2) {
                 $posController = 1;
             }
         }
@@ -449,15 +464,15 @@ class Application {
 
     /**
      * Init the translator of the application.
-     * @param Context $ctx
+     * @param $locale Locale to use for the translator
      */
-    private function initTranslator($ctx) {
+    private static function initTranslator($locale) {
         $translatorClassName = Config::getInstance()->getString('properties/translator', 'I18nUtil');
         if (class_exists($translatorClassName)) {
             $translator = new $translatorClassName();
             if ($translator instanceof ITranslator) {
                 self::$translator = $translator;
-                self::$translator->setLocale(self::getSupportedLocale($ctx->getUser()->getLocale()));
+                self::$translator->setLocale(self::getSupportedLocale($locale));
             } else {
                 throw new ConfigurationException("The properties/translator configuration class does not implement ITranslator interface.");
             }
@@ -467,9 +482,15 @@ class Application {
     }
     
     /**
+     * Return the translator. If none is set in the first call of getTranslator, it means
+     * the application class has not been init, so we set a translator with en_US locale.
+     * It can happen by example in scripts ran by run.php, or if Zend_Sessio::start() throws an Exception in Application::service() 
      * @return ITranslator
      */
     public static function getTranslator() {
+        if (!(self::$translator instanceof ITranslator)) {
+            self::initTranslator('en_US');
+        } 
         return self::$translator;
     }
 }

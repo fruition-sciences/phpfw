@@ -83,7 +83,7 @@ class Context {
      * Redirect to another URL. If the given path starts with '/', the path is
      * assumed to be absolute under this application.
      * @param string $path Path to the new URL
-     * @param Boolean $permanent Set if the redirection is permanent or not
+     * @param Boolean $permanent Determines whether redirection is permanent or not
      */
     public function redirect($path, $permanent=false) {
         $newPath = self::normalizePath($path);
