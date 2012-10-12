@@ -57,10 +57,6 @@ abstract class BaseView implements View {
         $path = $this->getTemplateDirPath() . "/" . $this->getTemplateName();
         global $form, $format;
         $form = $ctx->getForm();
-        $timezone = $ctx->getUser()->getTimezone();
-		if(!$timezone) {
-        	$timezone = Config::getInstance()->getString("properties/anonymousUserTimezone");
-		}
         $format = $ctx->getUIManager()->getFormatter();
         // Make $page and $ui globals, so they can be accessed by the view template.
         global $page, $ui;
