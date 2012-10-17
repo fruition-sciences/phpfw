@@ -117,6 +117,10 @@ class I18nUtil implements ITranslator {
         self::setDefaultLocale($locale);
     }
     
+    public function getLocale() {
+        return self::$bundleLocale;
+    }
+    
     public static function setDefaultLocale($locale) {
         self::$bundleLocale = (string)$locale;
     }
