@@ -160,7 +160,7 @@ class Application {
         /*
          * If the controller requires a locale :
          * - If it is not in the url, we redirect the user to his own locale
-         * - If it is and the locale is different than the saved locale, we save it in a cookie
+         * - If it is in the url and the locale is different than the saved locale, we save it in a cookie (for anonymous users only)
          * - We set the locale to the default translator and I18nUtil 
          * Else, we set the user locale to default translator and I18nUtil.
          */
@@ -168,11 +168,10 @@ class Application {
             if (empty($tokens['locale'])) {
                 $ctx->redirect('/'. $this->getSupportedLocale($ctx->getUser()->getLocale()) .'/'. $pathInfo, true);
             }
-            if ($ctx->getUser()->getLocale() != $tokens['locale']) {
+            if ($ctx->getUser()->isAnonymous() && $ctx->getUser()->getLocale() != $tokens['locale']) {
                 $ctx->getUser()->setLocale($tokens['locale']);
                 Zend_Session::setOptions(array('cookie_httponly'=>'on'));
-                Zend_Session::registerValidator(new Fruition_Session_Validator_HttpUserAgent());
-                Zend_Session::RememberMe(1209600);
+                Zend_Session::RememberMe(1209600); // 14 days
             }
             $locale = $tokens['locale'];
         } else {
