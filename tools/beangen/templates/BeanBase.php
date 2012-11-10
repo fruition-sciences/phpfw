@@ -121,24 +121,31 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
           $comment .= " ($unitConstantName)";
       }
 ?>
-<?php if ($comment) { ?>
+
     /**
+<?php if ($comment) { ?>
      * <?php echo wordwrap($comment, 73, "\n     * ") ?>.
      * 
-     * @return <?php echo $field['type']?> 
-     */
 <?php } ?>
+     * @return <?php echo $field['type']?> 
+<?php if ($field["deprecateReason"]) { ?>
+     * @deprecated <?php echo wordwrap($field["deprecateReason"], 73, "\n     * ") ?>.
+<?php } ?>
+     */
     public function <?php echo $descriptor->getterName($field) ?>() {
         return $this-><?php echo $field['name']?>;
     }
 
-<?php if ($comment) { ?>
     /**
+<?php if ($comment) { ?>
      * <?php echo wordwrap($comment, 73, "\n     * ") ?>.
      *
-     * @param <?php echo $field['type']?> $<?php echo $field["name"]?> 
-     */
 <?php } ?>
+     * @param <?php echo $field['type']?> $<?php echo $field["name"]?> 
+<?php if ($field["deprecateReason"]) { ?>
+     * @deprecated <?php echo wordwrap($field["deprecateReason"], 73, "\n     * ") ?>.
+<?php } ?>
+     */
     public function <?php echo $descriptor->setterName($field) ?>($<?php echo $field["name"]?>) {
 <?php
   if ($field["type"] == "Boolean") {
@@ -174,6 +181,9 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
      * <?php echo wordwrap("Get the " . $field["name"] . " as a Zend Measure object, containing both the unit measure and the value", 73, "\n     * ") ?>.
      *
      * @return <?php echo $unitInfo[0] ?> 
+<?php if ($field["deprecateReason"]) { ?>
+     * @deprecated <?php echo wordwrap($field["deprecateReason"], 73, "\n     * ") ?>.
+<?php } ?>
      */
     public function <?php echo $descriptor->unitGetterName($field) ?>() {
         return new <?php echo $unitClassName ?>($this-><?php echo $descriptor->getterName($field) ?>(), <?php echo $field["unit"] ?>);
@@ -183,6 +193,9 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
      * <?php echo wordwrap("Set the {$field["name"]} using a Zend Measure object. The unit can be any $unitClassName unit. It will automatically be converted to $unitConstantName", 73, "\n     * ") ?>.
      * 
      * @param $<?php echo $field["name"]?>Measure <?php echo $unitClassName ?> 
+<?php if ($field["deprecateReason"]) { ?>
+     * @deprecated <?php echo wordwrap($field["deprecateReason"], 73, "\n     * ") ?>.
+<?php } ?>
      */
     public function <?php echo $descriptor->unitSetterName($field) ?>($<?php echo $measureParamName?>) {
         if (!$<?php echo $measureParamName?>) {
