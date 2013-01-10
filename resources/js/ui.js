@@ -9,8 +9,7 @@ function button_click(url, target) {
     url = normalizeUrl(url);
     if (target) {
         window.open(url, target);
-    }
-    else {
+    } else {
         document.location = url;
     }
 }
@@ -35,25 +34,18 @@ function button_submit(url, target) {
 
 function normalizeUrl(url) {
     if (url.charAt(0) == '/') {
-      return appBase + url.substring(1);
+        return appBase + url.substring(1);
+    } else {
+        return url;
     }
-    else return url;
 }
 
+/**
+ * Focus on the first form element which is visible and which is not a button
+ * and not a dateBox.
+ */
 function focusOnFirst() {
-    var elements = document.getElementsByTagName('input');
-    for (var i=0; i<elements.length; i++) {
-        var elem = elements[i];
-        if (elem.type == 'text') {
-            try {
-                elem.focus();
-            }
-            catch (e) {
-                // IE refuses to focus on hidden elements
-            }
-            return;
-        }
-    }
+    jQuery(':input:visible:not(button):not(".date,.dateTime"):first').focus();
 }
 
 /**
@@ -62,9 +54,8 @@ function focusOnFirst() {
  * @param e jQuery event
  */
 function ui_pressDefaultButton(e) {
-    var input = jQuery(e.target);
-    var parents = input.parents('form, div, fieldset');
-    
+    var input = jQuery(e.target),
+        parents = input.parents('form, div, fieldset');
     parents.each(function(i, element) { 
         // Find first button (or element with attribute button="1")
         // TODO: We may want to give priority to primary button
@@ -83,8 +74,8 @@ function ui_pressDefaultButton(e) {
  * @param fieldName
  * @return
  */
-function updateHiddenTimeField(fieldName){
-    document.getElementById(fieldName).value = document.getElementById("_"+fieldName+"_hour").value +":"+ document.getElementById("_"+fieldName+"_minute").value +" "+ document.getElementById("_"+fieldName+"_pm").value;
+function updateHiddenTimeField(fieldName) {
+    document.getElementById(fieldName).value = document.getElementById("_" + fieldName + "_hour").value + ":" + document.getElementById("_" + fieldName + "_minute").value + " " + document.getElementById("_" + fieldName + "_pm").value;
 }
 
 /**
@@ -93,28 +84,28 @@ function updateHiddenTimeField(fieldName){
  * @param fieldName
  * @return
  */
-function updateSelectTimeFields(fieldName){
-    if(document.getElementById(fieldName)){
+function updateSelectTimeFields(fieldName) {
+    if (document.getElementById(fieldName)) {
         var time = document.getElementById(fieldName).value;
-        if(time == ""){
+        if (time == "") {
             updateHiddenTimeField(fieldName);
-        }else{
-            var temp = new Array();
-            var temp2 = new Array();
+        } else {
+            var temp = [],
+                temp2 = [];
             temp = time.split(":");
             temp2 = temp[1].split(" ");
-            if(temp2[0]<8){
-                temp2[0]="00";
-            }else if(temp2[0]<23){
-                temp2[0]="15";
-            }else if(temp2[0]<38){
-                temp2[0]="30";
-            }else{
-                temp2[0]="45";
+            if (temp2[0] < 8) {
+                temp2[0] = "00";
+            } else if (temp2[0] < 23) {
+                temp2[0] = "15";
+            } else if (temp2[0] < 38) {
+                temp2[0] = "30";
+            } else {
+                temp2[0] = "45";
             }
-            document.getElementById("_"+fieldName+"_hour").value = temp[0];
-            document.getElementById("_"+fieldName+"_minute").value = temp2[0];
-            document.getElementById("_"+fieldName+"_pm").value= temp2[1];
+            document.getElementById("_" + fieldName + "_hour").value = temp[0];
+            document.getElementById("_" + fieldName + "_minute").value = temp2[0];
+            document.getElementById("_" + fieldName + "_pm").value = temp2[1];
         }
     }
 }
@@ -125,42 +116,8 @@ function updateSelectTimeFields(fieldName){
  * @param String
  */
 function trim(stringToTrim) {
-    return stringToTrim.replace(/^\s+|\s+$/g,"");
+    return stringToTrim.replace(/^\s+|\s+$/g, "");
 }
-
-/**
- * Hides an element by id
- * 
- * @param ID
- */
-function hideElement(id) {
-    if (document.getElementById) { // DOM3 = IE5, NS6
-        document.getElementById(id).style.display = 'none';
-    } else {
-        if (document.layers) { // Netscape 4
-            eval("document." + id + ".visibility = 'hidden'");
-        } else { // IE 4
-            eval("document.all." + id + ".style.visibility = 'hidden'");
-        }
-    }
-}
-
-/**
- * Shows an element by id
- * 
- * @param ID
- */
-function showElement(id) {
-    if (document.getElementById) { // DOM3 = IE5, NS6
-        document.getElementById(id).style.display = 'block';
-    } else {
-        if (document.layers) { // Netscape 4
-            eval("document." + id + ".visibility = 'visible'");
-        } else { // IE 4
-            eval("document.all." + id + ".style.visibility = 'visible'");
-        }
-    }
-} 
 
 function moveIt(obj, mvTop, mvLeft) {
     obj.style.position = "absolute";
@@ -169,18 +126,18 @@ function moveIt(obj, mvTop, mvLeft) {
 }
 
 
-var xMousePos = 0;
-var yMousePos = 0;
+var xMousePos = 0,
+    yMousePos = 0;
 
 function captureMousePosition(e) {
-    var posx = 0;
-    var posy = 0;
-    if (!e) var e = window.event;
-    if (e.pageX || e.pageY)     {
+    var posx = 0, posy = 0;
+    if (!e) {
+        e = window.event;
+    }
+    if (e.pageX || e.pageY) {
         posx = e.pageX;
         posy = e.pageY;
-    }
-    else if (e.clientX || e.clientY)    {
+    } else if (e.clientX || e.clientY) {
         posx = e.clientX + document.body.scrollLeft
             + document.documentElement.scrollLeft;
         posy = e.clientY + document.body.scrollTop
@@ -191,21 +148,22 @@ function captureMousePosition(e) {
     yMousePos = posy;
 }
 function encode(value) {
-    value = value.replace(/\r\n/g,"\n");
+    value = value.replace(/\r\n/g, "\n");
     var utftext = "";
-  for (var n = 0; n < value.length; n++) {
-    var c = value.charCodeAt(n);
-    if (c < 128) { utftext += String.fromCharCode(c); }
-    else if((c > 127) && (c < 2048)) {
-      utftext += String.fromCharCode((c >> 6) | 192);
-      utftext += String.fromCharCode((c & 63) | 128);
-    } else {
-      utftext += String.fromCharCode((c >> 12) | 224);
-      utftext += String.fromCharCode(((c >> 6) & 63) | 128);
-      utftext += String.fromCharCode((c & 63) | 128);
+    for (var n = 0; n < value.length; n++) {
+        var c = value.charCodeAt(n);
+        if (c < 128) {
+            utftext += String.fromCharCode(c);
+        } else if ((c > 127) && (c < 2048)) {
+          utftext += String.fromCharCode((c >> 6) | 192);
+          utftext += String.fromCharCode((c & 63) | 128);
+        } else {
+          utftext += String.fromCharCode((c >> 12) | 224);
+          utftext += String.fromCharCode(((c >> 6) & 63) | 128);
+          utftext += String.fromCharCode((c & 63) | 128);
+        }
     }
-  }
-  return escape(utftext);
+    return escape(utftext);
 }
 
 /**
@@ -215,28 +173,28 @@ function encode(value) {
  * @param dateSeperator (/)
  * @return Date object
  */
-function getDateObject(dateString,dateSeperator){
-    var curValue=dateString;
-    var sepChar=dateSeperator;
-    var curPos=0;
-    var cDate,cMonth,cYear;
+function getDateObject(dateString, dateSeperator) {
+    var curValue = dateString,
+    sepChar = dateSeperator,
+    curPos = 0,
+    cDate,cMonth,cYear;
 
     //extract month portion
-    curPos=dateString.indexOf(sepChar);
-    cMonth=dateString.substring(0,curPos);
+    curPos = dateString.indexOf(sepChar);
+    cMonth = dateString.substring(0, curPos);
     
     //extract day portion               
-    endPos=dateString.indexOf(sepChar,curPos+1);            
-    cDate=dateString.substring(curPos+1,endPos);
+    endPos = dateString.indexOf(sepChar,curPos+1);            
+    cDate = dateString.substring(curPos+1,endPos);
 
     //extract year portion              
-    curPos=endPos;
-    endPos=curPos+3;            
-    cYear=curValue.substring(curPos+1,endPos);
-    if(cYear.length == 2){
+    curPos = endPos;
+    endPos = curPos + 3;            
+    cYear=curValue.substring(curPos + 1, endPos);
+    if (cYear.length == 2) {
         cYear = "20" + cYear;
     }
     //Create Date Object
-    dtObject=new Date(cYear,cMonth-1,cDate);    
+    dtObject=new Date(cYear, cMonth-1, cDate);    
     return dtObject;
 }
