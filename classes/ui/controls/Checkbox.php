@@ -40,7 +40,7 @@ class Checkbox extends Control {
     }
 
     public function toInput() {
-        if ($this->value == $this->getValue()) {
+        if ($this->getValue() && $this->value == $this->getValue()) {
             $this->set("checked");
     	}
     	// Also respect array value (for multiple checkboxes with same name)
