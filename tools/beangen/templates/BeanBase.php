@@ -7,7 +7,7 @@ echo "<" . "?php";
  * This code was automatically generated.
 <?php if ($descriptor->xml->description) { ?>
  *
- * <?php echo wordwrap($descriptor->xml->description, 77, "\n * ") ?> 
+ * <?php echo wordwrap(trim(preg_replace("/\s+/", " ", $descriptor->xml->description)), 77, "\n * ") ?> 
 <?php } ?>
  * 
  * Generated on <?php echo date("F j, Y") ?> 
