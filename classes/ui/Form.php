@@ -214,6 +214,10 @@ class Form {
         return $this->values[$name];
     }
 
+    public function getValues() {
+        return $this->values;
+    }
+
     public function setValues($map, $prefix="") {
         foreach ($map as $key=>$val) {
             $this->setValue($prefix . $key, $val);
