@@ -43,9 +43,12 @@ function normalizeUrl(url) {
 /**
  * Focus on the first form element which is visible and which is not a button
  * and not a dateBox.
+ * Prevent scrolling to the bottom of the page when focus is on an element not at the top of the page.
  */
 function focusOnFirst() {
+    var x = window.scrollX, y = window.scrollY;
     jQuery(':input:visible:not(button):not(".date,.dateTime"):first').focus();
+    window.scrollTo(x, y);
 }
 
 /**
