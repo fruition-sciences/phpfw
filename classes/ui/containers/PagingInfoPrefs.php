@@ -80,13 +80,11 @@ class PagingInfoPrefs {
     /**
      * Update the tablePagingPrefs for the table with the given key with the
      * given preferences.
-     * Does not save the page number and recodsPerPage. We don't want those to
+     * Does not save the page number. We don't want this to
      * be stuck in the session, because it can be confusing for the user.
      */
     private function updateSession($key, $prefs) {
-        // Remove keys we don't want in the session
         unset($prefs['pageNumber']);
-        unset($prefs['recordsPerPage']);
         $_SESSION['tablePagingPrefs'][$key] = $prefs;
     }
 
