@@ -23,9 +23,51 @@ class TemplateBasedNotification extends Notification {
     private $attributes = array();
 
     /**
+     * Creates a new TemplateBasedNotification object based on the given template
+     * file and the given language code.
+     * 
+     * Searches for the template file in a few possible locations. If a language
+     * is given, searches for the template in a path that includes the language.
+     * If language is not given, or if template is not found, looks under no
+     * language, and under the application's default language.
+     * 
+     * Example:
+     *   $templateFile = '/path/to/template.php'
+     *   $lang = 'fr'
+     * 
+     *   Will search at:
+     *   1. <notification_dir>/fr/path/to/template.php
+     *   2. <notification_dir>/path/fr/to/template.php
+     *   3. <notification_dir>/path/to/fr/template.php
+     *   4. <notification_dir>/path/to/template.php
+     *   5. <notification_dir>/en/path/to/template.php
+     *   6. <notification_dir>/path/en/to/template.php
+     *   7. <notification_dir>/path/to/en/template.php
+     * 
+     * @param String $templateFile path to the template, relative to the directory
+     *        'application/templates/notifications'.
+     * @param String $lang language code
+     * @return TemplateBasedNotification
+     */
+    public static function newInstrance($templateFile, $lang=null) {
+        $defaultLang = Config::getInstance()->getString('webapp/defaultLocale', 'en');
+        $possibleFiles = array();
+        $parts = explode('/', $templateFile);
+        if ($lang && $defaultLang != $lang) {
+            $possibleFiles = array_merge($possibleFiles, self::injectString($parts, $lang, '/'));
+        }
+        $possibleFiles[] = $templateFile;
+        $possibleFiles = array_merge($possibleFiles, self::injectString($parts, $defaultLang, '/'));
+        return new TemplateBasedNotification($possibleFiles);
+    }
+
+    /**
      * Construct a new TemplateBasedNotification based on the given template file.
      * The $templateFile parameter is either the path to the template file or
      * array of possible paths. Paths are relative to the 'notifications' directory.
+     * 
+     * Note: Consider using the method 'newInstrance' instead, in order to get
+     *       a template in a given language, if available.
      *
      * @param Mixed $templateFile either a file or an array of possible files.
      * @throws FileNotFoundException if the template file was not found.
@@ -126,5 +168,28 @@ class TemplateBasedNotification extends Notification {
     public function newHref($url) {
         $baseURL = Config::getInstance()->getString('properties/serverURL');
         return new Href("$baseURL/$url");
+    }
+
+    /**
+     * Helper method for creating various variation of a path with the laguage
+     * indicator injected in all possible locations.
+     *
+     * @param String[] $stringArray array of strings (parts of the path)
+     * @param String $lang
+     * @param String $separator
+     * @return String[]
+     */
+    private static function injectString($stringArray, $lang, $separator) {
+        $result = array();
+        $len = count($stringArray);
+        for ($i=0; $i<$len; $i++) {
+            $before = array_slice($stringArray, 0, $i);
+            $before[] = $lang;
+            $after = array_slice($stringArray, $i, $len-$i);
+            $newArray = array_merge($before, $after);
+            $str = implode($separator, $newArray);
+            $result[] = $str;
+        }
+        return $result;
     }
 }

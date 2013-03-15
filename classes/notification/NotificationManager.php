@@ -47,6 +47,12 @@ class NotificationManager {
         $body = $mime->get();
         $headers = $mime->headers($headers);
         $emailEnabled = Config::getInstance()->getBoolean("email/enabled", true);
+        $emailSuppressed = $emailEnabled ? '' : ' (suppressed)';
+
+        // Write the email content to the log.
+        $msgDump = self::getMessageDebugDump($headers, $body);
+        Logger::info("Sending email$emailSuppressed:\n$msgDump");
+        
         if (!$emailEnabled) {
             return true;
         }
@@ -59,6 +65,16 @@ class NotificationManager {
         }
         Logger::info("Email sent to " . $notification->getRecipient() . ". Subject: " . $notification->getSubject());
         return true;
+    }
+
+    private function getMessageDebugDump($headers, $body) {
+        $txt = "";
+        foreach ($headers as $k => $v) {
+            $txt .= "$k: $v\n";
+        }
+        $txt .= "\n\n";
+        $txt .= $body . "\n";
+        return $txt; 
     }
 
     private static function getMailConfigParams() {
