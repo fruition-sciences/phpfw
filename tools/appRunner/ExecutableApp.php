@@ -30,7 +30,7 @@ abstract class ExecutableApp {
         }
         if (!$this->lockProcess()) {
             Logger::warning("Process locked. Quitting");
-            echo "Process locked. Quitting";
+            echo "Process locked. Quitting. (Lock file: " . $this->getLockFile() . ")\n";
             $this->onLockError();
             return;
         }
