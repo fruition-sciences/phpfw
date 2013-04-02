@@ -47,8 +47,8 @@ class Button extends Control {
      * @param String $key
      * @param String $val
      */
-    public function set($key, $val) {
-        if ($key == "onclick") {
+    public function set($key, $val=null) {
+        if ($key == "onclick" && $val) {
             $this->onclick[] = $val;
         }
         else {

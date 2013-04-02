@@ -97,11 +97,12 @@ class Href extends Element {
      * If $addToArray is true, existing keys will not be overwritten, rather,
      * if the new value is already in the map, it will be added into an array.
      * 
-     * @param $key
-     * @param $val
-     * @param $addToArray
+     * @param String $key
+     * @param String $val
+     * @param Boolean $addToArray
+     * @return Href
      */
-    public function set($key, $val, $addToArray=false) {
+    public function set($key, $val=null, $addToArray=false) {
         // Serialize value if it's an object
         if (is_object($val)) {
             $val = $val->__toString();

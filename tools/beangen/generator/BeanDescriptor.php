@@ -77,7 +77,6 @@ class BeanDescriptor {
         switch ($field["type"]) {
             case "String":
                 return "SQLUtils::escapeString(\$this->${field['name']})";
-                //return "\"'\" . mysql_escape_string(\$this->${field['name']}) . \"'\"";
             case "long":
                 return "SQLUtils::convertLong(\$this->${field['name']})";
             case "id":
@@ -90,7 +89,6 @@ class BeanDescriptor {
                     $extraParam = ", '" . $field['timezone'] . "'";
                 }
                 return "SQLUtils::convertDate(\$this->${field['name']}$extraParam)";
-                //return "\"'\" . mysql_escape_string(\$this->${field['name']}) . \"'\"";
             case "time":
                 return "SQLUtils::convertTime(\$this->${field['name']})";
             case "Boolean":

@@ -10,7 +10,7 @@ class SQLUtils {
         if ($str === null) {
             return "null";
         }
-        return "'" . mysql_escape_string($str) . "'";
+        return "'" . mysql_real_escape_string($str) . "'";
     }
 
     /**
