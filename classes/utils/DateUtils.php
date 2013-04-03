@@ -159,7 +159,7 @@ class DateUtils {
         return $sign . str_pad($hours, 2, '0', STR_PAD_LEFT) . ':' . str_pad($minutes, 2, '0', STR_PAD_LEFT) . ':' . str_pad($seconds, 2, '0', STR_PAD_LEFT);
 	}
 	
-   /**
+    /**
      * Modify a timestamp using strtotime() textual datetime description.
      * @param $timestamp Timestamp to modify
      * @param $modifier String in a relative format accepted by strtotime(). ex : "+1 day", "+1 week 2 days 4 hours 2 seconds", "next Thursday"
@@ -178,15 +178,12 @@ class DateUtils {
     /**
      * Return an array containing all the months
      * The key is the month number and the value is the formatted month
-     * @param string $format [F|m|M|n|t] See http://php.net/manual/en/function.date.php
+     * @param string $format "abbreviated" ("jan.") or "wide" ("janvier").
      * @return array containing the 12 months. January is in index 1.
      */
     public static function getMonthsArray($format){
-        $months = array();
-        for ($i = 1; $i <= 12; $i++){
-            $months[$i] = date($format, mktime(0, 0, 0, $i+1, 0, 0));
-        }
-        return $months;
+        $zendMonthArr = Zend_Locale::getTranslationList("months", Application::getTranslator()->getLocale());
+        return $zendMonthArr["format"][$format];
     }
 
     /**
