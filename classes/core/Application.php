@@ -127,7 +127,7 @@ class Application {
             $ctx->redirect($page, true);
         }
         try {
-            $controllerName = $this->controllerNameFromAlias($tokens['controller']);
+            list($controllerName, $namespace) = $this->controllerNameFromAlias($tokens['controller']);
         }
         catch (IllegalArgumentException $e) {
             throw new PageNotFoundException($e->getMessage(), 0, $e);
@@ -141,7 +141,12 @@ class Application {
         $methodName = $tokens['method'];
         // Allow dashes in method name (for SEO purposes). Converts to camelCase.
         $methodName = $this->camelize($methodName);
-        $class = new ReflectionClass($controllerName);
+        if (!$namespace) {
+        	$class = new ReflectionClass($controllerName);
+        } else{
+        	$class = new \ReflectionClass('\\'.$namespace.'\\'.$controllerName);
+        }
+        
         $obj = $class->newInstance();
         if (!$this->checkAccess($class, $obj, $ctx)) {
             return;
@@ -358,10 +363,12 @@ class Application {
             throw new ConfigurationException("Missing controllers definition in config file");
         }
         $className = $config->getString("webapp/controllers/controller[@alias='$alias']/@class", null);
+        $namespace = $config->getString("webapp/controllers/controller[@alias='$alias']/@namespace", null);
+        
         if (!$className) {
             throw new IllegalArgumentException("Unknown alias - " . $alias);
         }
-        return $className;
+        return array($className, $namespace);
     }
 
     private function includeFiles() {
