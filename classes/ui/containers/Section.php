@@ -11,6 +11,7 @@ class Section extends HtmlElement {
 
     public function __construct($title, $bookmark=null) {
         parent::__construct("fieldset");
+        $this->setClass("section");
         if ($bookmark) {
             $this->set("id", $bookmark);
         }
