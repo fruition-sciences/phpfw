@@ -4,8 +4,6 @@
  * Author: Yoni Rosenbaum
  */
 
-require_once("HtmlElement.php");
-
 class Password extends Control {
     public function __construct($name) {
         parent::__construct("input", $name);

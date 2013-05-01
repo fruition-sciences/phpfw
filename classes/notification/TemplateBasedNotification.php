@@ -15,8 +15,6 @@
  *       substitution.
  */
 
-require_once('Notification.php');
-
 class TemplateBasedNotification extends Notification {
     private $templateFile; // String or Array of Strings
     private $templateContent;

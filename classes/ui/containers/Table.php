@@ -5,8 +5,6 @@
  * 
  */
 
-require_once("PagingInfoPrefs.php");
-
 class Table extends HtmlElement {
     protected $inHead = false;
     protected $inRow = false;

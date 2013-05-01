@@ -5,8 +5,6 @@
  * 
  */
 
-require_once("HtmlElement.php");
-
 class Textbox extends Control {
     public function __construct($name) {
         parent::__construct("input", $name);

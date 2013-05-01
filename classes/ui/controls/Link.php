@@ -5,8 +5,6 @@
  * 
  */
 
-require_once("HtmlElement.php");
-
 class Link extends HtmlElement {
     private $href;
 

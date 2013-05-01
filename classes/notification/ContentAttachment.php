@@ -6,8 +6,6 @@
  * Author: Yoni Rosenbaum
  */
 
-require_once('IAttachment.php');
-
 class ContentAttachment implements IAttachment {
     private $content;
     private $contentType;

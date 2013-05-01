@@ -5,14 +5,6 @@
  *
  */
 
-require_once("controls/HtmlElement.php");
-require_once("controls/Control.php");
-require_once("controls/Button.php");
-require_once("containers/Table.php");
-require_once("containers/TableCSS3.php");
-require_once("containers/Section.php");
-require_once("ErrorManager.php");
-
 abstract class UI {
     /**
      * @var Context

@@ -54,7 +54,6 @@ class Application {
         try {
             session_name($this->sessionName);
             Zend_Session::start();
-            $this->includeFiles();
             $transaction = Transaction::getInstance();
             $transaction->setUser($this->getContext()->getUser());
             self::initTranslator($this->getContext()->getUser()->getLocale());
@@ -369,11 +368,6 @@ class Application {
             throw new IllegalArgumentException("Unknown alias - " . $alias);
         }
         return array($className, $namespace);
-    }
-
-    private function includeFiles() {
-        $includer = new Includer();
-        $includer->includeAll();
     }
 
     /**

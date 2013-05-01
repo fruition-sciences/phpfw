@@ -7,8 +7,6 @@
  * @since Fev 17, 2012
  */
 
-require_once("PagingInfoPrefs.php");
-
 class TableCSS3 extends Table {
     public function __construct($name, $className='', $ctx=null) {
         parent::__construct($name, $className, $ctx);

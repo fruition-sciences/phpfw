@@ -5,13 +5,6 @@
  *
  */
 
-require_once("BreadCrumbs.php");
-require_once("classes/utils/StringUtils.php");
-require_once("classes/utils/DateUtils.php");
-require_once("classes/utils/FileUtils.php");
-require_once("classes/utils/BeanUtils.php");
-require_once("classes/ui/Menu.php");
-
 abstract class Page {
     public $mode;
     private $crumbs;

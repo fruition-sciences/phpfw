@@ -9,7 +9,6 @@
  */
 
 require_once("include/classes.php");
-require_once("ExecutableApp.php");
 
 class AppRunner {
     private $thisFileName;
@@ -27,22 +26,10 @@ class AppRunner {
     }
 
     private function executeApp() {
-        $appFullPath = $this->getAppFullPath();
-        if (!file_exists($appFullPath)) {
-            throw new FileNotFoundException("Class file doesn't exist: " . $appFullPath);
-        }
-        require_once($appFullPath);
+        // php file is loaded by the autoloader.
         $class = new ReflectionClass($this->appClass);
         $obj = $class->newInstance();
         $obj->execute($this->appArgs);
-    }
-
-    private function getAppFullPath() {
-        $appRoot = Config::getInstance()->getString('appRootDir');
-        if ($this->appDirPath) {
-            return "$appRoot/application/classes/apps/$this->appDirPath/$this->appClass.php";
-        }
-        return "$appRoot/application/classes/apps/$this->appClass.php";
     }
 
     /**

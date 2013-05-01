@@ -6,8 +6,6 @@
  * Default session implementation. Uses the PHP $_SESSION object.
  */
 
-require_once('Session.php');
-
 class DefaultSession implements Session {
 
     public function hasKey($key) {

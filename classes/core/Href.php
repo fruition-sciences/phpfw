@@ -6,8 +6,6 @@
  * Variables are encoded only during __toString().
  */
 
-require_once("Element.php");
-
 class Href extends Element {
     private $path; // The url, without the parameters
 

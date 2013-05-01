@@ -9,6 +9,3 @@
 
 require_once("Mail.php");
 require_once('Mail/mime.php');
-
-require_once("classes/notification/Notification.php");
-require_once("classes/notification/TemplateBasedNotification.php");

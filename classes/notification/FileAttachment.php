@@ -6,8 +6,6 @@
  * Author: Yoni Rosenbaum
  */
 
-require_once('IAttachment.php');
-
 class FileAttachment implements IAttachment {
     private $filePath; // Path to the file
 

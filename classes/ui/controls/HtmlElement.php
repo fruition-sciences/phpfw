@@ -5,8 +5,6 @@
  *
  */
 
-require_once("classes/core/Element.php");
-
 class HtmlElement extends Element {
     private $name;
     private $type;

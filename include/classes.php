@@ -3,44 +3,7 @@
  * Created on Dec 28, 2007
  * Author: Yoni Rosenbaum
  *
+ * Only the php files which have code outside a Classneed to be listed here.
  */
 
 require_once("classes/utils/functions.php");
-require_once("classes/utils/MimeTypeUtils.php");
-require_once("classes/utils/MeasureUtils.php");
-require_once("classes/core/db/db.php");
-require_once("classes/core/db/PagingInfo.php");
-require_once("classes/core/db/QueryPager.php");
-require_once("classes/core/db/SqlBuilder.php");
-require_once("classes/core/db/SQLUtils.php");
-require_once("classes/exception/IllegalArgumentException.php");
-require_once("classes/exception/IllegalStateException.php");
-require_once("classes/exception/IllegalOperationException.php");
-require_once("classes/exception/FileNotFoundException.php");
-require_once("classes/exception/PageNotFoundException.php");
-require_once("classes/exception/UndefinedKeyException.php");
-require_once("classes/exception/ConfigurationException.php");
-require_once("classes/exception/EndOfResponseException.php");
-require_once("classes/exception/ForwardViewException.php");
-require_once("classes/core/Transaction.php");
-require_once("classes/core/DefaultSession.php");
-require_once("classes/core/Context.php");
-require_once("classes/core/Request.php");
-require_once("classes/core/Controller.php");
-require_once("classes/core/Config.php");
-require_once("classes/core/Includer.php");
-require_once("classes/core/Logger.php");
-require_once("classes/core/BeanBase.php");
-require_once("classes/ui/BaseView.php");
-require_once("classes/ui/JSONView.php");
-require_once("classes/ui/Component.php");
-require_once("classes/core/User.php");
-require_once("classes/core/i18n/I18nUtil.php");
-require_once("classes/core/i18n/GettextZendTranslator.php");
-require_once("classes/core/TimeLogger.php");
-require_once("classes/core/Application.php");
-require_once("classes/ui/DataConverter.php");
-require_once("classes/ui/InputConverter.php");
-require_once("classes/utils/BeanMap.php");
-require_once("classes/GeomPoint.php");
-require_once("classes/GeomPolygon.php");

@@ -6,10 +6,6 @@
  * A simple email (or fax) notificiation.
  */
 
-require_once('FileAttachment.php');
-require_once('ContentAttachment.php');
-require_once('NotificationManager.php');
-
 class Notification {
     const FORMAT_TEXT = 'txt';
     const FORMAT_HTML = 'html';

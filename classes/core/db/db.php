@@ -5,10 +5,6 @@
  *
  */
 
-require_once("SQLException.php");
-require_once("ResultSet.php");
-require_once("QueryPager.php");
-
 class TheDB {
     private $connect_id;
     private $paging;

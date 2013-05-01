@@ -5,16 +5,6 @@
  *
  */
 
-require_once("classes/ui/View.php");
-require_once("classes/ui/Template.php");
-require_once("classes/ui/Page.php");
-require_once("classes/ui/ui.php");
-require_once("classes/ui/Form.php");
-require_once("classes/core/Href.php");
-require_once("classes/ui/controls/Link.php");
-require_once("classes/ui/Formatter.php");
-require_once("classes/ui/DataConverter.php");
-
 abstract class BaseView implements View {
     /**
      * @var Template

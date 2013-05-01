@@ -5,8 +5,6 @@
  *
  */
 
-require_once("HtmlElement.php");
-
 class Button extends Control {
     private $href;
     private $title;

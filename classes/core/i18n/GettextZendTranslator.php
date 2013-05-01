@@ -7,8 +7,6 @@
 * To use it just put the class name in a "translator" property.
 */
 
-require_once('ITranslator.php');
-
 class GettextZendTranslator extends Zend_Translate implements ITranslator {
 
     const GETTEXT = 'gettext';

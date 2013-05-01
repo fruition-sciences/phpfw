@@ -5,20 +5,6 @@
  *
  */
 
-require_once("controls/Control.php");
-require_once("controls/Checkbox.php");
-require_once("controls/Radio.php");
-require_once("controls/Dropdown.php");
-require_once("controls/Password.php");
-require_once("controls/TextArea.php");
-require_once("controls/Textbox.php");
-require_once("controls/MeasureTextbox.php");
-require_once("controls/Datebox.php");
-require_once("controls/Hidden.php");
-require_once("controls/FileUpload.php");
-require_once("constraints/ConstraintFactory.php");
-
-
 class Form {
     private $controls = array(); // control name -> Control
     private $labels = array(); // control name -> Label (field title)
@@ -33,7 +19,7 @@ class Form {
     private $calendarShown = false;
 
     public function textbox($name) {
-        $control = new TextBox($name);
+        $control = new Textbox($name);
         $this->registerControl($control);
         return $control;
     }

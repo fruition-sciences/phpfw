@@ -4,8 +4,6 @@
  * Author: Yoni Rosenbaum
  * 
  */
-require_once('classes/core/i18n/ITranslator.php');
-require_once("classes/core/i18n/LocalizedString.php");
 
 class I18nUtil implements ITranslator {
     const UNDEFINED = "___UNDEFINED___";

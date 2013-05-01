@@ -5,11 +5,6 @@
  *
  */
 
-require_once("Constraint.php");
-require_once("DateConstraint.php");
-require_once("RequiredConstraint.php");
-require_once("NumberConstraint.php");
-
 class ConstraintFactory {
     const REQUIRED = "required";
     const DATE = "date";

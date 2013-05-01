@@ -4,8 +4,6 @@
  * Author: Yoni Rosenbaum
  */
 
-require_once('XMLConfig.php');
-
 class Config extends XMLConfig {
     private static $theInstance;
 

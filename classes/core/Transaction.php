@@ -5,9 +5,6 @@
  *
  */
 
-
-require_once("classes/core/db/db.php");
-
 class Transaction {
     /**
      * @var Transaction

@@ -21,7 +21,6 @@ abstract class ExecutableApp {
      */
     public function execute($args) {
         date_default_timezone_set('UTC');
-        $this->includeFiles();
         $this->initLog();
         $this->startTransaction();
         if (!$this->parseArgs($args)) {
@@ -159,11 +158,6 @@ abstract class ExecutableApp {
         // TODO: set id to root.
         $user->setId(1);
         $transaction->setUser($user);
-    }
-
-    private function includeFiles() {
-        $includer = new Includer();
-        $includer->includeAll();
     }
 
     /**
