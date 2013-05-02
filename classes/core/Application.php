@@ -143,7 +143,7 @@ class Application {
         if (!$namespace) {
         	$class = new ReflectionClass($controllerName);
         } else{
-        	$class = new \ReflectionClass('\\'.$namespace.'\\'.$controllerName);
+        	$class = new \ReflectionClass($namespace.'\\'.$controllerName);
         }
         
         $obj = $class->newInstance();

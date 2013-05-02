@@ -16,6 +16,7 @@ require_once "classes/core/Config.php";
 require_once "classes/core/Logger.php";
 require_once "classes/exception/FileNotFoundException.php";
 require_once "classes/utils/FileUtils.php";
+require_once "classes/core/db/SQLException.php";
 
 $upgradeDb = new UpgradeDB();
 if ($upgradeDb->parseArgs()) {
