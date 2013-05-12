@@ -246,6 +246,20 @@ class DateUtils {
         $date = self::makeDateFromTimestamp($timestamp, $timezone);
         return $date->getOffset();
     }
+
+    /**
+     * Check whether the 2 given timestamp represent the same day in the given
+     * timezone.
+     * 
+     * @param long $timestamp1
+     * @param long $timestamp2
+     * @param string $timezone
+     */
+    public static function isSameDay($timestamp1, $timestamp2, $timezone) {
+        $date1 = self::makeDateFromTimestamp($timestamp1, $timezone);
+        $date2 = self::makeDateFromTimestamp($timestamp2, $timezone);
+        return $date1->format('Y-m-d') == $date2->format('Y-m-d');
+    }
     
     /**
      * 
@@ -313,6 +327,8 @@ class DateUtils {
     	}
     	return true;
     }
+
+    
 
     /**
      * Convert from an Excel decimal datetime number to a unix timestamp.
