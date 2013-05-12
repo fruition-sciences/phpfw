@@ -50,7 +50,11 @@ class LocalizedString {
                 }
                 // Convert value to a string
                 $val = $val->__toString();
-            } 
+            }
+            // Skip this pair if value is an array.
+            if (is_array($val)) {
+                continue;
+            }
             $search = '${'. $key . '}';
             $resultMsg = str_replace($search, $val, $resultMsg);
         }
