@@ -132,10 +132,10 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanHomeBase {
         $db = Transaction::getInstance()->getDB();
         $beans = array();
         $sb = new SQLBuilder();
-        $sb->selectAll('<?php echo $descriptor->xml['name'] ?>Bean', 'b');
+        $sb->selectAll('<?php echo $descriptor->xml['name'] ?>Bean', 't');
         $db->query($sb, $paging);
         while ($row = $db->fetch_row()) {
-            $beans[] = self::create($row, 'b');
+            $beans[] = self::create($row, 't');
         }
         $db->disposeQuery();
         return $beans;
