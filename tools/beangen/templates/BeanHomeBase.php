@@ -132,10 +132,34 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanHomeBase {
         $db = Transaction::getInstance()->getDB();
         $beans = array();
         $sb = new SQLBuilder();
-        $sb->selectAll('<?php echo $descriptor->xml['name'] ?>Bean', 't');
+        $sb->selectAll('<?php echo $descriptor->xml['name'] ?>Bean', 'b');
         $db->query($sb, $paging);
         while ($row = $db->fetch_row()) {
-            $beans[] = self::create($row,'t');
+            $beans[] = self::create($row, 'b');
+        }
+        $db->disposeQuery();
+        return $beans;
+    }
+
+    /**
+     * Find all beans by any of the given primary keys.
+     *
+     * @param long[] $ids
+     * @param PaginInfo $paging
+     * @return <?php echo $descriptor->xml['name'] ?>Bean[]
+     */ 
+    public static function findAllByIds($ids, $paging=null) {
+        if (!$ids) {
+            return array();
+        }
+        $sb = new SQLBuilder();
+        $sb->selectAll('<?php echo $descriptor->xml['name'] ?>Bean', 'b');
+        $sb->filter('b.' . <?php echo $descriptor->xml['name'] ?>Bean::ID . " in (" . implode(',', $ids) . ")");
+        $db = Transaction::getInstance()->getDB();
+        $db->query($sb, $paging);
+        $beans = array();
+        while ($row = $db->fetch_row()) {
+            $beans[] = self::create($row, 'b');
         }
         $db->disposeQuery();
         return $beans;
