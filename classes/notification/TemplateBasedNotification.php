@@ -41,11 +41,14 @@ class TemplateBasedNotification extends Notification {
      *   5. <notification_dir>/en/path/to/template.php
      *   6. <notification_dir>/path/en/to/template.php
      *   7. <notification_dir>/path/to/en/template.php
+     *   
+     * TODO: Use cache to minimize lookup
      * 
      * @param String $templateFile path to the template, relative to the directory
      *        'application/templates/notifications'.
      * @param String $lang language code
      * @return TemplateBasedNotification
+     * @throws FileNotFoundException if the notification template file was not found.
      */
     public static function newInstrance($templateFile, $lang=null) {
         $defaultLang = Config::getInstance()->getString('webapp/defaultLocale', 'en');
