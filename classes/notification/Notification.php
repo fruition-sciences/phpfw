@@ -3,7 +3,9 @@
  * Created on May 10, 2009
  * Author: Yoni Rosenbaum
  *
- * A simple email (or fax) notificiation.
+ * A simple notificiation. Can be used for email/fax/pager/mobile-push.
+ * The recipient will be either email address, phone number or device id depending
+ * on how you plan to send it.
  */
 
 class Notification {
@@ -17,6 +19,10 @@ class Notification {
     private $subject;
     private $content;
     private $attachments = array(); // Array of IAttachment instances
+    /**
+     * @var INotificationManager
+     */
+    private $notificationManager;
 
     /**
      * Set the recepient for the message.
@@ -117,7 +123,35 @@ class Notification {
         return $this->attachments;
     }
 
+    /**
+     * Set the notification manager to be used to send this notification.
+     * If not set, the default notification manager will be used (email).
+     * 
+     * @param INotificationManager $notificationManager
+     */
+    public function setNotificationManager($notificationManager) {
+        $this->notificationManager = $notificationManager;
+    }
+
+    /**
+     * Get the notification manager that will be used to send this notification.
+     * 
+     * @return INotificationManager
+     */
+    public function getNotificationManager() {
+        return $this->notificationManager;
+    }
+
+    /**
+     * Send this notification. If set, uses the 'notificationManager'. Otherwise
+     * uses the default notification manager (email).
+     * 
+     * @return boolean true on success, false if there was an error.
+     */
     public function send() {
+        if ($this->notificationManager) {
+            $this->notificationManager->send($this);
+        }
         return NotificationManager::send($this);
     }
 }
