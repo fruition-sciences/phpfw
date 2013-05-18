@@ -150,7 +150,7 @@ class Notification {
      */
     public function send() {
         if ($this->notificationManager) {
-            $this->notificationManager->send($this);
+            return $this->notificationManager->send($this);
         }
         return NotificationManager::send($this);
     }
