@@ -97,22 +97,24 @@ class DateUtils {
     }
     
      /**
-     * Get a unix timestamp representing 12AM of the first day of the date's week in the given
-     * timezone.
-     * Assume that the first day of the week is Monday.
+     * Get a unix timestamp representing 12AM of the first day of the week of the
+     * given date in the the given timezone.
+     * Assumes that the first day of the week is Monday.
+     * Note: Requires (PHP 5 >= 5.1.0)
      *
      * @param long $date unix timestamp.
      * @param String $timezone time zone code.
      * @return long unix timestamp
      */
     public static function getBeginningOfWeek($timestamp, $timezone) {
-        date_default_timezone_set($timezone);
-        if(date("l",$timestamp) == "Monday"){
-            return DateUtils::getBeginningOfDay($timestamp, $timezone);
-        }else{
-            return DateUtils::getBeginningOfDay(strtotime("last monday", $timestamp), $timezone);
-        }
-    }
+        $dt = DateUtils::makeDateFromTimestamp($timestamp, $timezone);
+        // 1=Monday,... 7=Sunday
+        $dayOfWeek = intval($dt->format('N')); // (PHP 5 >= 5.1.0)
+        $daysDiff = $dayOfWeek - 1;
+        $dt->modify("-$daysDiff day");
+        $dt->setTime(0, 0, 0);
+        return self::dateTimeToTimestamp($dt);
+    } 
 
     /**
      * Get the first day of the month of the given timestamp. Time is set to
