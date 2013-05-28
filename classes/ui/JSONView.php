@@ -7,8 +7,13 @@
 
 class JSONView extends BaseView {
     private $doc; // php structure
+    
+    public function __construct($doc) {
+        $this->doc = $doc;
+    }
 
     public function render($ctx) {
+        header("Content-Type: application/json ; encoding=utf-8");
         echo json_encode($this->doc);
     }
 
