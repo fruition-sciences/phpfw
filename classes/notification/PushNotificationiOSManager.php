@@ -45,7 +45,6 @@ class PushNotificationiOSManager implements INotificationManager{
 
         $recipientList = explode(",", $notification->getRecipient());
         foreach ($recipientList as $registrationId) {
-            echo $registrationId;
             $message->addRecipient($registrationId);
         }
         // Add the message to the message queue
