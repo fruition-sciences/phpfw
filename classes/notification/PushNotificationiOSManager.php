@@ -26,7 +26,7 @@ class PushNotificationiOSManager implements INotificationManager{
 
         // Instanciate a new ApnsPHP_Push object, with the provider certificate
         $push = new ApnsPHP_Push(
-                ApnsPHP_Abstract::ENVIRONMENT_SANDBOX,
+                ApnsPHP_Abstract::ENVIRONMENT_PRODUCTION,
                 $appRoot .$config->getString('monitoring/notification/push/providerCertificateDir')
         );
 
