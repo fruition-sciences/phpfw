@@ -47,4 +47,20 @@ class Element {
         $this->atts = array();
         return $this;
     }
+
+    /**
+     * Return all attributes.
+     * 
+     * @return Array:
+     */
+    public function getAll() {
+        return $this->atts;
+    }
+
+    /**
+     * @param Array $atts
+     */
+    public function setAll($atts) {
+        $this->atts = $atts;
+    }
 }
