@@ -67,12 +67,26 @@ class AutoConfig {
     public function process() {
         // Include the properties file, to make $props available as a global var
         require($this->propertiesFile);
+        $this->addStageToMap($props);
         if ($this->templateFile) {
             $this->processTemplateFile($this->templateFile);
         }
         else {
             $this->processTemplateDir($this->templateDir);
         }
+    }
+
+    /**
+     * Tries to get the stage name based on the name of the properties file.
+     * Then adds it to the given map under the key: 'stage'.
+     * For example, if the properties file name is: prod.properties.php then
+     * the stage name is 'prod'.
+     * 
+     * @param Map $props
+     */
+    private function addStageToMap(&$map) {
+        $stageName = basename($this->propertiesFile, '.properties.php');
+        $map['stage'] = $stageName;
     }
 
     private function processTemplateDir($templateDir) {
