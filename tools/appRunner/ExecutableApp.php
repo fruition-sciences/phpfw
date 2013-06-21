@@ -239,7 +239,7 @@ abstract class ExecutableApp {
     /**
      * Removes the lock file, if one exists.
      */
-    private function unlockProcess() {
+    protected function unlockProcess() {
         // If this process doesn't require locking, don't do anything
         if (!$this->singleProcess) {
             return;
