@@ -54,8 +54,9 @@ class EmailNotificationManager implements INotificationManager {
         if (!$emailEnabled) {
             return true;
         }
+        $mailerBackend = Config::getInstance()->getString('email/backend');
         $params = $this->getMailConfigParams();
-        $mailer =& Mail::factory('smtp', $params);
+        $mailer =& Mail::factory($mailerBackend, $params);
         $sendResult = $mailer->send($recipients, $headers, $body);
         if (PEAR::isError($sendResult)) {
             Logger::error("Send email failed. " . $sendResult->getMessage());
@@ -77,6 +78,7 @@ class EmailNotificationManager implements INotificationManager {
     private function getMailConfigParams() {
         $params = array();
         $config = Config::getInstance();
+        $params['sendmail_path'] = $config->getString('email/sendmail/path', '/usr/bin/sendmail');
         $params['host'] = $config->getString('email/smtp_host', 'localhost');
         $port = $config->getString('email/smtp_port', null);
         if ($port) {
