@@ -29,11 +29,22 @@ class PushNotificationiOSManager implements INotificationManager{
                 ApnsPHP_Abstract::ENVIRONMENT_PRODUCTION,
                 $appRoot .$config->getString('monitoring/notification/push/providerCertificateDir')
         );
-
+        
+        // Set custom logger
+        $push->setLogger(new ApnsPHP_Log_Fruition());
+        
         // Set the Provider Certificate passphrase
         $push->setProviderCertificatePassphrase($config->getString('monitoring/notification/push/passphrase'));
         // Set the Root Certificate Autority to verify the Apple remote peer
         $push->setRootCertificationAuthority($appRoot .$config->getString('monitoring/notification/push/rootCertificateAuthorityDir'));
+        
+        // Get recipient list. If no registration id (user did not connect to the 
+        // mobile app, we stop the process
+        $stringRecipients = $notification->getRecipient();
+        if(empty($stringRecipients)) {
+            Logger::info("No registration id was found. The notification is not sent.");
+            return false;
+        }
 
         // Connect to the Apple Push Notification Service
         $push->connect();
@@ -42,11 +53,12 @@ class PushNotificationiOSManager implements INotificationManager{
         $message = new ApnsPHP_Message();
         $message->setText($notification->getContent());
         $message->setSound();
-
+        
         $recipientList = explode(",", $notification->getRecipient());
         foreach ($recipientList as $registrationId) {
             $message->addRecipient($registrationId);
         }
+
         // Add the message to the message queue
         $push->add($message);
          
