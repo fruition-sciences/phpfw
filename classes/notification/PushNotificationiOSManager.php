@@ -6,10 +6,10 @@ class PushNotificationiOSManager implements INotificationManager{
     const INVALID_TOKEN = 8;
 
     /**
-     * Contain an array of two values: the bean name and method name.
-     * This array is use to make a callback if an error is catch during
+     * A callback function called if an error is catched during
      * sending notification process.
-     * @var Array $handlerErrorCallBack
+     * @var  $handlerErrorCallBack callback function
+     * @param String $registrationId the invalid registration ID
      */
     private $handlerErrorCallBack;
 
@@ -90,8 +90,8 @@ class PushNotificationiOSManager implements INotificationManager{
         return true;
     }
 
-    public function setHandlerErrorCallBack($className, $methodName) {
-        $this->handlerErrorCallBack = array($className, $methodName);
+    public function setHandlerErrorCallBack($callbackFunction) {
+        $this->handlerErrorCallBack = $callbackFunction;
     }
 
 }
