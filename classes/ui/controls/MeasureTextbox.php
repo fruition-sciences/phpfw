@@ -9,16 +9,27 @@
  */
 
 class MeasureTextbox extends Textbox {
-    private $showSymbol; // boolean
-    private $displayUnit; // String. Full Zend_Measure unit. For example: 'Zend_Measure_Temperature::CELSIUS'
-    private $measureValue;
-    private $decimalDigits = null; // Number of decimal digits to show
+    /**
+     * @var Boolean
+     */
+    private $showSymbol;
+    
+    /**
+     * Full Zend_Measure unit. For example: 'Zend_Measure_Temperature::CELSIUS'
+     * @var String
+     */
+    private $displayUnit;
+    
+    /**
+     * Number of decimal digits to show
+     * @var Int
+     */
+    private $decimalDigits = null;
 
     /** 
-     * @param $name the name for this control.
-     * @param $displayUnit String Full Zend_Measure unit.
+     * @param String $name the name for this control.
+     * @param String $displayUnit Full Zend_Measure unit.
      *        For example: 'Zend_Measure_Temperature::CELSIUS'
-     * @return unknown_type
      */
     public function __construct($name, $displayUnit) {
         parent::__construct($name);
@@ -29,7 +40,7 @@ class MeasureTextbox extends Textbox {
      * Define the measure unit for this control. This will be overrridden by
      * the unit as defined in the form.
      * 
-     * @param $displayUnit String Full Zend_Measure unit.
+     * @param String $displayUnit Full Zend_Measure unit.
      *        For example: 'Zend_Measure_Temperature::CELSIUS'
      * @return MeasureTextbox
      */
@@ -72,7 +83,7 @@ class MeasureTextbox extends Textbox {
      * 
      * Do not call this method more than once!
      */
-    private function convert() {
+    protected function convert() {
         $user = Transaction::getInstance()->getUser();
         if($this->getValue() !== null && Zend_Locale_Format::isNumber($this->getValue(), array("locale"=>$user->getLocale()))){
             $form = $this->getForm();
@@ -92,7 +103,7 @@ class MeasureTextbox extends Textbox {
         }
     }
 
-    private function getUnitFieldName() {
+    protected function getUnitFieldName() {
         return $this->getName() . '__unit';
     }
 
