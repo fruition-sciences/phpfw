@@ -11,7 +11,22 @@
 
 abstract class ExecutableApp {
     const LOCK_LENGTH_SECONGS = 7200; // 2 hours.
-    private $singleProcess = true; // boolean. If true, only one instance will be permitted.
+    /**
+     * If true, only one instance will be permitted.
+     * @var boolean
+     */
+    private $singleProcess = true;
+    
+    /**
+     * If false, don't echo that the process is locked.
+     * @var boolean
+     */
+    protected $echoProcessLocked = true;
+    
+    /**
+     * lock file pointer resource
+     * @var resource
+     */
     private $lockFp;
 
     /**
@@ -29,7 +44,9 @@ abstract class ExecutableApp {
         }
         if (!$this->lockProcess()) {
             Logger::warning("Process locked. Quitting");
-            echo "Process locked. Quitting. (Lock file: " . $this->getLockFile() . ")\n";
+            if ($this->echoProcessLocked) {
+                echo "Process locked. Quitting. (Lock file: " . $this->getLockFile() . ")\n";
+            }
             $this->onLockError();
             return;
         }
@@ -220,7 +237,7 @@ abstract class ExecutableApp {
      *
      * @return resource a file handle
      */
-    private function getLockFile() {
+    protected function getLockFile() {
         $lockDir = Config::getInstance()->getString("properties/storageDir") . "/locks";
         if (!is_dir($lockDir)) {
             echo "creating $lockDir\n";
