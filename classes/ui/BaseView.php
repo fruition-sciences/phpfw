@@ -67,6 +67,9 @@ abstract class BaseView implements View {
         return $this->ctx;
     }
 
+    /**
+     * @return Template
+     */
     protected function getTemplate() {
         if (!isset($this->template)) {
             $this->template = new Template($this->getPage());
