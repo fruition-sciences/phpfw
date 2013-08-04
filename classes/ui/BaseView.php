@@ -95,13 +95,25 @@ abstract class BaseView implements View {
 
     /**
      * Render the child component with the given name.
+     * 
      * @param String $name the component's name
+     * @param Boolean $ignoreIfMissing if true, does nothing if the component is missing. Otherwise it's an error.
      */
-    public function component($name) {
-        $this->components[$name]->show();
+    public function component($name, $ignoreIfMissing=false) {
+        $component = $this->getComponent($name);
+        if (!$component) {
+            if ($ignoreIfMissing) {
+                return;
+            }
+            throw new IllegalArgumentException("Missing component: $name");
+        }
+        $component->show();
     }
 
     public function getComponent($name) {
+        if (!$this->hasComponent($name)) {
+            return null;
+        }
         return $this->components[$name];
     }
 
