@@ -29,6 +29,12 @@ class TableCSS3 extends Table {
         $this->rowCount++;
         $this->inRow = true;
     }
+    
+    public function newHeaderRow($class = null) {
+        if ($this->inHead) {
+            echo "</tr><tr class=\"$class\">\n";
+        }
+    }
 
     protected function endRowOrHead() {
         if ($this->inHead) {
