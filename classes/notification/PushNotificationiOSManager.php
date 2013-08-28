@@ -86,6 +86,9 @@ class PushNotificationiOSManager implements INotificationManager{
             }
             return false;
         }
+        
+        //If success
+        Logger::info("Notification sent with device token " . $notification->getRecipient());
 
         return true;
     }
