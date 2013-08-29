@@ -1,6 +1,6 @@
 /**
  * Event for clicking on a button. Opens the given URL.
- * 
+ *
  * @param url
  * @param target (optional) if set, URL will be opened in a new window with this
  *        name.
@@ -16,7 +16,7 @@ function button_click(url, target) {
 
 /**
  * Event for clicking on a button. Supmits the form.
- * 
+ *
  * @param url
  * @param target (optional) if set, form will be submitted into a new window
  *        with this name.
@@ -34,7 +34,7 @@ function button_submit(url, target) {
 
 function normalizeUrl(url) {
     if (url.charAt(0) == '/') {
-        return appBase + url.substring(1);
+      return appBase + url.substring(1);
     } else {
         return url;
     }
@@ -52,14 +52,26 @@ function focusOnFirst() {
 }
 
 /**
+ * Array listing selectors. If an input element match on of these selectors and
+ * if the enter key is pressed while this input is focused, then the
+ * ui_pressDefaultButton function will be aborted.
+ * @var Array
+ */
+var defaultButtonIgnore = [];
+/**
  * Press the default (or most appropriate) button.
- * 
+ *
  * @param e jQuery event
  */
 function ui_pressDefaultButton(e) {
     var input = jQuery(e.target),
         parents = input.parents('form, div, fieldset');
-    parents.each(function(i, element) { 
+    $.each(defaultButtonIgnore, function(index, value) {
+        if (input.is(value)) {
+            return;
+        }
+    });
+    parents.each(function(i, element) {
         // Find first button (or element with attribute button="1")
         // TODO: We may want to give priority to primary button
         var button = jQuery(element).find('button, [button="1"]').first();
@@ -115,7 +127,7 @@ function updateSelectTimeFields(fieldName) {
 
 /**
  * Removes blank spaces in front and at the end of the string
- * 
+ *
  * @param String
  */
 function trim(stringToTrim) {
@@ -170,7 +182,7 @@ function encode(value) {
 }
 
 /**
- * This function return a date object after accepting 
+ * This function return a date object after accepting
  * a date string and a dateseparator as arguments
  * @param dateString (MM/DD/YY)
  * @param dateSeperator (/)
@@ -185,19 +197,19 @@ function getDateObject(dateString, dateSeperator) {
     //extract month portion
     curPos = dateString.indexOf(sepChar);
     cMonth = dateString.substring(0, curPos);
-    
-    //extract day portion               
-    endPos = dateString.indexOf(sepChar,curPos+1);            
+
+    //extract day portion
+    endPos = dateString.indexOf(sepChar,curPos+1);
     cDate = dateString.substring(curPos+1,endPos);
 
-    //extract year portion              
+    //extract year portion
     curPos = endPos;
-    endPos = curPos + 3;            
+    endPos = curPos + 3;
     cYear=curValue.substring(curPos + 1, endPos);
     if (cYear.length == 2) {
         cYear = "20" + cYear;
     }
     //Create Date Object
-    dtObject=new Date(cYear, cMonth-1, cDate);    
+    dtObject=new Date(cYear, cMonth-1, cDate);
     return dtObject;
 }
