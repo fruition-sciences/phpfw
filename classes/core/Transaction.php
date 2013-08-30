@@ -11,7 +11,7 @@ class Transaction {
      */
     static private $theInstance;
     /**
-     * @var TheDB
+     * @var Database
      */
     private $db;
     /**
@@ -20,7 +20,7 @@ class Transaction {
     private $user;
 
     private function __construct() {
-        $this->db = new TheDB();
+        $this->db = new Database();
     }
 
     /**
@@ -34,7 +34,7 @@ class Transaction {
     }
 
     /**
-     * @return TheDB
+     * @return Database
      */
     public function getDB() {
         return $this->db;

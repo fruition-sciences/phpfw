@@ -10,7 +10,16 @@ class SQLUtils {
         if ($str === null) {
             return "null";
         }
-        return "'" . mysql_real_escape_string($str) . "'";
+        $db = Transaction::getInstance()->getDB();
+        $escaped = '';
+        if (method_exists($db, 'getDB')) {
+            Logger::warning("Depracated: Avoid SQLUtils::escapeString. Use prepared statement instead.");
+            $escaped = $db->getDB()->real_escape_string($str);
+        }
+        else {
+            $escaped = mysql_real_escape_string($str);
+        }
+        return "'" . $escaped . "'";
     }
 
     /**
