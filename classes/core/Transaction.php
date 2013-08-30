@@ -55,6 +55,6 @@ class Transaction {
     }
 
     public function end() {
-        $this->db->sql_close();
+        $this->db->close();
     }
 }

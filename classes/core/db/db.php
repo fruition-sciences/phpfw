@@ -131,6 +131,10 @@ class TheDB {
         }
     }
 
+    public function close(){
+        $this->sql_close();
+    }
+
     public function sql_close(){
         if($this->connect_id){
             return mysql_close($this->connect_id);
