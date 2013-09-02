@@ -13,7 +13,7 @@ class SQLUtils {
         $db = Transaction::getInstance()->getDB();
         $escaped = '';
         if (method_exists($db, 'getDB')) {
-            Logger::warning("Depracated: Avoid SQLUtils::escapeString. Use prepared statement instead.");
+            Logger::warning("Depracated: Avoid SQLUtils::escapeString. Use prepared statement instead (suppoer for prepared statements coming soon).");
             $escaped = $db->getDB()->real_escape_string($str);
         }
         else {
