@@ -7,7 +7,7 @@
 
 require_once "classes/utils/functions.php";
 require_once "SQLScript.php";
-require_once "classes/core/db/db.php";
+require_once "classes/core/db/Database.php";
 require_once "classes/core/db/QueryPager.php";
 require_once "classes/core/db/ResultSet.php";
 require_once "classes/core/Transaction.php";
@@ -59,7 +59,7 @@ class UpgradeDB {
             echo $e;
             $ret = false;
         }
-        $db->sql_close();
+        $db->close();
         return $ret;
     }
 
