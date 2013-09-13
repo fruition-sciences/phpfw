@@ -65,12 +65,13 @@ var defaultButtonIgnore = [];
  */
 function ui_pressDefaultButton(e) {
     var input = jQuery(e.target),
-        parents = input.parents('form, div, fieldset');
-    $.each(defaultButtonIgnore, function(index, value) {
-        if (input.is(value)) {
-            return;
+        parents = input.parents('form, div, fieldset'),
+        i = 0;
+    for (i = 0; i < defaultButtonIgnore.length; i++) {
+        if (input.is(defaultButtonIgnore[i])) {
+            return true;
         }
-    });
+    }
     parents.each(function(i, element) {
         // Find first button (or element with attribute button="1")
         // TODO: We may want to give priority to primary button
