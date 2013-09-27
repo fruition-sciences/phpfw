@@ -6,7 +6,7 @@
  */
 
 class SQLUtils {
-    public static function escapeString($str) {
+    public static function escapeString($str, $withQuotes=true) {
         if ($str === null) {
             return "null";
         }
@@ -19,7 +19,10 @@ class SQLUtils {
         else {
             $escaped = mysql_real_escape_string($str);
         }
-        return "'" . $escaped . "'";
+        if ($withQuotes) {
+            $escaped = "'" . $escaped . "'";
+        } 
+        return $escaped;
     }
 
     /**
