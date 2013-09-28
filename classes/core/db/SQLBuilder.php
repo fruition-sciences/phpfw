@@ -9,6 +9,10 @@ class SQLBuilder {
     private $tables = array();
     private $columns = array();
     private $conditions = array();
+    private $params = array(
+    	'list' => array(), // Array of parameters used by prepapred statement
+        'types' => ''      // String containing sequence of types. See types under http://www.php.net/manual/en/mysqli-stmt.bind-param.php
+    );
     private $order = "";
     private $group = "";
     private $predicate;
@@ -77,7 +81,35 @@ class SQLBuilder {
         $this->tables[$alias] = new SQLJoin($tableName, $alias);
     }
 
-    public function filter($condition) {
+    /**
+     * Add a condition to the 'where' clause of the query.
+     * All filters are treated as 'AND', and each will be surrounded by
+     * parentheses for protection.
+     * 
+     * Use 'varTypes' and arg1 for prepapred statements with bound parameters.
+     * Note that you can pass extra parameters after arg1.
+     * 
+     * Example:
+     *  sqlBuilder.where('name=? and age=?', 'si', 'john', 11);
+     * 
+     * @param string $condition the SQL clause
+     * @param string $varTypes defines the types of parameters you pass.
+     *               See types under http://www.php.net/manual/en/mysqli-stmt.bind-param.php
+     * @param string $arg1 the first parameter.
+     * @param string $arg2,... the method accepts additional parameters. Number
+     *               of arguments should match the length of the string $varTypes.
+     */
+    public function filter($condition, $varTypes=null, $arg1=null) {
+        if ($varTypes) {
+            if (func_num_args()-2 != strlen($varTypes)) {
+                throw new IllegalArgumentException("Number of variables must match the length of the varTypes variable: '$varTypes'");
+            }
+            // Collect the arguments and their types
+            for ($i=2; $i<func_num_args(); $i++) {
+                $this->params['list'][] = func_get_arg($i);
+            }
+            $this->params['types'] .= $varTypes;
+        }
         $this->conditions[] = "($condition)";
     }
 
@@ -184,6 +216,34 @@ class SQLBuilder {
 
     public function getLimit() {
         return $this->limit;
+    }
+
+    /**
+     * Check whether this builder contains parameters for a prepared statement.
+     * 
+     * @return boolean
+     */
+    public function hasParams() {
+        return count($this->params['list']) > 0;
+    }
+
+    /**
+     * Get the list of parameters for a prepapred statement.
+     * 
+     * @return array
+     */
+    public function getParamList() {
+        return $this->params['list'];
+    }
+
+    /**
+     * Get a string which represents the types of the parameters for a prepared
+     * statement. See types under http://www.php.net/manual/en/mysqli-stmt.bind-param.php
+     * 
+     * @return string
+     */
+    public function getParamTypes() {
+        return $this->params['types'];
     }
 
     private function tablesToString() {

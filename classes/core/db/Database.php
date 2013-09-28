@@ -24,10 +24,11 @@ class Database {
     }
 
     public function query($sql, $paging=null) {
-        $this->paging = $paging;
         if (!$sql) {
             throw new SQLException("Empty query");
         }
+        # Keep the PagingInfo so we can set total rows later on.
+        $this->paging = $paging;
         $queryPager = new QueryPager($sql, $paging);
         $startTime = microtime(true);
         if ($this->debugOn) {
@@ -46,28 +47,95 @@ class Database {
     }
 
     /**
+     * Prepare the given query for execution.
+     * 
+     * @param SQLBuilder|String $sqlBuilder can be either:
+     *          a. SQLBuilder: in which case it may contain parameters prepared
+     *             statements.
+     *          b. String: Plain SQL.
+     * @param PagingInfo $paging
+     * @return mysqli_stmt
+     */
+    public function execute($sqlBuilder, $paging=null) {
+        if (!$sqlBuilder) {
+            throw new SQLException("Empty query");
+        }
+        # Keep the PagingInfo so we can set total rows later on.
+        $this->paging = $paging;
+        $queryPager = new QueryPager($sqlBuilder, $paging);
+        $startTime = microtime(true);
+        if ($this->debugOn) {
+            Logger::debug("SQL: $sqlBuilder");
+        }
+
+        # Create a prepared statement
+        $stmt = $this->db->prepare($queryPager->getQuery());
+
+        # Bind parameters, if there are any
+        if ($sqlBuilder instanceof SQLBuilder && $sqlBuilder->hasParams()) {
+            $refArgs = array($sqlBuilder->getParamTypes());
+            foreach ($sqlBuilder->getParamList() as $param) {
+                $refArgs[] = $param;
+            }
+        
+            // Modify the values in the array to be referenced (ugly, but works).
+            for ($i=1; $i<count($refArgs); $i++) {
+                $refArgs[$i] = &$refArgs[$i];
+            }
+
+            call_user_func_array(array($stmt, 'bind_param'), $refArgs);
+            if ($this->debugOn) {
+                Logger::debug("Query params: " . var_export($refArgs, true));
+            }
+        }
+
+        $stmt->execute();
+        $endTime = microtime(true);
+
+        if (!$stmt) {
+            throw new SQLException("Failed to execute query: " . $sqlBuilder);
+        }
+
+        return $stmt;
+    }
+    
+
+    /**
      * Call this method after fetching all rows.
      * With the current implementation, it is important to call this method only
      * when the query was using a PagingInfo object, so that the PagingInfo will
      * contain the total number of rows.
+     * 
+     * For convinience, in case a prepared statement was used, this method also
+     * accepts an optional statement, and will close it.
+     * 
+     * @param mysqli_stmt $statement
      */
-    public function disposeQuery() {
+    public function disposeQuery($statement=null) {
+        if ($statement) {
+            $statement->close();
+        }
         if ($this->paging) {
             $this->paging->setTotalRows($this->getFoundRows());
         }
         if ($this->queryResult) {
             $this->queryResult->free();
+            $this->queryResult = null;
         }
     }
 
     /**
-     * @param string $queryResult
+     * @param resultset $queryResult
      * @deprecated use fetchRow
      */
     public function fetch_row($queryResult=null) {
         return $this->fetchRow($queryResult);
     }
 
+    /**
+     * @param resultset $queryResult
+     * @return ResultSet
+     */
     public function fetchRow($queryResult=null) {
         if (!$queryResult) {
             $queryResult = $this->queryResult;
