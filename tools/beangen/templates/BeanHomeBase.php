@@ -15,7 +15,7 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanHomeBase {
 
 <?php } ?>
     /**
-     * Retrieve a <?php echo $descriptor->xml['name'] ?>Bean from the id
+     * Retrieve a <?php echo $descriptor->xml['name'] ?>Bean by id
      * 
      * @param integer $id
      * @return <?php echo $descriptor->xml['name'] ?>Bean
@@ -24,9 +24,11 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanHomeBase {
         $db = Transaction::getInstance()->getDB();
         $sb = new SQLBuilder();
         $sb->selectAll('<?php echo $descriptor->xml['name'] ?>Bean', 't');     
-        $sb->filter('t.' . <?php echo $descriptor->xml['name'] ?>Bean::ID . "=" . $id); 
-        $db->query($sb);
-        $rs = $db->fetch_row();
+        $sb->filter('t.' . <?php echo $descriptor->xml['name'] ?>Bean::ID . "=?", 'i', $id);
+        $stmt = $db->execute($sb);
+        $result = $stmt->get_result(); 
+        $rs = $db->fetchRow($result);
+        $db->disposeQuery($stmt);
         return self::create($rs,'t');
     }
 
@@ -154,14 +156,15 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanHomeBase {
         }
         $sb = new SQLBuilder();
         $sb->selectAll('<?php echo $descriptor->xml['name'] ?>Bean', 'b');
-        $sb->filter('b.' . <?php echo $descriptor->xml['name'] ?>Bean::ID . " in (" . implode(',', $ids) . ")");
+        $sb->filter('b.' . <?php echo $descriptor->xml['name'] ?>Bean::ID . " in (?)", 's', implode(',', $ids));
         $db = Transaction::getInstance()->getDB();
-        $db->query($sb, $paging);
+        $stmt = $db->execute($sb, $paging);
+        $result = $stmt->get_result();
         $beans = array();
-        while ($row = $db->fetch_row()) {
+        while ($row = $db->fetchRow($result)) {
             $beans[] = self::create($row, 'b');
         }
-        $db->disposeQuery();
+        $db->disposeQuery($stmt);
         return $beans;
     }
 }
