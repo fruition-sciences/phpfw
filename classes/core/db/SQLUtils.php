@@ -29,13 +29,16 @@ class SQLUtils {
      * Convert a date (number) to a database date representation (string).
      *
      * @param long dateTime The date (number)
+     * @param boolean whether the returned string should be surrounted by quotes.
+     * @return string
      */
-    public static function convertDate($dateTime, $timeZone='GMT') {
+    public static function convertDate($dateTime, $timeZone='GMT', $withQuotes=true) {
         if ($dateTime == null) {
             return "null";
         }
         $format = new Formatter($timeZone);
-        return "'" . $format->dateFormat($dateTime, "Y-m-d H:i:s") . "'";
+        $sDate = $format->dateFormat($dateTime, "Y-m-d H:i:s");
+        return $withQuotes ? "'$sDate'" : $sDate;
     }
     
     /**
