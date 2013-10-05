@@ -118,7 +118,7 @@ class Database {
         if ($this->paging) {
             $this->paging->setTotalRows($this->getFoundRows());
         }
-        if ($this->queryResult) {
+        if ($this->queryResult instanceof mysqli_result) {
             $this->queryResult->free();
             $this->queryResult = null;
         }

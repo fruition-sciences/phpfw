@@ -28,8 +28,9 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanHomeBase {
         $stmt = $db->execute($sb);
         $result = $stmt->get_result(); 
         $rs = $db->fetchRow($result);
+        $bean = self::create($rs,'t');
         $db->disposeQuery($stmt);
-        return self::create($rs,'t');
+        return $bean;
     }
 
 <?php if ($descriptor->xml['cache']) { ?>
