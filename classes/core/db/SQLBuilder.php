@@ -101,6 +101,7 @@ class SQLBuilder {
      *               - d : Double
      *               - b : Blob
      *               - a : Array. (to be use in 'in (?)' clause). The type of each param will be evaluated at runtime.
+     *               - t : timestamp. Will be converted to date-time in GMT.
      * @param string $arg1 the first parameter.
      * @param string $arg2,... the method accepts additional parameters. Number
      *               of arguments should match the length of the string $varTypes.
@@ -119,10 +120,10 @@ class SQLBuilder {
                 // Get the argument
                 $arg = func_get_arg($i + 2);
                 
-                // If type is 'array'
+                // Handle 'array'
                 if ($varType == 'a') {
                     if (!is_array($arg)) {
-                        throw new IllegalArgumentException("Type of argument number $i is expected to be array");
+                        throw new IllegalArgumentException("Type of argument number $i is expected to be array. Value is $arg");
                     }
                     // Add each of the items and their type
                     foreach ($arg as $item) {
@@ -131,6 +132,11 @@ class SQLBuilder {
                     }
                     // Mark that this arg is an array and keep its size
                     $arraySizesMap[$i] = count($arg);
+                }
+                // Handle 'timestamp'
+                else if ($varType == 't') {
+                    $this->params['list'][] = SQLUtils::convertDate($arg, 'GMT', false);
+                    $this->params['types'] .= 's';
                 }
                 else {
                     $this->params['list'][] = $arg;
