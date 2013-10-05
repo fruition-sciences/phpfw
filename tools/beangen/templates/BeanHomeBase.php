@@ -157,7 +157,7 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanHomeBase {
         }
         $sb = new SQLBuilder();
         $sb->selectAll('<?php echo $descriptor->xml['name'] ?>Bean', 'b');
-        $sb->filter('b.' . <?php echo $descriptor->xml['name'] ?>Bean::ID . " in (?)", 's', implode(',', $ids));
+        $sb->filter('b.' . <?php echo $descriptor->xml['name'] ?>Bean::ID . " in (" . implode(',', $ids) . ")");
         $db = Transaction::getInstance()->getDB();
         $stmt = $db->execute($sb, $paging);
         $result = $stmt->get_result();
