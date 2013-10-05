@@ -86,7 +86,7 @@ class SQLBuilder {
      * All filters are treated as 'AND', and each will be surrounded by
      * parentheses for protection.
      * 
-     * Use 'varTypes' and arg1 for prepapred statements with bound parameters.
+     * Use 'varTypes' and arg1, arg2,... for prepapred statements with bound parameters.
      * Note that you can pass extra parameters after arg1.
      * 
      * Example:
@@ -94,7 +94,13 @@ class SQLBuilder {
      * 
      * @param string $condition the SQL clause
      * @param string $varTypes defines the types of parameters you pass.
-     *               See types under http://www.php.net/manual/en/mysqli-stmt.bind-param.php
+     *               Each character represents the type of the proceeding args.
+     *               Supported types are: (See: http://www.php.net/manual/en/mysqli-stmt.bind-param.php)
+     *               - s : String
+     *               - i : Integer
+     *               - d : Double
+     *               - b : Blob
+     *               - a : Array. (to be use in 'in (?)' clause). The type of each param will be evaluated at runtime.
      * @param string $arg1 the first parameter.
      * @param string $arg2,... the method accepts additional parameters. Number
      *               of arguments should match the length of the string $varTypes.
@@ -104,11 +110,35 @@ class SQLBuilder {
             if (func_num_args()-2 != strlen($varTypes)) {
                 throw new IllegalArgumentException("Number of variables must match the length of the varTypes variable: '$varTypes'");
             }
-            // Collect the arguments and their types
-            for ($i=2; $i<func_num_args(); $i++) {
-                $this->params['list'][] = func_get_arg($i);
+
+            // This map will indicate which of the variables is an array and 
+            // what its size is.
+            $arraySizesMap = array();
+
+            foreach (str_split($varTypes) as $i => $varType) {
+                // Get the argument
+                $arg = func_get_arg($i + 2);
+                
+                // If type is 'array'
+                if ($varType == 'a') {
+                    if (!is_array($arg)) {
+                        throw new IllegalArgumentException("Type of argument number $i is expected to be array");
+                    }
+                    // Add each of the items and their type
+                    foreach ($arg as $item) {
+                        $this->params['list'][] = $item;
+                        $this->params['types'] .= $this->getBindVariableType($item);
+                    }
+                    // Mark that this arg is an array and keep its size
+                    $arraySizesMap[$i] = count($arg);
+                }
+                else {
+                    $this->params['list'][] = $arg;
+                    $this->params['types'] .= $varType;
+                }
             }
-            $this->params['types'] .= $varTypes;
+            // In case of array vars, expand their '?' to a comma-separated list of '?'
+            $condition = $this->expandArrayVars($condition, $arraySizesMap);
         }
         $this->conditions[] = "($condition)";
     }
@@ -256,5 +286,60 @@ class SQLBuilder {
             $sql .= $sqlJoin;
         }
         return $sql;
+    }
+
+    /**
+     * Get the binding type suitable binding type for the given variable.
+     * See: http://www.php.net/manual/en/mysqli-stmt.bind-param.php
+     *  
+     * @param unknown $var
+     * @return string
+     */
+    private function getBindVariableType($var) {
+        if (is_string($var)) {
+            return 's';
+        }
+        if (is_integer($var)) {
+            return 'i';
+        }
+        if (is_double($var)) {
+            return 'd';
+        }
+        return 'b';
+    }
+
+    /**
+     * Given a SQL clause with potentially multiple '?', this method replaces
+     * certain occurances of '?' with a comma-separated list of '?'. It does so
+     * only for occurances which are indicated by the given map.
+     * For example: If $arraySizesMap[2] == 5 then the 3rd '?' will be replaced
+     * with '?,?,?,?,?'.
+     * 
+     * @param string $condition
+     * @param Map $arraySizesMap indicates which indexes of occurances of '?' in
+     *        the given condition represents an array, and what the array size is.
+     * @return string the given condition, with some of its '?' potentially
+     *         replaced with comma-separated list of '?'.
+     */
+    private function expandArrayVars($condition, $arraySizesMap) {
+        if (empty($arraySizesMap)) {
+            return $condition;
+        }
+        $parts = explode('?', $condition);
+        $newCondition = '';
+        foreach ($parts as $i => $part) {
+            // Paste the '?' (or its replacement by multiple '?") before the content
+            // but only after the first one.
+            if ($i > 0) {
+                $qMarks = '?';
+                // If $arraySizesMap contains this index, replace '?' with comma-separated list of '?'.
+                if (isset($arraySizesMap[$i-1])) {
+                    $qMarks = implode(',', array_fill(0, $arraySizesMap[$i-1], '?'));
+                }
+                $newCondition .= $qMarks;                
+            }
+            $newCondition .= $part;
+        }
+        return $newCondition;
     }
 }
