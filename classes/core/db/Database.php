@@ -47,34 +47,60 @@ class Database {
     }
 
     /**
+     * Prepare and executes the given query.
+     * Or, if $sqlOrStmt IS a statement, just executes it.
+     * To get the results, call get_result() with the returned statement.
+     *
+     * @param SQLBuilder|String|mysqli_stmt $sqlOrStmt can be either:
+     *          a. SQLBuilder: in which case it may contain parameters prepared
+     *             statements.
+     *          b. String: Plain SQL.
+     *          c. mysqli_stmt
+     * @param PagingInfo $paging
+     * @return mysqli_stmt
+     */
+    public function execute($sqlOrStmt, $paging=null) {
+        if (!$sqlOrStmt instanceof mysqli_stmt) {
+            $sqlOrStmt = $this->prepare($sqlOrStmt, $paging);
+        }
+        // At this point $sqlOrStmt is a mysqli_stmt
+        $startTime = microtime(true);
+        $success = $sqlOrStmt->execute();
+        $endTime = microtime(true);
+        if (!$success) {
+            throw new SQLException("Failed to execute query: " . $stmt);
+        }
+        return $sqlOrStmt;
+    }
+
+    /**
      * Prepare the given query for execution.
-     * 
-     * @param SQLBuilder|String $sqlBuilder can be either:
+     *
+     * @param SQLBuilder|String $sql can be either:
      *          a. SQLBuilder: in which case it may contain parameters prepared
      *             statements.
      *          b. String: Plain SQL.
      * @param PagingInfo $paging
      * @return mysqli_stmt
      */
-    public function execute($sqlBuilder, $paging=null) {
-        if (!$sqlBuilder) {
+    public function prepare($sql, $paging=null) {
+        if (!$sql) {
             throw new SQLException("Empty query");
         }
         # Keep the PagingInfo so we can set total rows later on.
         $this->paging = $paging;
-        $queryPager = new QueryPager($sqlBuilder, $paging);
-        $startTime = microtime(true);
+        $queryPager = new QueryPager($sql, $paging);
         if ($this->debugOn) {
-            Logger::debug("SQL: $sqlBuilder");
+            Logger::debug("SQL: $sql");
         }
 
         # Create a prepared statement
         $stmt = $this->db->prepare($queryPager->getQuery());
-
+        
         # Bind parameters, if there are any
-        if ($sqlBuilder instanceof SQLBuilder && $sqlBuilder->hasParams()) {
-            $refArgs = array($sqlBuilder->getParamTypes());
-            foreach ($sqlBuilder->getParamList() as $param) {
+        if ($sql instanceof SQLBuilder && $sql->hasParams()) {
+            $refArgs = array($sql->getParamTypes());
+            foreach ($sql->getParamList() as $param) {
                 $refArgs[] = $param;
             }
         
@@ -82,20 +108,12 @@ class Database {
             for ($i=1; $i<count($refArgs); $i++) {
                 $refArgs[$i] = &$refArgs[$i];
             }
-
+        
             call_user_func_array(array($stmt, 'bind_param'), $refArgs);
             if ($this->debugOn) {
                 Logger::debug("Query params: " . var_export($refArgs, true));
             }
         }
-
-        $stmt->execute();
-        $endTime = microtime(true);
-
-        if (!$stmt) {
-            throw new SQLException("Failed to execute query: " . $sqlBuilder);
-        }
-
         return $stmt;
     }
     
@@ -139,7 +157,10 @@ class Database {
     public function fetchRow($queryResult=null) {
         if (!$queryResult) {
             $queryResult = $this->queryResult;
-        } 
+        }
+        if (!$queryResult) {
+            throw new IllegalArgumentException("Missing query result");
+        }
         $result = $queryResult->fetch_array();
         if (!$result) {
             return $result;
