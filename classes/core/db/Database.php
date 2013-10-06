@@ -70,6 +70,12 @@ class Database {
         if (!$success) {
             throw new SQLException("Failed to execute query: " . $stmt);
         }
+        
+        if ($this->debugOn) {
+            $timeDiff = $endTime - $startTime;
+            Logger::debug("Query completed in " . number_format($timeDiff, 2) . " seconds.");
+        }
+
         return $sqlOrStmt;
     }
 
