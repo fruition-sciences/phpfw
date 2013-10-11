@@ -61,7 +61,11 @@ class Database {
      */
     public function execute($sqlOrStmt, $paging=null) {
         if (!$sqlOrStmt instanceof mysqli_stmt) {
-            $sqlOrStmt = $this->prepare($sqlOrStmt, $paging);
+            $stmt= $this->prepare($sqlOrStmt, $paging);
+            if (!$stmt) {
+                throw new SQLException("Failed to prepare query: $sqlOrStmt; Error: " . $this->db->error);
+            }
+            $sqlOrStmt = $stmt;
         }
         // At this point $sqlOrStmt is a mysqli_stmt
         $startTime = microtime(true);
