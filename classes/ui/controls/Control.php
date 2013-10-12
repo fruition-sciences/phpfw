@@ -61,9 +61,6 @@ class Control extends HtmlElement {
     }
 
     public function toInput() {
-        $html = self::getElementOpenTag();
-        $html .= $this->getBody();
-        $html .= self::getElementCloseTag();
-        return $html;
+        return parent::__toString();
     }
 }
