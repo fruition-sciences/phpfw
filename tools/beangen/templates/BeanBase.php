@@ -614,4 +614,15 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
     public function getColumnNames() {
         return self::$ALL;
     }
+
+    /**
+     * Check whether this bean represents a record that already exists in the
+     * database or not. This is determined by the value of the primary key.
+     *
+     * @return boolean true if the record does not exist in the database (i.e:
+     *         its ID is not a positive number), otherwise false. 
+     */
+    public function isNew() {
+        return $this->getId() <= 0;
+    }
 }
