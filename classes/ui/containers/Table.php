@@ -10,7 +10,11 @@ class Table extends HtmlElement {
     protected $inRow = false;
     protected $rowCount = 0;
     protected $noDataMessage;
-    
+    protected $showPaging = true;
+
+    /**
+     * @var PagingInfo
+     */
     private $pagingInfo;
 
     public function __construct($name, $className='', $ctx=null) {
@@ -121,6 +125,9 @@ class Table extends HtmlElement {
     }
 
     private function writePagingBar() {
+        if (!$this->showPaging) {
+            return;
+        }
         if (!$this->pagingInfo->getTotalRows()) {
             return;
         }
@@ -249,5 +256,16 @@ class Table extends HtmlElement {
 
     public function getRowCount() {
         return $this->rowCount;
+    }
+
+    /**
+     * Set to false to never show the paging footer. Note that this method does
+     * not affect which data will be shown in the table. It simply allows you
+     * to prevent showing the paging footer.
+     * 
+     * @param boolean $showPaging
+     */
+    public function setShowPaging($showPaging) {
+        $this->showPaging = $showPaging;
     }
 }
