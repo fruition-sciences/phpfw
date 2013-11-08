@@ -163,7 +163,28 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
      * @return boolean
      */
     public function <?php echo $descriptor->isChangedName($field) ?>() {
+<?php
+  if ($field['type'] == 'double') {
+      $getterName = $descriptor->getterName($field);
+?>
+        // Check if float values are equal.
+        if ($this-><?php echo $getterName ?>() == $this-><?php echo $getterName ?>Was()) {
+            return false;
+        }
+        // If only one of the values is null, we know they are not equal.
+        if ($this-><?php echo $getterName ?>() == null || $this-><?php echo $getterName ?>Was() == null) {
+            return true;
+        }
+        // Otherwise, compare up to precision of 6 decimal points.
+        return abs($this-><?php echo $getterName ?>() - $this-><?php echo $getterName ?>Was()) > 0.000001;
+<?php
+  }
+  else { 
+?>
         return $this-><?php echo $descriptor->getterName($field) ?>() != $this-><?php echo $descriptor->getterName($field) ?>Was();
+<?php 
+  }
+?>
     }
 
     /**
