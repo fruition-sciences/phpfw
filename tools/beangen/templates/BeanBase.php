@@ -85,6 +85,16 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
       ?>;
 <?php
  }
+ ?>
+ 
+    /**
+     * Map containing the original values, as loaded from DB. Allows checking if
+     * any field has changed. Keys are the column names.
+     *
+     * @var Array
+     */
+    private $prevValues = array();
+ <?php
 
   // Declare relationships (skips relationship to constant tables)
   $declaredRelationships = array();
@@ -121,7 +131,6 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
           $comment .= " ($unitConstantName)";
       }
 ?>
-
     /**
 <?php if ($comment) { ?>
      * <?php echo wordwrap($comment, 73, "\n     * ") ?>.
@@ -134,6 +143,27 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
      */
     public function <?php echo $descriptor->getterName($field) ?>() {
         return $this-><?php echo $field['name']?>;
+    }
+
+    /**
+     * Get the value of the '<?php echo $field['name']?>' field, as it was when loaded from the DB.
+     *
+     * @return id or null if this is a new bean.
+     */
+    public function <?php echo $descriptor->getterName($field) ?>Was() {
+        if (isset($this->prevValues[self::<?php echo $descriptor->fieldConstant($field) ?>])) {
+            return $this->prevValues[self::<?php echo $descriptor->fieldConstant($field) ?>];
+        }
+        return null;
+    }
+
+    /**
+     * Check if the '<?php echo $field['name']?>' field has changed since it was loaded from the DB.
+     *
+     * @return boolean
+     */
+    public function <?php echo $descriptor->isChangedName($field) ?>() {
+        return $this-><?php echo $descriptor->getterName($field) ?>() != $this-><?php echo $descriptor->getterName($field) ?>Was();
     }
 
     /**
@@ -305,10 +335,10 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
         }
         $this-><?php echo $rel['name']?>[] = $bean;
     }
+
 <?php
   }
 ?>
-
 <?php
   if (sizeof($descriptor->xml->constant) > 0) {
 ?>
@@ -324,6 +354,40 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
 <?php
   }
 ?>
+    /**
+     * Check if the value of any field of this bean has changed since it was
+     * loaded from the database.
+     * This is done by comparing each field with its previous value. Previous
+     * values have been set by calling populatePrevValues(), which is called by
+     * <?php echo $descriptor->xml['name'] ?>BeanHomeBase::populate().
+     *
+     * @return boolean
+     */
+    public function isChanged() {
+<?php
+  $parts = array();
+  foreach ($descriptor->xml->field as $field) {
+      $parts[] = '$this->' . $descriptor->isChangedName($field) . "()";
+  }
+?>
+        return
+            <?php echo implode(" ||\n            ", $parts) ?>;
+    }
+
+    /**
+     * Populate the 'prevValues' map, with the values of all fields of this bean.
+     * This method is being called after populating this bean.
+     */
+    public function populatePrevValues() {
+<?php
+  foreach ($descriptor->xml->field as $field) {
+?>
+        $this->prevValues[self::<?php echo $descriptor->fieldConstant($field) ?>] = $this-><?php echo $descriptor->getterName($field) ?>();
+<?php
+  }
+?>
+    }
+
     public function insert() {
         $db = Transaction::getInstance()->getDB();
         $this->createDate = time();

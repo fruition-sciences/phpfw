@@ -34,6 +34,10 @@ class BeanDescriptor {
         return $verb . ucfirst($field["name"]);
     }
 
+    public function isChangedName($field) {
+        return 'is' . ucfirst($field["name"]) . 'Changed';
+    }
+
     public function unitGetterName($field) {
         if (!isset($field['unit'])) {
             throw new IllegalArgumentException("The field " . $field["name"] . " does not have a 'unit' attribute");

@@ -129,6 +129,7 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanHomeBase {
 <?php
   }
 ?>
+        $bean->populatePrevValues();
     }
 
     public static function findAll($paging=null) {
