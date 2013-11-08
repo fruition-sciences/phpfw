@@ -451,10 +451,10 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
       $sep = $i < sizeof($descriptor->xml->field)-1 ? "\",\" ." : "";
       ?>
       
-      self::<?php echo $descriptor->fieldConstant($field)?> . " = " . <?php echo $descriptor->escapedField($field) . " . $sep"?>
+        self::<?php echo $descriptor->fieldConstant($field)?> . " = " . <?php echo $descriptor->escapedField($field) . " . $sep"?>
     <?php  }
-?>
-            " where " . self::ID . "=" . $this->id;
+?> 
+        " where " . self::ID . "=" . $this->id;
         $db->query($sql);
     }
 
