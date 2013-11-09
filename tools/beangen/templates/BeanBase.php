@@ -409,53 +409,67 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
 ?>
     }
 
+<?php
+  $questionMarks = array_fill(0, sizeof($descriptor->xml->field)-1, '?');
+  $paramsList = array();
+  $bindParamTypes = array();
+  $paramReferences = array();
+  $columnNamesForInsert = array();
+  $columnAssignmentsForUpdate = array();
+  for ($i=1; $i<sizeof($descriptor->xml->field); $i++) {
+      $field = $descriptor->xml->field[$i];
+      $fieldStr = 
+      $paramsList[] = $descriptor->escapedFieldForPreparedStatement($field);
+      $bindParamTypes[] = $descriptor->getBindBaramType($field);
+      $paramReferences[] = '$params[' . ($i-1) . ']';
+      $columnNamesForInsert[] = "self::" . $descriptor->fieldConstant($field);
+      $columnAssignmentsForUpdate[] = "self::" . $descriptor->fieldConstant($field) . " . '=?";
+  }
+?>
     public function insert() {
         $db = Transaction::getInstance()->getDB();
         $this->createDate = time();
         $this->createUserId = Transaction::getInstance()->getUser()->getId();
         $sql = "insert into " . self::TABLE_NAME .
             " (" .
-<?php
-  for ($i=1; $i<sizeof($descriptor->xml->field); $i++) {
-      $field = $descriptor->xml->field[$i];
-      $sep = $i < sizeof($descriptor->xml->field)-1 ? "\", \"" : "\")\"";
-?>
-            self::<?php echo $descriptor->fieldConstant($field) . " . " . $sep;?> .
-<?php
-  }
-?>
-            " values (" .
-<?php
-  for ($i=1; $i<sizeof($descriptor->xml->field); $i++) {
-      $field = $descriptor->xml->field[$i];
-      $sep = $i < sizeof($descriptor->xml->field)-1 ? "\",\" ." : "\")\";";
-?>
-            <?php echo $descriptor->escapedField($field) . " . " . $sep?>
+            <?php echo implode(". \", \" .\n            ", $columnNamesForInsert)?> . ")" .
+            " values (<?php echo implode(', ', $questionMarks) ?>)";
 
-<?php
-  }
-?>
+        $params = [
+            <?php echo implode(",\n            ", $paramsList) ?> 
+        ];
 
-        $db->query($sql);
+        $stmt = $db->prepare($sql);
+        $stmt->bind_param('<?php echo implode('', $bindParamTypes) ?>', <?php echo implode(', ', $paramReferences) ?>);
+        $db->execute($stmt);
         $this->id = $db->get_last_id();
+        $db->disposeQuery($stmt); 
     }
 
+<?php
+  // Add the id and its binding type to the list of params.
+  $idField = $descriptor->xml->field[0];
+  $paramsList[] = $descriptor->escapedFieldForPreparedStatement($idField);
+  $bindParamTypes[] = $descriptor->getBindBaramType($idField);
+  $paramReferences[] = '$params[' . (sizeof($descriptor->xml->field)-1) . ']';
+?>
+    
     public function update() {
         $db = Transaction::getInstance()->getDB();
         $this->modDate = time();
         $this->modUserId = Transaction::getInstance()->getUser()->getId();
         $sql = "update " . self::TABLE_NAME . " set " .
-<?php
-  for ($i=1; $i<sizeof($descriptor->xml->field); $i++) {
-      $field = $descriptor->xml->field[$i];
-      $sep = $i < sizeof($descriptor->xml->field)-1 ? "\",\" ." : "";
-      ?>
-      
-        self::<?php echo $descriptor->fieldConstant($field)?> . " = " . <?php echo $descriptor->escapedField($field) . " . $sep"?>
-    <?php  }
-?> 
-        " where " . self::ID . "=" . $this->id;
-        $db->query($sql);
+            <?php echo implode(", ' .\n            ", $columnAssignmentsForUpdate)?>' . 
+            " where " . self::ID . "=?";
+
+        $params = [
+            <?php echo implode(",\n            ", $paramsList) ?> 
+        ];
+        
+        $stmt = $db->prepare($sql);
+        $stmt->bind_param('<?php echo implode('', $bindParamTypes) ?>', <?php echo implode(', ', $paramReferences) ?>);
+        $db->execute($stmt);
+        $db->disposeQuery($stmt);
     }
 
     /**

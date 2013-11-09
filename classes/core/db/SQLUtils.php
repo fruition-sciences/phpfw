@@ -13,7 +13,8 @@ class SQLUtils {
         $db = Transaction::getInstance()->getDB();
         $escaped = '';
         if (method_exists($db, 'getDB')) {
-            Logger::warning("Depracated: Avoid SQLUtils::escapeString. Use prepared statement instead (suppoer for prepared statements coming soon).");
+            $caller = self::getCallerFunction();
+            Logger::warning("Depracated: Avoid SQLUtils::escapeString. Use prepared statement. Called by: ${caller}");
             $escaped = $db->getDB()->real_escape_string($str);
         }
         else {
@@ -46,12 +47,14 @@ class SQLUtils {
      * representation (string HH:MM:SS).
      *
      * @param long time The time (seconds number)
+     * @param boolean whether the returned string should be surrounted by quotes.
      */
-    public static function convertTime($time) {
+    public static function convertTime($time, $withQuotes=true) {
         if ($time == null || $time === "") {
             return "null";
         }
-        return "'" . sprintf("%02d%s%02d%s%02d", floor($time/3600), ":", ($time/60)%60, ":", $time%60) . "'";
+        $sTime = sprintf("%02d%s%02d%s%02d", floor($time/3600), ":", ($time/60)%60, ":", $time%60);
+        return $withQuotes ? "'$sTime'" : $sTime;
     }
 
     public static function convertLong($val) {
@@ -93,5 +96,20 @@ class SQLUtils {
             return "null";
         }
         return "GeomFromText('" . $geom->toWKT() . "',4326)";
+    }
+
+    /**
+     * Get the caller method.
+     * This should eventually be moved to a more general utils class.
+     */
+    private static function getCallerFunction() {
+        $callers = debug_backtrace();
+        if ($callers && count($callers > 1)) {
+            $caller = $callers[1];
+            $file = $caller['file'];
+            $line = $caller['line'];
+            return "${file} line ${line}";
+        }
+        return null;
     }
 }

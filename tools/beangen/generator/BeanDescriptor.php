@@ -77,7 +77,16 @@ class BeanDescriptor {
         return "load" . ucfirst($field["name"]);
     }
 
-    public function escapedField($field) {
+    /**
+     * Escape/format the given field so it can be used in SQL queries.
+     * 
+     * @param SimpleXMLElement $field
+     * @param boolean $quoteDates if true, date/time will be surrounded by quotes.
+     * @throws Exception
+     * @return string
+     */
+    public function escapedField($field, $quoteDates=true) {
+        $sQuoteDates = $quoteDates ? 'true' : 'false';
         switch ($field["type"]) {
             case "String":
                 return "SQLUtils::escapeString(\$this->${field['name']})";
@@ -88,19 +97,68 @@ class BeanDescriptor {
             case "double":
                 return "SQLUtils::convertDouble(\$this->${field['name']})";
             case "Date":
+                $timeZone = 'GMT';
                 $extraParam = "";
                 if ($field['timezone']) {
-                    $extraParam = ", '" . $field['timezone'] . "'";
+                    $timeZone = $field['timezone'];
                 }
-                return "SQLUtils::convertDate(\$this->${field['name']}$extraParam)";
+                return "SQLUtils::convertDate(\$this->${field['name']}, '${timeZone}', ${sQuoteDates})";
             case "time":
-                return "SQLUtils::convertTime(\$this->${field['name']})";
+                return "SQLUtils::convertTime(\$this->${field['name']}, ${sQuoteDates})";
             case "Boolean":
                  return "SQLUtils::convertBoolean(\$this->${field['name']})";
             case "GeomPolygon":
                  return "SQLUtils::convertGeom(\$this->${field['name']})";
             case "GeomPoint":
                 return "SQLUtils::convertGeom(\$this->${field['name']})";
+            default:
+                throw new Exception("Unknown field type: " . $field["type"]);
+        }
+    }
+
+    /**
+     * For prepapred statement, we need to escape (or rather, reformat) only
+     * types that are not handled directly by the statement.
+     * For those types, we delegate to the method 'escapedField'.
+     * 
+     * @param SimpleXMLElement $field
+     * @throws Exception
+     * @return string
+     */
+    public function escapedFieldForPreparedStatement($field) {
+        switch ($field ["type"]) {
+            case "String":
+            case "long":
+            case "id":
+            case "double":
+            case "Boolean":
+                return "\$this->${field['name']}";
+            default :
+                return $this->escapedField($field, false);
+        }       
+    }
+
+    /**
+     * Get the bind param type to be used in a prepared statement for the given
+     * field. This corresponds to the way we escape/format the param.
+     * See: escapedFieldForPreparedStatement.
+     * 
+     * @param SimpleXMLElement $field
+     */
+    public function getBindBaramType($field) {
+        switch ($field ["type"]) {
+            case "id":
+            case "long":
+            case "Boolean":
+                return 'i';
+            case "double":
+                return 'd';
+            case "String":
+            case "Date":
+            case "time":
+            case "GeomPolygon":
+            case "GeomPoint":
+                return 's';
             default:
                 throw new Exception("Unknown field type: " . $field["type"]);
         }

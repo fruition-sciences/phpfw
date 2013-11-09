@@ -72,7 +72,7 @@ class Database {
         $success = $sqlOrStmt->execute();
         $endTime = microtime(true);
         if (!$success) {
-            throw new SQLException("Failed to execute query: " . $stmt);
+            throw new SQLException("Failed to execute query. " . $sqlOrStmt->error);
         }
         
         if ($this->debugOn) {
