@@ -95,7 +95,11 @@ class SQLUtils {
         if ($geom === null) {
             return "null";
         }
-        return "GeomFromText('" . $geom->toWKT() . "',4326)";
+        // Surround content with quotes, unless it's '?', meant for prepared statement.
+        if ($geom != '?') {
+            $geom = "'${geom}'";
+        }
+        return "GeomFromText(${geom} ,4326)";
     }
 
     /**

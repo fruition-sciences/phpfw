@@ -6,6 +6,7 @@
  */
 
 require_once("classes/utils/StringUtils.php");
+require_once("classes/core/db/SQLUtils.php");
 
 class BeanDescriptor {
     private $xmlFile;
@@ -127,17 +128,32 @@ class BeanDescriptor {
      */
     public function escapedFieldForPreparedStatement($field) {
         switch ($field ["type"]) {
-            case "String":
-            case "long":
-            case "id":
-            case "double":
-            case "Boolean":
-                return "\$this->${field['name']}";
-            default :
+    	      case "Date":
+    	      case "time":
                 return $this->escapedField($field, false);
+    	      default:
+    	          return "\$this->${field['name']}";
         }       
     }
 
+    /**
+     * Get the '?' variable to represent the given field in an 'insert' or
+     * 'update' prepapred statement.
+     * In most cases, returned value will simply be '?'.
+     * In some other cases, additional SQL functions need to be included.
+     * 
+     * @param SimpleXMLElement $field
+     */
+    public function getVariableMarkerForPreparedStatement($field) {
+        switch ($field ["type"]) {
+        	case "GeomPolygon":
+        	case "GeomPoint":
+        	    return SQLUtils::convertGeom('?');
+        	default:
+        	    return "?";
+        }
+    }
+    
     /**
      * Get the bind param type to be used in a prepared statement for the given
      * field. This corresponds to the way we escape/format the param.

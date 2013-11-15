@@ -410,7 +410,7 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
     }
 
 <?php
-  $questionMarks = array_fill(0, sizeof($descriptor->xml->field)-1, '?');
+  $questionMarks = array();
   $paramsList = array();
   $bindParamTypes = array();
   $paramReferences = array();
@@ -423,7 +423,9 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
       $bindParamTypes[] = $descriptor->getBindBaramType($field);
       $paramReferences[] = '$params[' . ($i-1) . ']';
       $columnNamesForInsert[] = "self::" . $descriptor->fieldConstant($field);
-      $columnAssignmentsForUpdate[] = "self::" . $descriptor->fieldConstant($field) . " . '=?";
+      $variableMarker = $descriptor->getVariableMarkerForPreparedStatement($field);
+      $questionMarks[] = $variableMarker;
+      $columnAssignmentsForUpdate[] = sprintf("self::%s . '=%s", $descriptor->fieldConstant($field), $variableMarker);
   }
 ?>
     public function insert() {
