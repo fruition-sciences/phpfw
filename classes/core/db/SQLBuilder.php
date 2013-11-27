@@ -295,7 +295,7 @@ class SQLBuilder {
     }
 
     /**
-     * Get the binding type suitable binding type for the given variable.
+     * Get the binding type suitable for the given variable.
      * See: http://www.php.net/manual/en/mysqli-stmt.bind-param.php
      *  
      * @param unknown $var

@@ -71,9 +71,19 @@ class SQLUtils {
         return $val;
     }
 
-    public static function convertId($val) {
+    /**
+     * Convert the given number to an id, which basically means converting -1
+     * and empty string to null.
+     * 
+     * @param int $val
+     * @param string $quoteNull if true, the 'null' value will be in quotes (useful
+     *        when NOT using prepared statements). Pass false when you use a
+     *        prepared statement. 
+     * @return Ambigous <string, NULL>|unknown
+     */
+    public static function convertId($val, $quoteNull=true) {
         if ($val < 0 || $val === null || $val === "") {
-            return "null";
+            return $quoteNull ? "null" : null;
         }
         return $val;
     }

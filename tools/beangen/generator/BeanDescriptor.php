@@ -82,19 +82,20 @@ class BeanDescriptor {
      * Escape/format the given field so it can be used in SQL queries.
      * 
      * @param SimpleXMLElement $field
-     * @param boolean $quoteDates if true, date/time will be surrounded by quotes.
+     * @param boolean $quoteValues if true, non-number values will be surrounded
+     *        by quotes. Pass false when using prepared statement.
      * @throws Exception
      * @return string
      */
-    public function escapedField($field, $quoteDates=true) {
-        $sQuoteDates = $quoteDates ? 'true' : 'false';
+    public function escapedField($field, $quoteValues=true) {
+        $sQuoteValues = $quoteValues ? 'true' : 'false';
         switch ($field["type"]) {
             case "String":
                 return "SQLUtils::escapeString(\$this->${field['name']})";
             case "long":
                 return "SQLUtils::convertLong(\$this->${field['name']})";
             case "id":
-                return "SQLUtils::convertId(\$this->${field['name']})";
+                return "SQLUtils::convertId(\$this->${field['name']}, ${sQuoteValues})";
             case "double":
                 return "SQLUtils::convertDouble(\$this->${field['name']})";
             case "Date":
@@ -103,9 +104,9 @@ class BeanDescriptor {
                 if ($field['timezone']) {
                     $timeZone = $field['timezone'];
                 }
-                return "SQLUtils::convertDate(\$this->${field['name']}, '${timeZone}', ${sQuoteDates})";
+                return "SQLUtils::convertDate(\$this->${field['name']}, '${timeZone}', ${sQuoteValues})";
             case "time":
-                return "SQLUtils::convertTime(\$this->${field['name']}, ${sQuoteDates})";
+                return "SQLUtils::convertTime(\$this->${field['name']}, ${sQuoteValues})";
             case "Boolean":
                  return "SQLUtils::convertBoolean(\$this->${field['name']})";
             case "GeomPolygon":
@@ -130,6 +131,7 @@ class BeanDescriptor {
         switch ($field ["type"]) {
     	      case "Date":
     	      case "time":
+    	      case "id":
                 return $this->escapedField($field, false);
     	      default:
     	          return "\$this->${field['name']}";
