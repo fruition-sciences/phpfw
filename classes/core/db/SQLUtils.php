@@ -35,7 +35,7 @@ class SQLUtils {
      */
     public static function convertDate($dateTime, $timeZone='GMT', $withQuotes=true) {
         if ($dateTime == null) {
-            return "null";
+            return $withQuotes ? "null" : null;
         }
         $format = new Formatter($timeZone);
         $sDate = $format->dateFormat($dateTime, "Y-m-d H:i:s");
