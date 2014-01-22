@@ -120,7 +120,8 @@ class Datebox extends Control {
             dateFormat: "{$this->dateFormat}",
             timeFormat: "{$this->timeFormat}",
             stepMinute: {$this->stepMinute},
-            showMinute: {$showMinute}
+            showMinute: {$showMinute},
+            firstDay: 1
         });
         jQuery.datepicker.setDefaults($localization);
         jQuery( "#{$this->getName()}" ).datetimepicker();
@@ -136,7 +137,8 @@ EOP;
             yearRange: "{$this->yearRange}",
             showOtherMonths: true,
             selectOtherMonths: true,
-            dateFormat: "{$this->dateFormat}"
+            dateFormat: "{$this->dateFormat}",
+            firstDay: 1
         });
         jQuery.datepicker.setDefaults($localization);
         jQuery( "#{$this->getName()}" ).datepicker();
