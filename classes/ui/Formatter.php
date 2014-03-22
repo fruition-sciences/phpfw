@@ -70,7 +70,7 @@ class Formatter {
      *         for this Formatter object.
      */
     public function date($timestamp, $default='') {
-         return $this->zendDate($timestamp, Zend_Date::DATE_SHORT, $default);
+        return $this->zendDate($timestamp, Zend_Date::DATE_SHORT, $default);
     }
 
     /**
@@ -105,8 +105,8 @@ class Formatter {
     }
 
     /**
-     * Format the given timestamp using the given zend format.
-     * Uses the 'zendLocale' field.
+     * Format the given timestamp using the given zend format and using the
+     * locale defined in this formatter.
      * If the given timestamp is null, returns an empty string.
      * @see Zend_Date
      *
@@ -118,7 +118,7 @@ class Formatter {
         if (!$timestamp) {
             return $default;
         }
-        $zendDate = new Zend_Date($timestamp, Zend_Date::TIMESTAMP, new Zend_Locale('en_US'));
+        $zendDate = new Zend_Date($timestamp, Zend_Date::TIMESTAMP, $this->zendLocale);
         $zendDate->setTimezone($this->timezoneName);
         return $zendDate->toString($zendFormat);
     }
@@ -216,5 +216,16 @@ class Formatter {
             self::$utcTimeZone = new DateTimeZone('UTC');
         }
         return self::$utcTimeZone;
+    }
+
+    /**
+     * @return Zend_Locale
+     */
+    public function getLocale() {
+        return $this->zendLocale;
+    }
+
+    public function getLocaleName() {
+        return $this->zendLocale->toString();        
     }
 }

@@ -3,7 +3,7 @@
  * Converts back and forth various object types into serialized values in a map.
  * The map is similar to the one used to keep Form values. The values are all
  * formatted strings. Certain data types are kept in more than a single key in
- * the map. (For example, measure if kept in two fields: value & unit).  
+ * the map. (For example, measure is kept in two fields: value & unit).  
  *
  * The 'getter' methods convert from values in the map (formatted strings) to a
  * single value (or object).
@@ -29,6 +29,9 @@ class InputConverter {
      * Get a date (unix timestamp) from the given map.
      * 
      * Currently, parses the value associated with the key.
+     * Parses the date using the Zend_Date::DATETIME_SHORT format, which accepts
+     * year as either 2 or 4 digits.
+     * 
      * TODO: The map should contain 2 fields:
      * - $key : keeps the formatted date
      * - $key__time: keeps the formatted time 
@@ -42,18 +45,8 @@ class InputConverter {
         if (!isset($value) || $value === "" || $value === false) {
             return null;
         }
-        // TODO: Parse according to locale
-        $originalDefaultTimezone = date_default_timezone_get();
-        // Temporarily change time zone.
-        date_default_timezone_set($this->timezoneName);
-
-        $date = new DateTime($value);
-        $tz = new DateTimeZone($this->timezoneName);
-        $date->setTimezone($tz);
-
-        // Set default time zone back
-        date_default_timezone_set($originalDefaultTimezone);
-        return $date->format('U');
+        $dataConverter = new DataConverter($this->timezoneName, $this->locale);
+        return $dataConverter->parseDate($value, Zend_Date::DATETIME_SHORT);
     }
 
     /**

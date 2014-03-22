@@ -12,9 +12,11 @@
 class DataConverter {
     private static $theInstance;
     private $timezoneName; // String
+    private $locale; // String
 
-    public function DataConverter($timezoneName) {
+    public function DataConverter($timezoneName, $locale='en_US') {
         $this->timezoneName = $timezoneName;
+        $this->locale = $locale;
     }
 
     /**
@@ -23,9 +25,10 @@ class DataConverter {
      * @return DataConverter
      */
     public static function getInstance() {
-        if (!self::$theInstance) {
+        if (!self::$theInstance) { 
             $timezone = Transaction::getInstance()->getUser()->getTimezone();
-            self::$theInstance = new DataConverter($timezone);
+            $locale = Transaction::getInstance()->getUser()->getLocale();
+            self::$theInstance = new DataConverter($timezone, $locale);
         }
         return self::$theInstance;
     }
@@ -35,14 +38,28 @@ class DataConverter {
      * DataConverter object.
      * 
      * @param String $formattedDate formatted date (or date & time)
+     * @param String $format the date format to use. See: http://framework.zend.com/manual/1.12/en/zend.date.constants.html#zend.date.constants.list
      * @return long unix timestamp
      */
-    public function parseDate($formattedDate) {
+    public function parseDate($formattedDate, $format=null) {
         if (!$formattedDate) {
             return null;
         }
-        $date = new DateTime($formattedDate, new DateTimeZone($this->timezoneName));
-        return $date->format('U');
+        // This is quite bad. In order to parse date in a given timezone using
+        // Zend_Date, looks like we must change the default time zone.
+        // We're changing it back after this call.
+        $defaultTimeZone = date_default_timezone_get();
+        try {
+            @date_default_timezone_set($this->timezoneName);
+            $zendDate = new Zend_Date($formattedDate, $format, $this->locale);
+            $timestamp = $zendDate->getTimestamp();
+        }
+        catch (Exception $e) {
+            @date_default_timezone_set($defaultTimeZone);
+            throw $e;
+        }
+        @date_default_timezone_set($defaultTimeZone);
+        return $timestamp;
     }
     
     /**

@@ -112,19 +112,16 @@ class Datebox extends Control {
             $script = <<<EOP
 <script type="text/javascript">
     jQuery(function() {
+        jQuery.timepicker.setDefaults($localization);
         jQuery( "#{$this->getName()}" ).datetimepicker({
             changeYear: true,
             yearRange: "{$this->yearRange}",
             showOtherMonths: true,
             selectOtherMonths: true,
-            dateFormat: "{$this->dateFormat}",
-            timeFormat: "{$this->timeFormat}",
             stepMinute: {$this->stepMinute},
             showMinute: {$showMinute},
             firstDay: 1
         });
-        jQuery.datepicker.setDefaults($localization);
-        jQuery( "#{$this->getName()}" ).datetimepicker();
     });
 </script>
 EOP;
@@ -132,6 +129,7 @@ EOP;
             $script = <<<EOP
 <script type="text/javascript">
     jQuery(function() {
+        jQuery.datepicker.setDefaults($localization);
         jQuery( "#{$this->getName()}" ).datepicker({
             changeYear: true,
             yearRange: "{$this->yearRange}",
@@ -140,8 +138,6 @@ EOP;
             dateFormat: "{$this->dateFormat}",
             firstDay: 1
         });
-        jQuery.datepicker.setDefaults($localization);
-        jQuery( "#{$this->getName()}" ).datepicker();
     });
 </script>
 EOP;
@@ -214,22 +210,26 @@ EOP;
         $weekArr = Zend_Locale_data::getList(Transaction::getInstance()->getUser()->getLocale(), "week");
         $firstDay = $daysArr['format']['narrow'][$weekArr["firstDay"]]-1;
         $tr = Application::getTranslator();
+        // Most i18n values come from dedicated jquery.ui.datepicker-<LANG>.js
+        // Make sure to include this file on all pages.
+        // The fields here are the ones used by the datetimepicker extension.
         $regional = array(
             "closeText"          => $tr->_('Done'), // Display text for close link
-            "prevText"           => $tr->_('Prev'), // Display text for previous month link
-            "nextText"           => $tr->_('Next'), // Display text for next month link
-            "currentText"        => $tr->_('Today'), // Display text for current month link
-            "monthNames"         => array($tr->_('January'),$tr->_('February'),$tr->_('March'),$tr->_('April'),$tr->_('May'),$tr->_('June'),
-                    			          $tr->_('July'),$tr->_('August'),$tr->_('September'),$tr->_('October'),
-                    			          $tr->_('November'),$tr->_('December')), // Names of months for drop-down and formatting
-            "monthNamesShort"    => array($tr->_('Jan'), $tr->_('Feb'), $tr->_('Mar'), $tr->_('Apr'), $tr->_('May'), $tr->_('Jun'), 
-                                          $tr->_('Jul'), $tr->_('Aug'), $tr->_('Sep'), $tr->_('Oct'), $tr->_('Nov'), $tr->_('Dec')), // For formatting
-            "dayNames"           => array($tr->_('Sunday'), $tr->_('Monday'), $tr->_('Tuesday'), $tr->_('Wednesday'), 
-                                          $tr->_('Thursday'), $tr->_('Friday'), $tr->_('Saturday')), // For formatting
-            "dayNamesShort"      => array($tr->_('Sun'), $tr->_('Mon'), $tr->_('Tue'), $tr->_('Wed'), $tr->_('Thu'), $tr->_('Fri'), $tr->_('Sat')), // For formatting
-            "dayNamesMin"        => array($tr->_('Su'),$tr->_('Mo'),$tr->_('Tu'),$tr->_('We'),$tr->_('Th'),$tr->_('Fr'),$tr->_('Sa')), // Column headings for days starting at Sunday
-            "weekHeader"         => $tr->_('Wk'), // Column header for week of the year
-            "dateFormat"         => 'mm/dd/yy', // TODO See format options on parseDate
+//             "prevText"           => $tr->_('Prev'), // Display text for previous month link
+//             "nextText"           => $tr->_('Next'), // Display text for next month link
+//            "currentText"        => $tr->_('Today'), // Display text for current month link
+//             "monthNames"         => array($tr->_('January'),$tr->_('February'),$tr->_('March'),$tr->_('April'),$tr->_('May'),$tr->_('June'),
+//                     			          $tr->_('July'),$tr->_('August'),$tr->_('September'),$tr->_('October'),
+//                     			          $tr->_('November'),$tr->_('December')), // Names of months for drop-down and formatting
+//             "monthNamesShort"    => array($tr->_('Jan'), $tr->_('Feb'), $tr->_('Mar'), $tr->_('Apr'), $tr->_('May'), $tr->_('Jun'), 
+//                                           $tr->_('Jul'), $tr->_('Aug'), $tr->_('Sep'), $tr->_('Oct'), $tr->_('Nov'), $tr->_('Dec')), // For formatting
+//             "dayNames"           => array($tr->_('Sunday'), $tr->_('Monday'), $tr->_('Tuesday'), $tr->_('Wednesday'), 
+//                                           $tr->_('Thursday'), $tr->_('Friday'), $tr->_('Saturday')), // For formatting
+//             "dayNamesShort"      => array($tr->_('Sun'), $tr->_('Mon'), $tr->_('Tue'), $tr->_('Wed'), $tr->_('Thu'), $tr->_('Fri'), $tr->_('Sat')), // For formatting
+//            "dayNamesMin"        => array($tr->_('Su'),$tr->_('Mo'),$tr->_('Tu'),$tr->_('We'),$tr->_('Th'),$tr->_('Fr'),$tr->_('Sa')), // Column headings for days starting at Sunday
+//             "weekHeader"         => $tr->_('Wk'), // Column header for week of the year
+            // dateFormat must be compatible with Zend_date DATE_SHORT for each local. Make sure to translate it to all supported locales.
+            "dateFormat"         => $tr->_('m/dd/y'), // Single y means 2 digit year.
             "firstDay"           => $firstDay, // The first day of the week, Sun = 0, Mon = 1, ...
             "isRTL"              => false, // True if right-to-left language, false if left-to-right
             "showMonthAfterYear" => false, // True if the year select precedes month, false for month then year
@@ -239,7 +239,7 @@ EOP;
             $regional["currentText"]   = $tr->_('Now');
             $regional["amNames"]       = array('AM', 'A');
             $regional["pmNames"]       = array('PM', 'P');
-            $regional["timeFormat"]    = 'HH:mm';
+            $regional["timeFormat"]    = $tr->_('h:mm TT');
             $regional["timeSuffix"]    = '';
             $regional["timeOnlyTitle"] = $tr->_('Choose Time');
             $regional["timeText"]      = $tr->_('Time');
