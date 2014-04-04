@@ -17,10 +17,7 @@ class DateConstraint extends Constraint {
             return true;
         }
         $converter = DataConverter::getInstance();
-        try {
-            $dateValue = $converter->parseDate($value, Zend_Date::DATETIME_SHORT);
-        }
-        catch (Exception $e) {
+        if (!$converter->parseDate($value)) {
             $msg = sprintf(Application::getTranslator()->_('The field %1$s must be a valid date'), $this->getLabel());
             $this->addFieldError($ctx, $this->getName(), $msg);
             return false;

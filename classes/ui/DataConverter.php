@@ -38,28 +38,18 @@ class DataConverter {
      * DataConverter object.
      * 
      * @param String $formattedDate formatted date (or date & time)
-     * @param String $format the date format to use. See: http://framework.zend.com/manual/1.12/en/zend.date.constants.html#zend.date.constants.list
+     * @param int $datetype Date type to use (none, short, medium, long, full). See: http://www.php.net/manual/en/class.intldateformatter.php#intl.intldateformatter-constants
+     * @param int $timetype Time type to use (none, short, medium, long, full). See: http://www.php.net/manual/en/class.intldateformatter.php#intl.intldateformatter-constants
+     * @param String $pattern Optional pattern to use when formatting or parsing. Possible patterns are documented at http://userguide.icu-project.org/formatparse/datetime
      * @return long unix timestamp
      */
-    public function parseDate($formattedDate, $format=null) {
+    public function parseDate($formattedDate, $datetype=IntlDateFormatter::SHORT, $timetype=IntlDateFormatter::SHORT, $pattern=null) {
         if (!$formattedDate) {
             return null;
         }
-        // This is quite bad. In order to parse date in a given timezone using
-        // Zend_Date, looks like we must change the default time zone.
-        // We're changing it back after this call.
-        $defaultTimeZone = date_default_timezone_get();
-        try {
-            @date_default_timezone_set($this->timezoneName);
-            $zendDate = new Zend_Date($formattedDate, $format, $this->locale);
-            $timestamp = $zendDate->getTimestamp();
-        }
-        catch (Exception $e) {
-            @date_default_timezone_set($defaultTimeZone);
-            throw $e;
-        }
-        @date_default_timezone_set($defaultTimeZone);
-        return $timestamp;
+        
+        $ftm = new IntlDateFormatter($this->locale, $datetype, $timetype, $this->timezoneName, null, $pattern);
+        return $ftm->parse($formattedDate);
     }
     
     /**

@@ -29,7 +29,7 @@ class InputConverter {
      * Get a date (unix timestamp) from the given map.
      * 
      * Currently, parses the value associated with the key.
-     * Parses the date using the Zend_Date::DATETIME_SHORT format, which accepts
+     * Parses the date using the IntlDateFormatter SHORT format, which accepts
      * year as either 2 or 4 digits.
      * 
      * TODO: The map should contain 2 fields:
@@ -46,7 +46,7 @@ class InputConverter {
             return null;
         }
         $dataConverter = new DataConverter($this->timezoneName, $this->locale);
-        return $dataConverter->parseDate($value, Zend_Date::DATETIME_SHORT);
+        return $dataConverter->parseDate($value);
     }
 
     /**

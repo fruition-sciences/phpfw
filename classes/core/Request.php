@@ -115,7 +115,7 @@ class Request {
      * Get the date value associated with the given key.
      *
      * @param String $key the key
-     * @param timestamp $dafaultValue value to return in case the key doesn't exist in the request.
+     * @param timestamp $defaultValue value to return in case the key doesn't exist in the request.
      * @param String $timezone If not passed, the user timezone will be used.
      * @return timestamp Unix timestamp - the number of seconds since January 1 1970 00:00:00 GMT
      */
