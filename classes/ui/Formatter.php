@@ -81,6 +81,11 @@ class Formatter {
         if ($timestamp === null) {
             return $default;
         }
+        # Workaround: Fix inconsistency in en_US locale - Make sure pattern does not contain a comma.
+        #             Some versions of IntlDateFormatter contain a comma in the pattern.
+        if ($fmt->getPattern() == "M/d/yy, h:mm a") {
+            $fmt->setPattern("M/d/yy h:mm a");
+        }
         return $fmt->format($timestamp);
     }
 
