@@ -369,4 +369,18 @@ class DateUtils {
         return $timestamp;
     }
     
+    /**
+     * Convert the given formatted date/time into a timestamp using the given
+     * timezone.
+     * The format accepted are described here : 
+     * http://www.php.net/manual/en/datetime.formats.php
+     * 
+     * @param string $formattedDate
+     * @param string $timezone
+     * @return int unix timestamp
+     */
+    public static function parseDate($formattedDate, $timezone) {
+        $date = new DateTime($formattedDate, new DateTimeZone($timezone));
+        return $date->format('U');
+    }
 }

@@ -63,10 +63,10 @@ class Formatter {
      *         for this Formatter object.
      */
     public function date($timestamp, $default='') {
-        $fmt = new IntlDateFormatter($this->getLocaleName(), IntlDateFormatter::SHORT, IntlDateFormatter::NONE, $this->timezone);
         if ($timestamp === null) {
             return $default;
         }
+        $fmt = new IntlDateFormatter($this->getLocaleName(), IntlDateFormatter::SHORT, IntlDateFormatter::NONE, $this->timezone);
         return $fmt->format($timestamp);
     }
 
@@ -77,10 +77,10 @@ class Formatter {
      *         timezone set for this Formatter object.
      */
     public function dateTime($timestamp, $newLine=false, $showSeconds=false) {
-        $fmt = new IntlDateFormatter($this->getLocaleName(), IntlDateFormatter::SHORT, IntlDateFormatter::SHORT, $this->timezone);
         if ($timestamp === null) {
-            return $default;
+            return '';
         }
+        $fmt = new IntlDateFormatter($this->getLocaleName(), IntlDateFormatter::SHORT, IntlDateFormatter::SHORT, $this->timezone);
         # Workaround: Fix inconsistency in en_US locale - Make sure pattern does not contain a comma.
         #             Some versions of IntlDateFormatter contain a comma in the pattern.
         if ($fmt->getPattern() == "M/d/yy, h:mm a") {
