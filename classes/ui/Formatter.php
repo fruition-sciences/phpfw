@@ -12,15 +12,9 @@ class Formatter {
     private static $theInstance;
 
     /**
-     * @var DateTimeZone
-     * @deprecated most likely will be removed
-     */
-    private $timezone;
-
-    /**
      * @var String
      */
-    private $timezoneName;
+    private $timezone;
 
     /**
      * @var Zend_Locale
@@ -35,15 +29,14 @@ class Formatter {
     /**
      * Create a new Formatter, for the given time zone.
      *
-     * @param String $timezoneName For example: 'America/Los_Angeles'
+     * @param String $timezone For example: 'America/Los_Angeles'
      * @param String $localeName For example: "en_US".
      */
-    public function Formatter($timezoneName, $localeName=null) {
+    public function Formatter($timezone, $localeName=null) {
         if (!$localeName) {
             $localeName = Transaction::getInstance()->getUser()->getLocale();
         }
-        $this->timezoneName = $timezoneName;
-        $this->timezone = new DateTimeZone($timezoneName);
+        $this->timezone = $timezone;
         $this->zendLocale = new Zend_Locale($localeName);
     }
 
@@ -70,7 +63,11 @@ class Formatter {
      *         for this Formatter object.
      */
     public function date($timestamp, $default='') {
-         return $this->zendDate($timestamp, Zend_Date::DATE_SHORT, $default);
+        $fmt = new IntlDateFormatter($this->getLocaleName(), IntlDateFormatter::SHORT, IntlDateFormatter::NONE, $this->timezone);
+        if ($timestamp === null) {
+            return $default;
+        }
+        return $fmt->format($timestamp);
     }
 
     /**
@@ -80,7 +77,16 @@ class Formatter {
      *         timezone set for this Formatter object.
      */
     public function dateTime($timestamp, $newLine=false, $showSeconds=false) {
-        return $this->zendDate($timestamp, Zend_Date::DATETIME_SHORT, '');
+        $fmt = new IntlDateFormatter($this->getLocaleName(), IntlDateFormatter::SHORT, IntlDateFormatter::SHORT, $this->timezone);
+        if ($timestamp === null) {
+            return $default;
+        }
+        # Workaround: Fix inconsistency in en_US locale - Make sure pattern does not contain a comma.
+        #             Some versions of IntlDateFormatter contain a comma in the pattern.
+        if ($fmt->getPattern() == "M/d/yy, h:mm a") {
+            $fmt->setPattern("M/d/yy h:mm a");
+        }
+        return $fmt->format($timestamp);
     }
 
     /**
@@ -100,27 +106,12 @@ class Formatter {
      *         timezone set for this Formatter object.
      */
     public function time($timestamp, $showSeconds=false) {
-        $zendFormat = $showSeconds ? Zend_Date::TIME_MEDIUM : Zend_Date::TIME_SHORT;
-        return $this->zendDate($timestamp, $zendFormat, '');
-    }
-
-    /**
-     * Format the given timestamp using the given zend format.
-     * Uses the 'zendLocale' field.
-     * If the given timestamp is null, returns an empty string.
-     * @see Zend_Date
-     *
-     * @param long $timestamp
-     * @param String $zendFormat
-     * @param String $default value to return if the given timestamp is null
-     */
-    private function zendDate($timestamp, $zendFormat, $default) {
-        if (!$timestamp) {
+        $timeType = $showSeconds ? IntlDateFormatter::MEDIUM : IntlDateFormatter::SHORT;
+        $fmt = new IntlDateFormatter($this->getLocaleName(), IntlDateFormatter::NONE, IntlDateFormatter::SHORT, $this->timezone);
+        if ($timestamp === null) {
             return $default;
         }
-        $zendDate = new Zend_Date($timestamp, Zend_Date::TIMESTAMP, new Zend_Locale('en_US'));
-        $zendDate->setTimezone($this->timezoneName);
-        return $zendDate->toString($zendFormat);
+        return $fmt->format($timestamp);
     }
 
     public function secondsToTime($seconds) {
@@ -141,7 +132,7 @@ class Formatter {
         }
         try {
             $date = new DateTime(date('c', $timestamp));
-            $date->setTimezone($this->timezone);
+            $date->setTimezone(new DateTimeZone($this->timezone));
             return $date->format($formatString);
         }
         catch (Exception $e) {
@@ -194,18 +185,9 @@ class Formatter {
     }
 
     /**
-     * Get the name of this formatter's timezone.
-     * 
-     * @return String
-     */
-    public function getTimeZoneName() {
-        return $this->timezone->getName();
-    }
-
-    /**
      * Get this formatter's timezone.
      * 
-     * @return DateTimeZone
+     * @return String
      */
     public function getTimeZone() {
         return $this->timezone;
@@ -216,5 +198,16 @@ class Formatter {
             self::$utcTimeZone = new DateTimeZone('UTC');
         }
         return self::$utcTimeZone;
+    }
+
+    /**
+     * @return String the locale
+     */
+    public function getLocale() {
+        return $this->zendLocale;
+    }
+
+    public function getLocaleName() {
+        return $this->zendLocale->toString();
     }
 }

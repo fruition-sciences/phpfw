@@ -12,9 +12,11 @@
 class DataConverter {
     private static $theInstance;
     private $timezoneName; // String
+    private $locale; // String
 
-    public function DataConverter($timezoneName) {
+    public function DataConverter($timezoneName, $locale='en_US') {
         $this->timezoneName = $timezoneName;
+        $this->locale = $locale;
     }
 
     /**
@@ -23,9 +25,10 @@ class DataConverter {
      * @return DataConverter
      */
     public static function getInstance() {
-        if (!self::$theInstance) {
+        if (!self::$theInstance) { 
             $timezone = Transaction::getInstance()->getUser()->getTimezone();
-            self::$theInstance = new DataConverter($timezone);
+            $locale = Transaction::getInstance()->getUser()->getLocale();
+            self::$theInstance = new DataConverter($timezone, $locale);
         }
         return self::$theInstance;
     }
@@ -35,14 +38,18 @@ class DataConverter {
      * DataConverter object.
      * 
      * @param String $formattedDate formatted date (or date & time)
+     * @param int $datetype Date type to use (none, short, medium, long, full). See: http://www.php.net/manual/en/class.intldateformatter.php#intl.intldateformatter-constants
+     * @param int $timetype Time type to use (none, short, medium, long, full). See: http://www.php.net/manual/en/class.intldateformatter.php#intl.intldateformatter-constants
+     * @param String $pattern Optional pattern to use when formatting or parsing. Possible patterns are documented at http://userguide.icu-project.org/formatparse/datetime
      * @return long unix timestamp
      */
-    public function parseDate($formattedDate) {
+    public function parseDate($formattedDate, $datetype=IntlDateFormatter::SHORT, $timetype=IntlDateFormatter::SHORT, $pattern=null) {
         if (!$formattedDate) {
             return null;
         }
-        $date = new DateTime($formattedDate, new DateTimeZone($this->timezoneName));
-        return $date->format('U');
+        
+        $ftm = new IntlDateFormatter($this->locale, $datetype, $timetype, $this->timezoneName, null, $pattern);
+        return $ftm->parse($formattedDate);
     }
     
     /**
