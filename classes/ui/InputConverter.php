@@ -46,7 +46,12 @@ class InputConverter {
             return null;
         }
         $dataConverter = new DataConverter($this->timezoneName, $this->locale);
-        return $dataConverter->parseDate($value);
+        $timestamp = $dataConverter->parseDate($value);
+        if ($timestamp === false) {
+            // If date/time parsing fail, try date only parsing...
+            $timestamp = $dataConverter->parseDate($value, IntlDateFormatter::SHORT, IntlDateFormatter::NONE);
+        }
+        return $timestamp;
     }
 
     /**
