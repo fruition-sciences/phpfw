@@ -54,7 +54,11 @@ class ResultSet {
 
     public function getDate($key, $timeZone='GMT') {
         $converter = new DataConverter($timeZone);
-        return $converter->parseDate($this->map[$key], null, null, 'yyyy-MM-dd HH:mm:ss');
+        $pattern = 'yyyy-MM-dd HH:mm:ss';
+        if (strpos($this->map[$key], " ") === false) {
+            $pattern = 'yyyy-MM-dd';
+        }
+        return $converter->parseDate($this->map[$key], null, null, $pattern);
     }
 
     public function setDate($key, $value) {
