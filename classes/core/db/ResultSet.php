@@ -58,7 +58,7 @@ class ResultSet {
         if (strpos($this->map[$key], " ") === false) {
             $pattern = 'yyyy-MM-dd';
         }
-        return $converter->parseDate($this->map[$key], null, null, $pattern);
+        return $converter->parseDate($this->map[$key], $pattern);
     }
 
     public function setDate($key, $value) {

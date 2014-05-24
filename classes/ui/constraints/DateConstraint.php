@@ -17,7 +17,7 @@ class DateConstraint extends Constraint {
             return true;
         }
         $converter = DataConverter::getInstance();
-        if (!$converter->parseDate($value) && !$converter->parseDate($value, IntlDateFormatter::SHORT, IntlDateFormatter::NONE)) {
+        if (!$converter->parseDate($value)) {
             $msg = sprintf(Application::getTranslator()->_('The field %1$s must be a valid date'), $this->getLabel());
             $this->addFieldError($ctx, $this->getName(), $msg);
             return false;

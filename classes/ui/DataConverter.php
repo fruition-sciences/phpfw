@@ -36,22 +36,36 @@ class DataConverter {
     /**
      * Parse the given formatted date according to the timezone set in this
      * DataConverter object.
+     * If $pattern is given, parsing will be strictly by this pattern.
+     * Otherwise, will try various localized patterns. Currently tries datetime
+     * and then date.
      * 
      * @param String $formattedDate formatted date (or date & time)
-     * @param int $datetype Date type to use (none, short, medium, long, full). See: http://www.php.net/manual/en/class.intldateformatter.php#intl.intldateformatter-constants
-     * @param int $timetype Time type to use (none, short, medium, long, full). See: http://www.php.net/manual/en/class.intldateformatter.php#intl.intldateformatter-constants
-     * @param String $pattern Optional pattern to use when formatting or parsing. Possible patterns are documented at http://userguide.icu-project.org/formatparse/datetime
+     * @param String $pattern Optional pattern to use when formatting or parsing. 
+     *               Patterns are documented at http://userguide.icu-project.org/formatparse/datetime
      * @return long unix timestamp
      */
-    public function parseDate($formattedDate, $datetype=IntlDateFormatter::SHORT, $timetype=IntlDateFormatter::SHORT, $pattern=null) {
+    public function parseDate($formattedDate, $pattern=null) {
         if (!$formattedDate) {
             return null;
         }
-        
-        $ftm = new IntlDateFormatter($this->locale, $datetype, $timetype, $this->timezoneName, null, $pattern);
-        return $ftm->parse($formattedDate);
+
+        if ($pattern) {
+            return $this->parseDateByPattern($formattedDate, $pattern);
+        }
+
+        // First try parsing as datetime
+        $pattern = DataConverter::getDatePattern($this->locale, true, true);
+        $timestamp = $this->parseDateByPattern($formattedDate, $pattern);
+        if (is_numeric($timestamp)) {
+            return $timestamp;
+        }
+
+        // If parsing failed, try parsing as date only
+        $pattern = DataConverter::getDatePattern($this->locale, true, false);
+        return $this->parseDateByPattern($formattedDate, $pattern);
     }
-    
+
     /**
      * Parse the given formatted time which is a duration (absolute amount of time).
      * 
@@ -66,5 +80,46 @@ class DataConverter {
 
     public function getTimeZoneName() {
         return $this->timezoneName;
+    }
+
+    /**
+     * Get the pattern to be used to format and parse date/time.
+     * The pattern is locale specific.
+     * The returned pattern is according to this specification: http://userguide.icu-project.org/formatparse/datetime
+     * 
+     * Note:
+     * 1. The $locale parameter is here becuase it *should* be used, however
+     *    current implementation uses Application::getTranslator(), which is
+     *    static so locale is not being use. It should be changed to use the given locale.
+     * 2. Calls to the translator should explicitly send the literal pattern so
+     *    that it is picked by the translator parser. (poedit).
+     * 
+     * @param String $locale
+     * @param boolean $withDate whether the pattern should include date. Default is true.
+     * @param boolean $withTime whether the pattern should include time. Default is false.
+     * @param boolean $timeIncludesSeconds whether the time should include seconds. Default is false.
+     *        Relevant only if $withTime is true.
+     *        Note: Currently ignored if $withDate is true.
+     * @return String
+     */
+    public static function getDatePattern($locale, $withDate=true, $withTime=false, $timeIncludesSeconds=false) {
+        if (!$withDate && !$withTime) {
+            throw new IllegalArgumentException("Date format must contain date or/and time");
+        }
+        $translator = Application::getTranslator();
+        if ($withDate && $withTime) {
+            return $translator->_('M/dd/yy h:mm a');
+        }
+        if ($withDate) {
+            return $translator->_('M/dd/yy');
+        }
+        if ($withTime) {
+            return $timeIncludesSeconds ? $translator->_('h:mm:ss a') : $translator->_('h:mm a');
+        }
+    }
+
+    private function parseDateByPattern($formattedDate, $pattern) {
+        $ftm = new IntlDateFormatter($this->locale, null, null, $this->timezoneName, null, $pattern);
+        return $ftm->parse($formattedDate);
     }
 }

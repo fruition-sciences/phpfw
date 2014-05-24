@@ -5,7 +5,7 @@
  *
  */
 
-class Formatter {
+class Formatter {    
     /**
      * @var Formatter
      */
@@ -66,12 +66,8 @@ class Formatter {
         if ($timestamp === null) {
             return $default;
         }
-        $fmt = new IntlDateFormatter($this->getLocaleName(), IntlDateFormatter::SHORT, IntlDateFormatter::NONE, $this->timezone);
-        # Workaround: Fix inconsistency in fr_FR locale - Make sure pattern does not contain a YYYY year.
-        #             Some versions of IntlDateFormatter contain this pattern.
-        if ($fmt->getPattern() == "dd/MM/y" || $fmt->getPattern() == "dd/MM/yyyy") {
-            $fmt->setPattern("dd/MM/yy");
-        }
+        $pattern = DataConverter::getDatePattern($this->getLocaleName());
+        $fmt = new IntlDateFormatter($this->getLocaleName(), null, null, $this->timezone, null, $pattern);
         return $fmt->format($timestamp);
     }
 
@@ -85,12 +81,8 @@ class Formatter {
         if ($timestamp === null) {
             return '';
         }
-        $fmt = new IntlDateFormatter($this->getLocaleName(), IntlDateFormatter::SHORT, IntlDateFormatter::SHORT, $this->timezone);
-        # Workaround: Fix inconsistency in en_US locale - Make sure pattern does not contain a comma.
-        #             Some versions of IntlDateFormatter contain a comma in the pattern.
-        if ($fmt->getPattern() == "M/d/yy, h:mm a") {
-            $fmt->setPattern("M/d/yy h:mm a");
-        }
+        $pattern = DataConverter::getDatePattern($this->getLocaleName(), true, true);
+        $fmt = new IntlDateFormatter($this->getLocaleName(), null, null, $this->timezone, null, $pattern);
         return $fmt->format($timestamp);
     }
 
@@ -111,8 +103,8 @@ class Formatter {
      *         timezone set for this Formatter object.
      */
     public function time($timestamp, $showSeconds=false) {
-        $timeType = $showSeconds ? IntlDateFormatter::MEDIUM : IntlDateFormatter::SHORT;
-        $fmt = new IntlDateFormatter($this->getLocaleName(), IntlDateFormatter::NONE, IntlDateFormatter::SHORT, $this->timezone);
+        $pattern = DataConverter::getDatePattern($this->getLocaleName(), false, true, $showSeconds);
+        $fmt = new IntlDateFormatter($this->getLocaleName(), null, null, $this->timezone, null, $pattern);
         if ($timestamp === null) {
             return $default;
         }

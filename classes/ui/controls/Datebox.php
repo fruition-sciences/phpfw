@@ -212,7 +212,7 @@ EOP;
         // The fields defined here are the ones used by the datetimepicker extension.
         $regional = array(
             "closeText"          => $tr->_('Done'), // Display text for close link
-            // Important: dateFormat must be compatible with IntlDateFormatter::SHORT for each local.
+            // Important: dateFormat must be compatible with pattern used by Formatter::date for each locale
             "dateFormat"         => $tr->_('m/dd/y'), // Single y means 2 digit year.
             "firstDay"           => $firstDay, // The first day of the week, Sun = 0, Mon = 1, ...
             "isRTL"              => false, // True if right-to-left language, false if left-to-right
@@ -223,7 +223,7 @@ EOP;
             $regional["currentText"]   = $tr->_('Now');
             $regional["amNames"]       = array('AM', 'A');
             $regional["pmNames"]       = array('PM', 'P');
-            // Important: timeFormat must be compatible with IntlDateFormatter::SHORT for each local.
+            // Important: timeFormat must be compatible with pattern used by Formatter::datetime for each locale
             $regional["timeFormat"]    = $tr->_('h:mm TT');
             $regional["timeSuffix"]    = '';
             $regional["timeOnlyTitle"] = $tr->_('Choose Time');

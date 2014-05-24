@@ -126,12 +126,7 @@ class Request {
             if ($timezone && $converter->getTimeZoneName() != $timezone) {
                 $converter = new DataConverter($timezone);
             }
-            $timestamp = $converter->parseDate($str);
-            if ($timestamp === false) {
-                // if parsing fail for date/time, try date only parsing.
-                $timestamp = $converter->parseDate($str, IntlDateFormatter::SHORT, IntlDateFormatter::NONE);
-            }
-            return $timestamp;
+            return $converter->parseDate($str);
         }
         catch (UndefinedKeyException $e) {
             if ($defaultValue != self::UNDEFINED) {
