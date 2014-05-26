@@ -67,6 +67,11 @@ class Formatter {
             return $default;
         }
         $fmt = new IntlDateFormatter($this->getLocaleName(), IntlDateFormatter::SHORT, IntlDateFormatter::NONE, $this->timezone);
+        # Workaround: Fix inconsistency in fr_FR locale - Make sure pattern does not contain a YYYY year.
+        #             Some versions of IntlDateFormatter contain this pattern.
+        if ($fmt->getPattern() == "dd/MM/y" || $fmt->getPattern() == "dd/MM/yyyy") {
+            $fmt->setPattern("dd/MM/yy");
+        }
         return $fmt->format($timestamp);
     }
 
