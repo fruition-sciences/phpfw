@@ -255,7 +255,7 @@ class Form {
         $hidden = new Hidden("_constraints");
         // Set the labels on the constraints
         foreach ($this->constraints as $constraint) {
-            if ($this->labels[$constraint->getName()]) {
+            if (isset($this->labels[$constraint->getName()])) {
                 $constraint->setLabel($this->labels[$constraint->getName()]);
             }
         }
