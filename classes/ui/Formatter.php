@@ -103,11 +103,11 @@ class Formatter {
      *         timezone set for this Formatter object.
      */
     public function time($timestamp, $showSeconds=false) {
+        if ($timestamp === null) {
+            return '';
+        }
         $pattern = DataConverter::getDatePattern($this->getLocaleName(), false, true, $showSeconds);
         $fmt = new IntlDateFormatter($this->getLocaleName(), null, null, $this->timezone, null, $pattern);
-        if ($timestamp === null) {
-            return $default;
-        }
         return $fmt->format($timestamp);
     }
 
