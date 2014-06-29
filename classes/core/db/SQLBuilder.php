@@ -6,6 +6,7 @@
  */
 
 class SQLBuilder {
+    private $command = "select";
     private $tables = array();
     private $columns = array();
     private $conditions = array();
@@ -31,6 +32,11 @@ class SQLBuilder {
     public function select($tableName, $alias, $columns, $functions=null) {
         $this->from($tableName, $alias);
         $this->addColumns($alias, $columns, $functions);
+    }
+    
+    public function delete($tableName) {
+        $this->from($tableName, '');
+        $this->command = "delete";
     }
     
     /** 
@@ -203,7 +209,7 @@ class SQLBuilder {
 
     public function __toString()
     {
-        $sql = "select ";
+        $sql = $this->command . " ";
         if ($this->predicate) {
             $sql .= $this->predicate . " ";
         }
