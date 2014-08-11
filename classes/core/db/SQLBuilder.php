@@ -61,7 +61,7 @@ class SQLBuilder {
      * @param $functions (option) array of the same size of the given columns array.
      * @return unknown_type
      */
-    private function addColumns($alias, $columns, $functions=null) {
+    public function addColumns($alias, $columns, $functions=null) {
         $useFunction = is_array($functions) && count($columns) == count($functions);
         foreach ($columns as $k=>$column) {
             if ($useFunction && !empty($functions[$k])){
