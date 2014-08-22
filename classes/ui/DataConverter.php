@@ -108,10 +108,10 @@ class DataConverter {
         }
         $translator = Application::getTranslator();
         if ($withDate && $withTime) {
-            return $translator->_('M/dd/yy h:mm a');
+            return $translator->_('M/dd/yyyy h:mm a');
         }
         if ($withDate) {
-            return $translator->_('M/dd/yy');
+            return $translator->_('M/dd/yyyy');
         }
         if ($withTime) {
             return $timeIncludesSeconds ? $translator->_('h:mm:ss a') : $translator->_('h:mm a');

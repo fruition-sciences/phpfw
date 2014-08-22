@@ -213,7 +213,7 @@ EOP;
         $regional = array(
             "closeText"          => $tr->_('Done'), // Display text for close link
             // Important: dateFormat must be compatible with pattern used by Formatter::date for each locale
-            "dateFormat"         => $tr->_('m/dd/y'), // Single y means 2 digit year.
+            "dateFormat"         => $tr->_('m/dd/yy'), // Single y means 2 digit year.
             "firstDay"           => $firstDay, // The first day of the week, Sun = 0, Mon = 1, ...
             "isRTL"              => false, // True if right-to-left language, false if left-to-right
             "showMonthAfterYear" => false, // True if the year select precedes month, false for month then year
