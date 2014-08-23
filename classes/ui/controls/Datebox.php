@@ -212,8 +212,17 @@ EOP;
         // The fields defined here are the ones used by the datetimepicker extension.
         $regional = array(
             "closeText"          => $tr->_('Done'), // Display text for close link
-            // Important: dateFormat must be compatible with pattern used by Formatter::date for each locale
-            "dateFormat"         => $tr->_('m/dd/y'), // Single y means 2 digit year.
+            // Important: dateFormat must be compatible with pattern used by
+            //   Formatter::date (DataConverter::getDatePattern) for each locale.
+            //
+            //   Note that in Formatter::date we use 2 digit year and for the datepicker
+            //   we use 4 digit year. The reasons are:
+            //   1. On the UI, we prefer to use 2 digit year format.
+            //   2. jQuery datepicker is able to parse 2 digit years even when
+            //      it uses a 4 digit year format. The oposite is not true.
+            //   3. DataConverter is able to parse 4 digit years even when it
+            //      uses a 2 digit year format.
+            "dateFormat"         => $tr->_('m/dd/yy'), // Single y means 2 digit year.
             "firstDay"           => $firstDay, // The first day of the week, Sun = 0, Mon = 1, ...
             "isRTL"              => false, // True if right-to-left language, false if left-to-right
             "showMonthAfterYear" => false, // True if the year select precedes month, false for month then year
