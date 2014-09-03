@@ -20,7 +20,9 @@ class Transaction {
     private $user;
 
     private function __construct() {
-        $this->db = new Database();
+        if (Config::getInstance()->getString('database/enable', "true") !== "false") {
+            $this->db = new Database();
+        }
     }
 
     /**
