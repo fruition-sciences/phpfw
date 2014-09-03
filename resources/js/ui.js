@@ -214,3 +214,12 @@ function getDateObject(dateString, dateSeperator) {
     dtObject=new Date(cYear, cMonth-1, cDate);
     return dtObject;
 }
+
+jQuery(document).ready(function(e) {
+    jQuery("input").keypress(function(e) {
+        if (e.which == 13) {
+            ui_pressDefaultButton(e);
+            e.preventDefault();
+        }
+    });
+});
