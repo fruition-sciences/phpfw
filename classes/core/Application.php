@@ -72,10 +72,10 @@ class Application {
     /**
      * Final handling of the exception.
      * Logs the error and renders the error page.
-     * 
+     *
      * Note: All PHP errors are being caught by the Application and then
      * being passed as exceptions to this method.
-     * 
+     *
      * @param $e
      */
     private function handleException($e) {
@@ -141,34 +141,34 @@ class Application {
         // Allow dashes in method name (for SEO purposes). Converts to camelCase.
         $methodName = $this->camelize($methodName);
         if (!$namespace) {
-        	$class = new ReflectionClass($controllerName);
+        	$controllerClass = new ReflectionClass($controllerName);
         } else{
-        	$class = new \ReflectionClass($namespace.'\\'.$controllerName);
+        	$controllerClass = new \ReflectionClass($namespace.'\\'.$controllerName);
         }
-        
-        $obj = $class->newInstance();
-        if (!$this->checkAccess($class, $obj, $ctx)) {
+
+        $controller = $controllerClass->newInstance();
+        if (!$this->checkAccess($controllerClass, $controller, $ctx)) {
             return;
         }
-        /*
-         * If a locale is required, set, but doesn't exist,
-        * or if a locale is defined but not required,
-        * we say the page doesn't exist and display a 404 error.
-        */
-        if (
-            ($obj->isLocaleSupported() == true && !empty($tokens['locale']) && !in_array($tokens['locale'], self::$translator->getAvailableLocales())) 
-            || (!$obj->isLocaleSupported() && !empty($tokens['locale']))
-           ) {
-            throw new PageNotFoundException(Application::getTranslator()->_("Invalid URL."), 0);
+
+        // If locale is required and set, but does not exist throw 404 error
+        if ($controller->isLocaleSupported() && isset($tokens['locale']) && !in_array($tokens['locale'], self::$translator->getAvailableLocales())) {
+            throw new PageNotFoundException(Application::getTranslator()->_("Invalid URL."));
         }
+
+        // If locale is defined but not required, throw 404 error
+        if (!$controller->isLocaleSupported() && isset($tokens['locale'])) {
+            throw new PageNotFoundException(Application::getTranslator()->_("Invalid URL."));
+        }
+
         /*
          * If the controller requires a locale :
          * - If it is not in the url, we redirect the user to his own locale
          * - If it is in the url and the locale is different than the saved locale, we save it in a cookie (for anonymous users only)
-         * - We set the locale to the default translator and I18nUtil 
+         * - We set the locale to the default translator and I18nUtil
          * Else, we set the user locale to default translator and I18nUtil.
          */
-        if ($obj->isLocaleSupported()) {
+        if ($controller->isLocaleSupported()) {
             if (empty($tokens['locale'])) {
                 $ctx->redirect('/'. $this->getSupportedLocale($ctx->getUser()->getLocale()) .'/'. $pathInfo, true);
             }
@@ -185,13 +185,13 @@ class Application {
         self::$translator->setLocale($this->getSupportedLocale($locale));
         header('Content-Language: '. self::$translator->getLocale());
         try {
-            $method = $class->getMethod($methodName);
+            $method = $controllerClass->getMethod($methodName);
         }
         catch (ReflectionException $e) {
             throw new PageNotFoundException($e->getMessage(), 0, $e);
         }
         try {
-            $view = $method->invoke($obj, $ctx);
+            $view = $method->invoke($controller, $ctx);
         }
         catch (ForwardViewException $e) {
             // Hanlde 'forwarding': A controller method threw this exception
@@ -210,17 +210,17 @@ class Application {
             $view->render($ctx);
         }
     }
-    
+
      /**
      * Breaks the path info into its various components, which are:
      * - locale
      * - controller : the alias of the controller
      * - method : the controller method to call
-     * 
+     *
      * The allowed combination of the path info components are:
      * 1. controller/method
-     * 2. locale/controller/method 
-     * 
+     * 2. locale/controller/method
+     *
      * @param String $pathInfo
      * @return Array a map with the following keys: locale, controller, method.
      */
@@ -232,7 +232,7 @@ class Application {
             'method' => null);
         if (($tokensCount = count($tokens)) == 0) {
             return $params;
-        } 
+        }
         $posController = 0;
         try {
             $this->controllerNameFromAlias($tokens[0]);
@@ -250,11 +250,11 @@ class Application {
         }
         return $params;
     }
-    
+
     /**
      * Get the locale of the user in the given context.
      * If the 'locale' parameter is in the request, sets its value into the user
-     * 
+     *
      * @param Context $ctx
      */
     public static function getSupportedLocale($locale) {
@@ -363,7 +363,7 @@ class Application {
         }
         $className = $config->getString("webapp/controllers/controller[@alias='$alias']/@class", null);
         $namespace = $config->getString("webapp/controllers/controller[@alias='$alias']/@namespace", null);
-        
+
         if (!$className) {
             throw new IllegalArgumentException("Unknown alias - " . $alias);
         }
@@ -416,7 +416,7 @@ class Application {
         if ($error) {
             // We cannot throw exception from here. Pass it to our exception handler method.
             $e = new ErrorException($error['message'], 0, $error['type'], $error['file'], $error['line']);
-            $this->handleException($e); 
+            $this->handleException($e);
         }
     }
 
@@ -424,7 +424,7 @@ class Application {
      * Get the 'stop' error level from configuration.
      * This is the biwise combination of error levels upon which the application
      * should stop.
-     *  
+     *
      * @return long
      */
     private function getConfigStopErrorLevel() {
@@ -438,7 +438,7 @@ class Application {
      * This is the biwise combination of error levels that the application
      * should log.
      * All other errors will be ignored.
-     *  
+     *
      * @return long
      */
     private function getConfigReportErrorLevel() {
@@ -450,7 +450,7 @@ class Application {
     /**
      * Change the given variable name into a camelCase form, (getting rid of
      * dashes).
-     * 
+     *
      * @param String $varName
      */
     private function camelize($varName) {
@@ -458,7 +458,7 @@ class Application {
         $varName = ucwords($varName);
         $varName = str_replace(' ', '', $varName);
         $varName = lcfirst($varName);
-    
+
         return $varName;
     }
 
@@ -480,17 +480,17 @@ class Application {
             throw new ConfigurationException("The properties/translator configuration parameter is invalid.");
         }
     }
-    
+
     /**
      * Return the translator. If none is set in the first call of getTranslator, it means
      * the application class has not been init, so we set a translator with en_US locale.
-     * It can happen by example in scripts ran by run.php, or if Zend_Sessio::start() throws an Exception in Application::service() 
+     * It can happen by example in scripts ran by run.php, or if Zend_Sessio::start() throws an Exception in Application::service()
      * @return ITranslator
      */
     public static function getTranslator() {
         if (!(self::$translator instanceof ITranslator)) {
             self::initTranslator('en_US');
-        } 
+        }
         return self::$translator;
     }
 }
