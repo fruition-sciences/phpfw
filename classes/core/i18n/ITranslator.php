@@ -25,6 +25,7 @@ interface ITranslator {
      * @return string
      */
     public function getLanguage();
+
     /**
      * Return the translated sentence
      * @param string $sentence
