@@ -12,14 +12,17 @@ class Application {
      * @var Context
      */
     private $ctx;
+
     /**
      * @var string
      */
     private $sessionName;
+
     /**
      * @var TimeLogger
      */
     private $timeLogger;
+
     /**
      * @var ITranslator
      */
@@ -108,96 +111,85 @@ class Application {
     }
 
     private function invokeControllerMethod() {
-        $ctx = $this->getContext();
         $pathInfo = self::getPathInfo();
         $this->timeLogger->setText($pathInfo);
-        $tokens = $this->explodePath($pathInfo);
-        if (empty($tokens['controller']) && empty($tokens['method'])) {
-            /* if there's no controller nor method, we redirect permanently to the default page.
-             * If there's a defined locale, we keep it.
-             */
-            $page = Config::getInstance()->getString('webapp/defaultURL');
-            if (substr($page, 0, 1) != '/') {
-                $page = '/'. $page;
-            }
-            if ($tokens['locale'] != null) {
-                $page = '/'. $tokens['locale'] . $page;
-            }
-            $ctx->redirect($page, true);
+
+        $ctx = $this->getContext();
+
+        $router = $this->loadRouter();
+        $ctx->setRouter($router);
+
+        $route = $router->match($pathInfo, $_SERVER);
+
+        // If no route found, show a 404
+        if (!$route) {
+            throw new PageNotFoundException(Application::getTranslator()->_("Invalid URL."));
         }
+
+        list($controllerAlias, $methodName, $lang, $redirectPath) = $this->getRouteResult($route);
+        Logger::info("Route: " . $route->name . " (controller=$controllerAlias, method=$methodName, lang=$lang, redirect=$redirectPath)");
+
+        $controllerClassName = null;
         try {
-            list($controllerName, $namespace) = $this->controllerNameFromAlias($tokens['controller']);
+            $controllerClassName = $this->controllerClassNameFromAlias($controllerAlias);
         }
         catch (IllegalArgumentException $e) {
             throw new PageNotFoundException($e->getMessage(), 0, $e);
         }
-        if (empty($tokens['method'])) {
-            $defaultUrl = $ctx->getUIManager()->getDefaultURL();
-            $ctx->redirect($defaultUrl);
-            return;
-        }
-        $ctx->setControllerAlias($tokens['controller']);
-        $methodName = $tokens['method'];
-        // Allow dashes in method name (for SEO purposes). Converts to camelCase.
-        $methodName = $this->camelize($methodName);
-        if (!$namespace) {
-        	$controllerClass = new ReflectionClass($controllerName);
-        } else{
-        	$controllerClass = new \ReflectionClass($namespace.'\\'.$controllerName);
-        }
 
-        $controller = $controllerClass->newInstance();
-        if (!$this->checkAccess($controllerClass, $controller, $ctx)) {
+        $ctx->setControllerAlias($controllerAlias);
+        if (!class_exists($controllerClassName)) {
+            throw new PageNotFoundException("Controller class not found: $controllerClassName");
+        }
+        $controller = new $controllerClassName;
+
+        // Check if access is allowed. Controller will redirect if not.
+        // TODO: Show a 403 if no access allowed
+        if (!$controller->checkAccess($ctx)) {
             return;
         }
 
         // If locale is required and set, but does not exist throw 404 error
-        if ($controller->isLocaleSupported() && isset($tokens['locale']) && !in_array($tokens['locale'], self::$translator->getAvailableLocales())) {
+        if ($controller->isLocaleSupported() && $lang && !in_array($lang, self::$translator->getAvailableLocales())) {
             throw new PageNotFoundException(Application::getTranslator()->_("Invalid URL."));
         }
 
-        // If locale is defined but not required, throw 404 error
-        if (!$controller->isLocaleSupported() && isset($tokens['locale'])) {
-            throw new PageNotFoundException(Application::getTranslator()->_("Invalid URL."));
-        }
+        $locale = $this->getLocale($ctx, $controller, $lang);
+        $supportedLocale = $this->getSupportedLocale($locale);
 
-        /*
-         * If the controller requires a locale :
-         * - If it is not in the url, we redirect the user to his own locale
-         * - If it is in the url and the locale is different than the saved locale, we save it in a cookie (for anonymous users only)
-         * - We set the locale to the default translator and I18nUtil
-         * Else, we set the user locale to default translator and I18nUtil.
+        /**
+         * Support the 'redirect' directive of the route.
+         * If the route included a 'redirect' value, we redirect to that path,
+         * passing all route values + 'lang'.
          */
-        if ($controller->isLocaleSupported()) {
-            if (empty($tokens['locale'])) {
-                $ctx->redirect('/'. $this->getSupportedLocale($ctx->getUser()->getLocale()) .'/'. $pathInfo, true);
-            }
-            if ($ctx->getUser()->isAnonymous() && $ctx->getUser()->getLocale() != $tokens['locale']) {
-                $ctx->getUser()->setLocale($tokens['locale']);
-                Zend_Session::setOptions(array('cookie_httponly'=>'on'));
-                Zend_Session::RememberMe(1209600); // 14 days
-            }
-            $locale = $tokens['locale'];
-        } else {
-            $locale = $ctx->getUser()->getLocale();
+        if ($redirectPath) {
+            $data = array_merge($route->params, array('lang' => $supportedLocale));
+            $url = '/' . $router->generate($redirectPath, $data);
+            $ctx->redirect($url);
         }
-        I18nUtil::setDefaultLocale($this->getSupportedLocale($locale));
-        self::$translator->setLocale($this->getSupportedLocale($locale));
+
+        I18nUtil::setDefaultLocale($supportedLocale);
+        self::$translator->setLocale($supportedLocale);
+
         header('Content-Language: '. self::$translator->getLocale());
-        try {
-            $method = $controllerClass->getMethod($methodName);
+
+        // Allow dashes in method name (for SEO purposes). Converts to camelCase.
+        $methodName = $this->camelize($methodName);
+
+        if (!method_exists($controller, $methodName)) {
+            throw new PageNotFoundException("Missing action method '$methodName' in controller $controllerClassName");
         }
-        catch (ReflectionException $e) {
-            throw new PageNotFoundException($e->getMessage(), 0, $e);
-        }
+        $view = null;
+        // Invoke the controller's method
         try {
-            $view = $method->invoke($controller, $ctx);
+            $view = $controller->$methodName($ctx);
         }
         catch (ForwardViewException $e) {
             // Hanlde 'forwarding': A controller method threw this exception
             // containing a view instead of returning it in a normal way.
             $view = $e->getView();
         }
+
         if ($view instanceof View) {
             if ($ctx->getUIManager()->getErrorManager()->hasErrors()) {
                 $ctx->getForm()->setValues($ctx->getAttributes());
@@ -209,6 +201,138 @@ class Application {
             global $form;
             $view->render($ctx);
         }
+    }
+
+    /**
+     * Get the router. Loads from file (routes.yml) if it's not loaded yet.
+     *
+     * @return Aura\Router\Router
+     */
+    private function loadRouter() {
+        $content = $this->readRouterFile();
+        $routerFactory = new Aura\Router\RouterFactory;
+        $router = $routerFactory->newInstance();
+
+        foreach ($content['routes'] as $r) {
+            $route = $router->add($r['name'], $r['path']);
+            if (isset($r['values'])) {
+                $route->addValues($r['values']);
+            }
+            if (isset($r['tokens'])) {
+                $route->addTokens($r['tokens']);
+            }
+        }
+        return $router;
+    }
+
+    /**
+     * Read the content of the router file.
+     * Supports both YAML and JSON.
+     * If json file exists, uses it.
+     * Otherwise, uses yaml file, unless YAML parser is not installed.
+     *
+     * @return Array map containing the routing content.
+     */
+    private function readRouterFile() {
+        $dir = Config::getInstance()->getString('appRootDir') . '/setup/config';
+
+        // Try json file
+        $jsonRoutesFile = "$dir/routes.json";
+        if (file_exists($jsonRoutesFile)) {
+            $fileContent = file_get_contents($jsonRoutesFile);
+            $json = json_decode($fileContent, true);
+            if (!$json) {
+                throw new ConfigurationException("Invalid JSON content in $jsonRoutesFile");
+            }
+            return $json;
+        }
+
+        $yamlRoutesFile = "$dir/routes.yaml";
+        if (!file_exists($yamlRoutesFile)) {
+            return $this->getDefaultRouterContent();
+        }
+
+        // Check if YAML parser is installed
+        if (!function_exists("yaml_parse_file")) {
+            // Report missing json routes file
+            throw new ConfigurationException("Missing routes file $jsonRoutesFile");
+        }
+
+        $content = yaml_parse_file($yamlRoutesFile);
+        if (!$content) {
+            throw new ConfigurationException("Error reading routing file: $yamlRoutesFile");
+        }
+        return $content;
+    }
+
+    /**
+     * For backwards compatibility, provide a default router which supports
+     * the two basic routes of:
+     * 1.{lang}/{controller}/{action}
+     * 2.{controller}/{action}
+     *
+     * To be used when routing file is missing.
+     *
+     * @return Array map containing the routing content.
+     */
+    private function getDefaultRouterContent() {
+        return array(
+        	  "routes" => array(
+        	      array(
+        		      "name" => "langLoginAction",
+        	        "path" => "{lang}/{controller}/{action}",
+        	        "tokens" => array(
+        	            "controller" => "login"
+        	        )
+        	      ),
+        	      array(
+        	          "name" => "controllerAction",
+        	          "path" => "{controller}/{action}"
+                )
+            )
+        );
+    }
+
+    /**
+     * Get the local. Logic depends on whether the given controller is marked
+     * as 'urlLocale' or not.
+     *
+     * @param Context $ctx
+     * @param Controller $controller
+     * @param String $lang the language from the URL, or null if it's not there.
+     * @return String locale (language)
+     */
+    private function getLocale($ctx, $controller, $lang) {
+        // We only care here about controllers which are marked as 'urlLocale'
+        if (!$controller->isLocaleSupported()) {
+            return $ctx->getUser()->getLocale();
+        }
+        if (!$lang) {
+            $lang = $ctx->getUser()->getLocale();
+        }
+        // Update anonymous user's locale, if it's different than the given lang
+        if ($ctx->getUser()->isAnonymous() && $ctx->getUser()->getLocale() != $lang) {
+            $ctx->getUser()->setLocale($lang);
+            // TODO: does this code have to be here??
+            Zend_Session::setOptions(array('cookie_httponly'=>'on'));
+            Zend_Session::RememberMe(1209600); // 14 days
+        }
+       return $lang;
+    }
+
+    /**
+     * Get the controller/action/lang from the given route.
+     * lang is optional and may be null.
+     *
+     * @param Aura\Router\Route $route
+     * @return list(String controllerAlias, String methodName, String lang)
+     */
+    private function getRouteResult($route) {
+        $controllerAlias = MapUtil::get($route->params, 'controller');
+        $methodName = MapUtil::get($route->params, 'action');
+        $lang = MapUtil::get($route->params, 'lang');
+        $redirectPath = MapUtil::get($route->params, 'redirect');
+        return array($controllerAlias, $methodName, $lang, $redirectPath);
     }
 
      /**
@@ -252,10 +376,12 @@ class Application {
     }
 
     /**
-     * Get the locale of the user in the given context.
-     * If the 'locale' parameter is in the request, sets its value into the user
+     * Returns the given locale, if it is in the list of supported locales.
+     * Otherwise, tries extracting the language portion of it (e.g: 'en' from
+     * 'en_US') and return it if it is in the list of supported locales.
+     * If nothing matches, returns the default locale.
      *
-     * @param Context $ctx
+     * @param String $locale
      */
     public static function getSupportedLocale($locale) {
         $supported_locales = self::$translator->getAvailableLocales();
@@ -272,14 +398,28 @@ class Application {
     /**
      * Get the path info, which is everything that follows the application
      * node in the URL. (without query info).
-     * The returned pathinfo will not start with '/'.
+     * The returned pathinfo will not start or end with '/'.
+     *
+     * @return String
      */
     public static function getPathInfo() {
         $appRoot = self::getAppRoot();
-        $path = isset($_SERVER['SCRIPT_URL']) ? $_SERVER['SCRIPT_URL'] : $_SERVER['PHP_SELF'];
+        // Get the URL path (everything until the '?')
+        $path = MapUtil::get($_SERVER, 'CONTEXT_PREFIX');
+
+        // CONTEXT_PREFIX is aparently new to apache 2.3.13
+        // If undefined, fall back to previous method. This one, though, is known
+        // to have a problem when the URL is root. ('/').
+        if ($path === null) {
+            $path = isset($_SERVER['SCRIPT_URL']) ? $_SERVER['SCRIPT_URL'] : $_SERVER['PHP_SELF'];
+        }
+
         $pathInfo = substr($path, strlen($appRoot));
         if (beginsWith($pathInfo, '/')) {
             $pathInfo = substr($pathInfo, 1);
+        }
+        if (endsWith($pathInfo, '/')) {
+            $pathInfo = substr($pathInfo, 0, -1);
         }
         return $pathInfo;
     }
@@ -295,6 +435,7 @@ class Application {
      * Build the page URL (http + serverName + port) from the $_SERVER
      * php variable. There is no / at the end.
      * the app root is not appended.
+     *
      * @return String page URL
      */
     public static function getPageURL() {
@@ -355,6 +496,23 @@ class Application {
         return $method->invoke($controller, $ctx);
     }
 
+    private function controllerClassNameFromAlias($alias) {
+        $config = Config::getInstance();
+        $result = $config->get('webapp/controllers/controller');
+        if (count($result) == 0) {
+            throw new ConfigurationException("Missing controllers definition in config file");
+        }
+        $className = $config->getString("webapp/controllers/controller[@alias='$alias']/@class", null);
+
+        if (!$className) {
+            throw new IllegalArgumentException("Unknown controller alias - " . $alias);
+        }
+        return $className;
+    }
+
+    /**
+     * @deprecated remove this one.
+     */
     private function controllerNameFromAlias($alias) {
         $config = Config::getInstance();
         $result = $config->get('webapp/controllers/controller');

@@ -32,12 +32,22 @@ function button_submit(url, target) {
     form.submit();
 }
 
+/**
+ * If the given url starts with '/', make sure it starts with the app root.
+ * 
+ * @param url
+ * @returns String the normalized url
+ */
 function normalizeUrl(url) {
+	// If url already starts with the appBase, no need to do anything.
+	if (url.substring(0, appBase.length) === appBase) {
+		return url;
+	}
+	// Otherwise, make sure url is absolute (starting with appBase).
     if (url.charAt(0) == '/') {
-      return appBase + url.substring(1);
-    } else {
-        return url;
+    	return appBase + url.substring(1);
     }
+    return url;
 }
 
 /**

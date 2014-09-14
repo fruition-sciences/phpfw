@@ -49,9 +49,10 @@ abstract class BaseView implements View {
         $form = $ctx->getForm();
         $format = $ctx->getUIManager()->getFormatter();
         // Make $page and $ui globals, so they can be accessed by the view template.
-        global $page, $ui;
+        global $page, $ui, $lang;
         $page = $this->getPage();
         $ui = $this->ctx->getUIManager();
+        $lang = Application::getTranslator()->getLanguage();
         include($path);
     }
 

@@ -14,6 +14,11 @@ class Context {
     private $ui;
     private $session;
 
+    /**
+     * @var Aura\Router\Router
+     */
+    private $router;
+
     function __construct() {
         $this->form = new Form();
         $this->request = new Request($this);
@@ -35,11 +40,27 @@ class Context {
         return $this->request;
     }
 
-    /** 
+    /**
      * @return Session
      */
     public function getSession() {
         return $this->session;
+    }
+
+    /**
+     * Set the router. Will be used to generate links.
+     *
+     * @param Aura\Router\Router $router
+     */
+    public function setRouter($router) {
+        $this->router = $router;
+    }
+
+    /**
+     * @return \Aura\Router\Router
+     */
+    public function getRouter() {
+        return $this->router;
     }
 
     public function getAttributes() {
@@ -97,18 +118,32 @@ class Context {
     /**
      * Forward to the given View. This is done by throwing a ForwardViewException
      * which is being handled by the Application.
-     * 
+     *
      * @param $view
      */
     public function forward($view) {
         throw new ForwardViewException($view);
     }
 
+    /**
+     * If the path starts with '/', make sure it starts with the app root.
+     *
+     * @param String $path
+     * @return String the normalized path.
+     */
     public static function normalizePath($path) {
-        return beginsWith($path, "/") ? Application::getAppRoot() . substr($path, 1) : $path;
+        // If url already starts with the appBase, no need to do anything.
+        if (beginsWith($path, Application::getAppRoot())) {
+            return $path;
+        }
+        // Otherwise, if url starts with '/', make sure it is absolute (starting with app root).
+        if (beginsWith($path, "/")) {
+            return Application::getAppRoot() . substr($path, 1);
+        }
+        return $path;
     }
 
-    /** 
+    /**
      * @return UI
      */
     public function getUIManager() {
@@ -133,7 +168,7 @@ class Context {
     public function setUser($user) {
         $this->user = $user;
     }
-    
+
     /**
      * @return User
      */

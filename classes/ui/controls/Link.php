@@ -43,9 +43,7 @@ class Link extends HtmlElement {
     }
 
     public function __toString() {
-    	if ($this->href) {
-    	    $this->set("href", Context::normalizePath($this->href->__toString()));
-    	}
+        $this->set("href", $this->href);
         return parent::__toString();
     }
 

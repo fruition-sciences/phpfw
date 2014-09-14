@@ -142,7 +142,7 @@ class Href extends Element {
 
     private function parse($path) {
         $parts = explode('?', $path);
-        $this->path = $parts[0];
+        $this->path = Context::normalizePath($parts[0]);
         if (count($parts) == 1) {
             return;
         }
