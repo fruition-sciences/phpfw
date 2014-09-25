@@ -68,7 +68,7 @@ class Formatter {
         }
         $pattern = DataConverter::getDatePattern($this->getLocaleName());
         $fmt = new IntlDateFormatter($this->getLocaleName(), null, null, $this->timezone, null, $pattern);
-        return $fmt->format($timestamp);
+        return $fmt->format((int)$timestamp);
     }
 
     /**
@@ -83,7 +83,7 @@ class Formatter {
         }
         $pattern = DataConverter::getDatePattern($this->getLocaleName(), true, true);
         $fmt = new IntlDateFormatter($this->getLocaleName(), null, null, $this->timezone, null, $pattern);
-        return $fmt->format($timestamp);
+        return $fmt->format((int)$timestamp);
     }
 
     /**
@@ -108,7 +108,7 @@ class Formatter {
         }
         $pattern = DataConverter::getDatePattern($this->getLocaleName(), false, true, $showSeconds);
         $fmt = new IntlDateFormatter($this->getLocaleName(), null, null, $this->timezone, null, $pattern);
-        return $fmt->format($timestamp);
+        return $fmt->format((int)$timestamp);
     }
 
     public function secondsToTime($seconds) {
