@@ -59,8 +59,24 @@ abstract class BaseView implements View {
         return get_class($this) . ".php";
     }
 
+    /**
+     * Find the template dir path using the name and the file location of the 
+     * View class.
+     * The template can be in the controller directory or in a subdirectory.
+     * The template file and the class file need to have the same path after
+     * .../controller/ 
+     * 
+     * @return string The path to the template php file without ending /
+     */
     public function getTemplateDirPath() {
-        return "application/templates/controller/" . $this->ctx->getControllerAlias();
+        $reflector = new ReflectionClass($this);
+        $pathParts = pathinfo($reflector->getFileName());
+        $explodedPath = explode($this->ctx->getControllerAlias(), $pathParts['dirname']);
+        $extraPath = "";
+        if (isset($explodedPath[1])) {
+            $extraPath = $explodedPath[1];
+        }
+        return "application/templates/controller/" . $this->ctx->getControllerAlias() . $extraPath;
     }
 
     protected function getContext() {
