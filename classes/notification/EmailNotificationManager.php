@@ -30,8 +30,10 @@ class EmailNotificationManager implements INotificationManager {
             $ccListStr = implode(',', $notification->getCCList());
             $headers['Cc'] = $ccListStr;
         }
-        $mime = new Mail_mime("\n");
-    
+        $mime = new Mail_mime(array('\n', 'text_encoding' => "8bit",
+                                    'text-charset' => 'UTF-8',
+                                    'html-charset' => 'UTF-8',
+                                    'head_charset' => 'UTF-8'));
         if ($content) {
             $mime->setTXTBody($content);
         }
