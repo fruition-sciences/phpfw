@@ -2,10 +2,13 @@
 /*
  * Created on Jun 22, 2007
  * Author: Yoni Rosenbaum
- * 
+ *
  */
 
 class Link extends HtmlElement {
+    /**
+     * @var Href
+     */
     private $href;
 
     public function __construct($href, $title='') {
@@ -26,6 +29,16 @@ class Link extends HtmlElement {
 
     public function setAction($action) {
         $this->href->set("_ac", $action);
+        return $this;
+    }
+
+    /**
+     * Set the fragment identifier (i.e: the value following a '#' at the end of the URL).
+     *
+     * @param String $anchor
+     */
+    public function setAnchor($anchor) {
+        $this->href->setAnchor($anchor);
         return $this;
     }
 

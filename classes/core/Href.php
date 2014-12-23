@@ -2,12 +2,13 @@
 /*
  * Created on Jun 22, 2007
  * Author: Yoni Rosenbaum
- * 
+ *
  * Variables are encoded only during __toString().
  */
 
 class Href extends Element {
     private $path; // The url, without the parameters
+    private $anchor;
 
     public function __construct($path='') {
         $this->parse($path);
@@ -35,7 +36,7 @@ class Href extends Element {
      * Set all the parameters from the given query string into this Href.
      * All prior parameters are removed.
      * Each value is being urldecoded before being added to the map.
-     * 
+     *
      * @param String query new query string to apply.
      */
     private function setQuery($query) {
@@ -57,7 +58,7 @@ class Href extends Element {
      * String values are being urlencoded.
      * Array values get translatetd to multiple entries with the same key.
      * '[]' is added to array keys if it's not there already.
-     * 
+     *
      * @return String
      */
     public function __toString() {
@@ -80,7 +81,19 @@ class Href extends Element {
             $text .= "?";
             $text .= implode('&', $nameValueList);
         }
+        if ($this->anchor) {
+            $text .= "#" . $this->anchor;
+        }
         return $text;
+    }
+
+    /**
+     * Set the fragment identifier (i.e: the value following a '#' at the end of the URL).
+     *
+     * @param String $anchor
+     */
+    public function setAnchor($anchor) {
+        $this->anchor = $anchor;
     }
 
     private function getQueryStringNameValue($key, $value) {
@@ -94,7 +107,7 @@ class Href extends Element {
      * Set value to the given key.
      * If $addToArray is true, existing keys will not be overwritten, rather,
      * if the new value is already in the map, it will be added into an array.
-     * 
+     *
      * @param String $key
      * @param String $val
      * @param Boolean $addToArray
@@ -105,7 +118,7 @@ class Href extends Element {
         if (is_object($val)) {
             $val = $val->__toString();
         }
-        // Support 'addToArray', if new value is not an array. 
+        // Support 'addToArray', if new value is not an array.
         if ($addToArray && !is_array($val)) {
             $existingVal = $this->get($key);
             // If there is an existing value
