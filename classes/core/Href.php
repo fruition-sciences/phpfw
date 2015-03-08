@@ -63,6 +63,17 @@ class Href extends Element {
      */
     public function __toString() {
         $text = $this->path;
+        $queryString = $this->getQueryString();
+        if ($queryString) {
+            $text .= "?" . $queryString;
+        }
+        if ($this->anchor) {
+            $text .= "#" . $this->anchor;
+        }
+        return $text;
+    }
+
+    public function getQueryString() {
         $nameValueList = array();
         foreach ($this->atts as $key=>$value) {
             if (is_array($value)) {
@@ -77,14 +88,10 @@ class Href extends Element {
                 $nameValueList[] = $this->getQueryStringNameValue($key, $value);
             }
         }
-        if ($nameValueList) {
-            $text .= "?";
-            $text .= implode('&', $nameValueList);
+        if (!$nameValueList) {
+            return "";
         }
-        if ($this->anchor) {
-            $text .= "#" . $this->anchor;
-        }
-        return $text;
+        return implode('&', $nameValueList);
     }
 
     /**
