@@ -127,7 +127,7 @@ class Application {
         }
 
         list($controllerAlias, $methodName, $lang, $redirectPath) = $this->getRouteResult($route);
-        Logger::info("Route: " . $route->name . " (controller=$controllerAlias, method=$methodName, lang=$lang, redirect=$redirectPath)");
+        Logger::debug("Route: " . $route->name . " (controller=$controllerAlias, method=$methodName, lang=$lang, redirect=$redirectPath)");
 
         $controllerClassName = null;
         try {
