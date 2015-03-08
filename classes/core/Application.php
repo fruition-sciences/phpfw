@@ -146,6 +146,7 @@ class Application {
         // Check if access is allowed. Controller will redirect if not.
         // TODO: Show a 403 if no access allowed
         if (!$controller->checkAccess($ctx)) {
+            header('HTTP/1.1 403 Forbidden');
             return;
         }
 
