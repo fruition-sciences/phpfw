@@ -50,7 +50,7 @@ class GeomPoint {
             return null;
         }
         $ret = preg_match('/^POINT\((.*) (.*)\)$/', $wkt, $matches);
-        if (!ret) {
+        if (!$ret) {
             throw new IllegalArgumentException("Invalid POINT format: $wkt");
         }
         return self::fromXY($matches[1], $matches[2]);
