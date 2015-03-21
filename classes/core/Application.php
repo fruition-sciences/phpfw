@@ -99,6 +99,7 @@ class Application {
         }
         // For all other errors - show error page.
         Logger::error($e);
+        http_response_code(500);
         include("www/templates/error.php");
     }
 
