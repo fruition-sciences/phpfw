@@ -167,7 +167,7 @@ class Application {
         if ($redirectPath) {
             $data = array_merge($route->params, array('lang' => $supportedLocale));
             $url = '/' . $router->generate($redirectPath, $data);
-            $ctx->redirect($url);
+            $ctx->redirect($url, true);
         }
 
         I18nUtil::setDefaultLocale($supportedLocale);
