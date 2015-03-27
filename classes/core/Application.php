@@ -167,6 +167,11 @@ class Application {
         if ($redirectPath) {
             $data = array_merge($route->params, array('lang' => $supportedLocale));
             $url = '/' . $router->generate($redirectPath, $data);
+            // Include query string when redirecting
+            $qs = $_SERVER['QUERY_STRING'];
+            if ($qs) {
+                $url .= "?${qs}";
+            }
             $ctx->redirect($url, true);
         }
 
