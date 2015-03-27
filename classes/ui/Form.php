@@ -4,7 +4,6 @@
  * Author: Yoni Rosenbaum
  *
  */
-
 class Form {
     private $controls = array(); // control name -> Control
     private $labels = array(); // control name -> Label (field title)
@@ -215,6 +214,10 @@ class Form {
         if (isset($this->values[$name])) {
             $control->setValue($this->values[$name]);
         }
+    }
+
+    public function getControls(){
+        return $this->controls;
     }
 
     public function isReadonly() {

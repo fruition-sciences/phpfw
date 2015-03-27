@@ -14,7 +14,7 @@ class DateUtils {
      * @param String $timezone
      */
     public static function getHourOfDay($timestamp, $timezone) {
-        $date = new DateTime(date('c', $timestamp));
+        $date = new DateTime("@$timestamp");
         $tz = new DateTimeZone($timezone);
         $date->setTimezone($tz);
         return intval($date->format("G"));
@@ -168,7 +168,7 @@ class DateUtils {
      * @return Long modified Timestamp
      */
     public static function modifyTimestamp($timestamp, $modifier, $timezone=null){
-        $dateTime = new DateTime(date('c', $timestamp));
+        $dateTime = new DateTime("@$timestamp");
         if($timezone){
             $tz = new DateTimeZone($timezone);
             $dateTime->setTimezone($tz);
@@ -221,7 +221,7 @@ class DateUtils {
         if (!$timezone) {
             $timezone = Transaction::getInstance()->getUser()->getTimezone();
         }
-        $date = new DateTime(date('c', $timestamp));
+        $date = new DateTime("@$timestamp");
         $tz = new DateTimeZone($timezone);
         $date->setTimezone($tz);
         return $date;

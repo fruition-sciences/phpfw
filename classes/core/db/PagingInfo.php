@@ -71,7 +71,7 @@ class PagingInfo {
     }
 
     public function getFirstRecord() {
-        return $this->pageNumber * $this->recordsPerPage;
+        return abs($this->pageNumber * $this->recordsPerPage);
     }
 
     public function setOrderByColumn($orderByColumn) {

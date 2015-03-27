@@ -1,7 +1,7 @@
 <?php
-/*
+/**
  * Created on Oct 7, 2007
- * Author: Yoni Rosenbaum
+ * @Author: Yoni Rosenbaum
  *
  */
 
@@ -126,7 +126,7 @@ class Request {
             if ($timezone && $converter->getTimeZoneName() != $timezone) {
                 $converter = new DataConverter($timezone);
             }
-            return $converter->parseDate($str);
+             return $converter->parseDate($str);
         }
         catch (UndefinedKeyException $e) {
             if ($defaultValue != self::UNDEFINED) {

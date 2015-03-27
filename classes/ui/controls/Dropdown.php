@@ -138,4 +138,39 @@ class Dropdown extends Control {
     public function setMultiSelectReadonlySeparator($multiSelectReadonlySeparator){
         $this->multiSelectReadonlySeparator = $multiSelectReadonlySeparator;
     }
+
+    /**
+     * @return Dropdown_Option[]
+     */
+    public function getOptions() {
+        return $this->options;
+    }
+
+    /**
+     * @return Dropdown_Optgroup[]
+     */
+    public function getOptgroups() {
+        return $this->optgroups;
+    }
+
+    /**
+     * @return array
+     */
+    public function getValues() {
+        return $this->values;
+    }
+
+    /**
+     * @return Link
+     */
+    public function getReadonlyLink() {
+        return $this->readonlyLink;
+    }
+
+    /**
+     * @return String
+     */
+    public function getMultiSelectReadonlySeparator() {
+        return $this->multiSelectReadonlySeparator;
+    }
 }

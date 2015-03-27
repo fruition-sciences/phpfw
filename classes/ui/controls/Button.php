@@ -110,4 +110,32 @@ class Button extends Control {
         $this->target = $target;
         return $this;
     }
+
+    /**
+     * @return Href
+     */
+    public function getHref() {
+        return $this->href;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTarget() {
+        return $this->target;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isSubmit() {
+        return $this->submit;
+    }
+
+    /**
+     * @return array
+     */
+    public function getOnclick() {
+        return $this->onclick;
+    }
 }

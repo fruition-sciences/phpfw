@@ -4,7 +4,6 @@
  * Author: Yoni Rosenbaum
  *
  */
-
 class Datebox extends Control {
     /**
      * The range of years displayed in the year drop-down in the datePicker
@@ -143,10 +142,6 @@ EOP;
         return $script;
     }
 
-    private function getButtonName() {
-        return $this->getName() . "_button";
-    }
-    
     private function getHourDropdown(){
         $selectHour = new Dropdown("_" . $this->getName() . "_hour");
         $selectHour->set("id","_" . $this->getName() . "_hour");
@@ -193,18 +188,14 @@ updateSelectTimeFields("{$this->getName()}");
 EOP;
         return $hidden.$script;
     }
-
-    private static function booleanToString($val) {
-        return $val ? "true" : "false";
-    }
     
     /**
      * Localization array for the Jquery UI date time picker.
      * @return array
      */
-    private function getDatePickerLocalization() {        
-        $daysArr = Zend_Locale_data::getList(Transaction::getInstance()->getUser()->getLocale(), "days");
-        $weekArr = Zend_Locale_data::getList(Transaction::getInstance()->getUser()->getLocale(), "week");
+    private function getDatePickerLocalization() {
+        $daysArr = Zend_Locale_Data::getList(Transaction::getInstance()->getUser()->getLocale(), "days");
+        $weekArr = Zend_Locale_Data::getList(Transaction::getInstance()->getUser()->getLocale(), "week");
         $firstDay = $daysArr['format']['narrow'][$weekArr["firstDay"]]-1;
         $tr = Application::getTranslator();
         // Most i18n values come from dedicated jquery.ui.datepicker-<LANG>.js
@@ -244,5 +235,46 @@ EOP;
             $regional["timezoneText"]  = $tr->_('Time Zone');
         }
         return $regional;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isShowTime() {
+        return $this->showTime;
+    }
+    
+    /**
+     * @return boolean
+     */
+    public function isShowDate() {
+        return $this->showDate;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isShowPopup() {
+        return $this->showPopup;
+    }
+    /**
+     * @return boolean
+     */
+    public function isShowMinute() {
+        return $this->showMinute;
+    }
+
+    /**
+     * @return int
+     */
+    public function getStepMinute() {
+        return $this->stepMinute;
+    }
+
+    /**
+     * @return String
+     */
+    public function getYearRange() {
+        return $this->yearRange;
     }
 }

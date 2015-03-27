@@ -1,0 +1,96 @@
+<project name="phpfw" basedir="." default="build">
+    <import file="tests/config/ant_properties.xml"/>
+    <property name="php.includepath" value=".${path.separator}${basedir}${path.separator}${zend.base}"/>
+    <!-- Default php executable. You can set a different value in ant_properties.xml -->
+    <condition property="php.bin" value="php">
+        <not><isset property="php.bin"/></not>
+    </condition>
+    <!-- Default lessc path. You can set a different value in ant_properties.xml -->
+    <condition property="phpunit.path" value="/usr/local/bin/">
+        <not><isset property="phpunit.path"/></not>
+    </condition>
+	
+	<property name="toolsdir" value="${phpfw.base}/vendor/bin/"/>
+
+    <target name="build" depends="phpunit, phploc-ci">
+    </target>
+    <target name="generateclassMap">
+        <exec executable="${php.bin}" failonerror="true">
+            <arg value="-d include_path=${php.includepath}"/>
+            <arg value="${phpfw.base}/tools/autoconfig/classmap_generator.php"/>
+            <arg value="-l"/>
+            <arg value="${phpfw.base}"/>
+            <arg value="-w"/>
+            <arg value="-o"/>
+            <arg value="${phpfw.base}/tests/config/autoload_classmap_phpfw.php"/>
+        </exec>
+    </target>
+    <exec executable="${php.bin}" failonerror="true">
+        <arg value="-d include_path=${php.includepath}"/>
+        <arg value="${phpfw.base}/tools/autoconfig/classmap_generator.php"/>
+        <arg value="-l"/>
+        <arg value="${zend.base}"/>
+        <arg value="-w"/>
+        <arg value="-o"/>
+        <arg value="${phpfw.base}/tests/config/autoload_classmap_zend.php"/>
+    </exec>
+	
+    <target name="phpunit" description="Run the unit tests and generate code coverage" depends="prepare, composer, generateclassMap">
+        <exec executable="${toolsdir}phpunit" failonerror="true" taskname="phpunit">
+        	<arg value="-c"/>
+            <arg path="${phpfw.base}/phpunit.xml.dist"/>
+        </exec>
+    </target>
+	
+	<target name="prepare" description="Prepare for build" depends="clean">
+		<mkdir dir="${phpfw.base}/build/coverage"/>
+		<mkdir dir="${phpfw.base}/build/logs"/>
+    </target>
+	
+	<target name="clean" description="Cleanup build artifacts" >
+        <delete dir="${phpfw.base}/build/coverage"/>
+		<delete dir="${phpfw.base}/build/logs"/>
+		<delete file="${phpfw.base}/composer.lock"/>
+    </target>
+
+    <target name="download-composer" description="Downloads composer.phar (when it does not exist or is older than 30 days)">
+        <tstamp>
+            <format property="thirty.days.ago" pattern="MM/dd/yyyy hh:mm aa" offset="-30" unit="day"/>
+        </tstamp>
+        <delete>
+            <fileset dir="${phpfw.base}">
+                <include name="composer.phar" />
+                <date datetime="${thirty.days.ago}" when="before"/>
+            </fileset>
+        </delete>
+
+        <get src="https://getcomposer.org/composer.phar" dest="${phpfw.base}/composer.phar" skipexisting="true"/>
+    </target>
+
+    <target name="composer" depends="download-composer" description="Install dependencies with Composer">
+        <exec executable="${php.bin}">
+            <arg value="composer.phar"/>
+            <arg value="install"/>
+        </exec>
+    </target>
+
+   
+
+    <target name="phploc-ci"
+            unless="phploc.done"
+            depends="prepare, composer"
+            description="Measure project size using PHPLOC and log result in CSV and XML format. Intended for usage within a continuous integration environment.">
+        <exec executable="${toolsdir}phploc" taskname="phploc">
+            <arg value="--count-tests" />
+            <arg value="--log-csv" />
+            <arg path="${phpfw.base}/build/logs/phploc.csv" />
+            <arg value="--log-xml" />
+            <arg path="${phpfw.base}/build/logs/phploc.xml" />
+            <arg path="${phpfw.base}/classes" />
+            <arg path="${phpfw.base}/tests" />
+        </exec>
+
+        <property name="phploc.done" value="true"/>
+    </target>
+	
+</project>

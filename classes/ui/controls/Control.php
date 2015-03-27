@@ -9,6 +9,9 @@ class Control extends HtmlElement {
     private $form;
     private $readonly; // if set, overwrites form's 'readonly' flag.
 
+    /**
+     * @param Form $form
+     */
     public function setForm($form) {
         $this->form = $form;
     }

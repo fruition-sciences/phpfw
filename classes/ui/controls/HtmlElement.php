@@ -140,4 +140,11 @@ class HtmlElement extends Element {
         // In all other cases
         return parent::set($key, $val);
     }
+
+    /**
+     * @return array
+     */
+    public function getCssClasses() {
+        return $this->cssClasses;
+    }
 }

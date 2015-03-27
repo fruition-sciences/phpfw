@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<menu>
+    <item id="dashboard">
+        <name>Dashboard</name>
+        <href>/vine/map</href>
+        <item id="map">
+            <name>MAP VIEW</name>
+            <href>/vine/map</href>
+        </item>
+        <item id="blist">
+            <name>LIST VIEW</name>
+            <href>/vine/blist</href>
+        </item>
+        <item id="detailedBlock">
+            <name>DETAILED BLOCK VIEW</name>
+            <href>/vine/detailedBlock</href>
+        </item>
+    </item>
+</menu>

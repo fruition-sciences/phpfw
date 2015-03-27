@@ -1,0 +1,14 @@
+<phpunit bootstrap="./phpunit.php">
+    <testsuites>
+        <testsuite name="phpfw">
+            <directory>./tests</directory>
+            <exclude>./tests/units/classes/core/ContextTest.php</exclude>
+        </testsuite>
+    </testsuites>
+
+    <logging>
+	    <log type="coverage-html" target="build/coverage"/>
+	    <log type="junit" target="build/logs/junit.xml" logIncompleteSkipped="false"/>
+        <log type="coverage-clover" target="build/logs/clover.xml"/>
+  	</logging>
+</phpunit>

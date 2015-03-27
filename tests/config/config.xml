@@ -1,0 +1,188 @@
+<?xml version="1.0"?>
+<config>
+  <appRoot>/tests</appRoot>
+  <appRootDir>./tests</appRootDir>
+  <stage>local</stage>
+
+  <webapp>
+    <controllers>
+      <controller alias="login" class="LoginController" urlLocale="true" />
+      <controller alias="vine" class="VineController" />
+      <controller alias="admin" class="AdminController" />
+      <controller alias="monitoring" class="MonitoringAdminController" />
+      <controller alias="service" class="ServiceController" />
+      <controller alias="mobile2.4" class="RestVersion24\MobileController"/>
+      <controller alias="mobile3.0" class="RestVersion30\MobileController"/>
+    </controllers>
+    <defaultLocale>en</defaultLocale>
+    <defaultURL>/login/home</defaultURL>
+    <uiManagerClass>FSUIManager</uiManagerClass>
+    <logging>
+      <errorLogFileName>vmms-error.log</errorLogFileName>
+      <timeLog>
+        <enabled>true</enabled>
+      </timeLog>
+    </logging>
+    <errorHandling>
+      <stopLevel>E_ALL</stopLevel>
+      <reportLevel>E_ALL</reportLevel>
+      <showDetails>true</showDetails>
+      <isDevInstance>true</isDevInstance>
+    </errorHandling>
+    <passwordHashCost>12</passwordHashCost>
+    <minify>
+      <yui>false</yui>
+    </minify>
+  </webapp>
+
+  <logging>
+    <logDir>/Users/Coulibaly/Documents/workspace/vmms/build/log</logDir>
+  </logging>
+
+  <database>
+    <host>localhost</host>
+    <userName>username</userName>
+    <password>password</password>
+    <dbName>vmms</dbName>
+    <debug>false</debug>
+  </database>
+
+  <googlemaps>
+    <key>AIzaSyDYL8zJRp8en6f4kEVp1faA28KtDCsPkE0</key>
+  </googlemaps>
+  
+  <geoserver>
+    <host>localhost:8080</host>
+    <dataStore>VMMS</dataStore>
+    <adminUsername>sidiki</adminUsername>
+    <adminPassword>11fruition</adminPassword>
+    <customerUsername>vmms_customer</customerUsername>
+    <customerPassword>11fruitioncustomer</customerPassword>
+  </geoserver>
+  
+  <tablePaging>
+    <rowsPerPage>40</rowsPerPage>
+    <maxLinksCount>20</maxLinksCount>
+  </tablePaging>
+
+  <properties>
+    <storageDir>/Users/Coulibaly/Documents/workspace/vmms/build/storageDir</storageDir>
+    <putDir>/Users/Coulibaly/Documents/workspace/vmms/build/storageDir/PUT</putDir>
+    <translator>GettextZendTranslator</translator>
+    <googleAnalyticsCode></googleAnalyticsCode>
+    <siteRefreshSeconds>900</siteRefreshSeconds>
+    <meteoFranceWeatherDataDir>/home/ftp/meteofrance/weatherData</meteoFranceWeatherDataDir>
+    <ACH34WeatherDataDir>/home/ftp/ach34</ACH34WeatherDataDir>
+    <ranchWeatherDataDir>/home/ftp/ranchsystems/weatherData</ranchWeatherDataDir>
+    <ridgeWethareDataDir>/home/ftp/ridge/weatherData</ridgeWethareDataDir>
+    <vanWallWeatherDataDir>/home/ftp/vanwall</vanWallWeatherDataDir>
+    <demeterWeatherDataDir>/home/ftp/demeter</demeterWeatherDataDir>
+    <harvestElectronicsWeatherDataDir>/home/ftp/harvest</harvestElectronicsWeatherDataDir>
+    <tuleWeatherDataDir>/home/ftp/tule</tuleWeatherDataDir>
+    <processedWeatherFilesDir>/Users/Coulibaly/Documents/workspace/vmms/build/storageDir/processedWeatherFiles</processedWeatherFilesDir>
+    <massUploadDataDir>/Users/Coulibaly/Documents/workspace/vmms/build/storageDir/massUploadFiles</massUploadDataDir>
+    <registerUploadDataDir>/Users/Coulibaly/Documents/workspace/vmms/build/storageDir/registerUploadFiles</registerUploadDataDir>
+    <georefImagesDataDir>/Users/Coulibaly/Documents/workspace/vmms/build/storageDir/georefImages</georefImagesDataDir>
+    <georefImagesPath>../images/georefImages/</georefImagesPath>
+    <ETSDataDir>/Users/Coulibaly/Documents/workspace/vmms/build/storageDir/ETSFiles</ETSDataDir>
+    <ftpUser>ftp</ftpUser>
+    <ftpGroup>ftp</ftpGroup>
+    <anonymousUserTimezone>America/Los_Angeles</anonymousUserTimezone>
+    <sensorReportOldDataSeconds>14400</sensorReportOldDataSeconds>
+    <dbBackupDir>/var/www/dbBackup</dbBackupDir>
+    <syncMissingSapFlow>
+      <daysBackCount>4</daysBackCount>
+    </syncMissingSapFlow>
+    <seasonStartDateNorthernHemisphere>January 1</seasonStartDateNorthernHemisphere>
+    <seasonStartDateSouthernHemisphere>July 1</seasonStartDateSouthernHemisphere>
+    <siteURL>http://localhost/vmms</siteURL>
+  </properties>
+  
+  <googleApi>
+    <clientId>CHANGETHIS.apps.googleusercontent.com</clientId>
+    <clientSecret>CHANGETHIS</clientSecret>
+    <refreshToken>CHANGETHIS</refreshToken>
+    <parentFolderId>CHANGETHIS</parentFolderId>
+  </googleApi>
+
+  <monitoring>
+    <zabbix>
+      <enabled>false</enabled>
+      <senderBin>/usr/local/bin/zabbix_sender</senderBin>
+      <agentConfFile>/etc/zabbix/zabbix_agentd.conf</agentConfFile>
+      <agentHostName></agentHostName>
+      <apiEndpoint>http://zabbix.fruitionsciences.com/api_jsonrpc.php</apiEndpoint>
+      <serverURL>http://zabbix.fruitionsciences.com</serverURL>
+      <apiUserName>vmms_app</apiUserName>
+      <apiUserPassword>zbx128*!</apiUserPassword>
+    </zabbix>
+    <notification>
+      <sendToEmail>alert@fruitionsciences.com</sendToEmail>
+      <push>
+        <passphrase>FruitionSciencesPush2013</passphrase>
+        <providerCertificateDir>/setup/FSPushCertificateKey.pem</providerCertificateDir>
+        <rootCertificateAuthorityDir>/setup/entrust_root_certification_autority.pem</rootCertificateAuthorityDir>
+      </push>
+    </notification>
+  </monitoring>
+  
+  <sapip>
+    <baseUrl>http://agrisensors.com</baseUrl>
+    <restUrl>http://agrisensors.com/service/rest</restUrl>
+    <username>production</username>
+    <password>test1sapip</password>
+    <resultFormat>application/json</resultFormat>
+  </sapip>
+  
+  <email>
+    <enabled>true</enabled>
+    <backend>sendmail</backend>
+    <sendmail>
+      <path>/usr/sbin/sendmail</path>
+    </sendmail>
+    <smtp_host>ssl://smtp.gmail.com</smtp_host>
+    <smtp_port>465</smtp_port>
+    <smtp_auth>true</smtp_auth>
+    <smtp_username>noreply@fruitionsciences.com</smtp_username>
+    <smtp_password>sapipFlow4</smtp_password>
+  	<noreplyEmail>noreply@fruitionsciences.com</noreplyEmail>
+  	<bugreportEmail>bugs@fruitionsciences.com</bugreportEmail>
+  	<contactEmail>contact@fruitionsciences.com</contactEmail>
+    <ndviEmail>ndvi@fruitionsciences.com</ndviEmail>
+    <imapMailbox>imap.gmail.com</imapMailbox>
+    <imapUsername>vmms@fruitionsciences.com</imapUsername>
+    <imapPassword>THE PASSWORD</imapPassword>
+  </email>
+  
+  <accessControl>
+    <ZendAcl>
+        <enable>true</enable>
+    </ZendAcl>
+  </accessControl>
+    
+  <cache>
+    <apc>
+      <manager>
+        <url>http://localhost/apc.php</url>
+        <login>apc</login>
+        <password>password</password>
+      </manager>
+    </apc>
+    <opcache>
+      <manager>
+        <url>http://localhost/opcache.php</url>
+      </manager>
+    </opcache>
+    <cloudflare>
+      <api>
+        <key></key>
+        <email></email>
+      </api>
+    </cloudflare>
+  </cache>
+
+  <messageQueue>
+    <host>localhost</host>
+  </messageQueue>
+  
+</config>

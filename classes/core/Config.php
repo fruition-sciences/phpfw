@@ -6,11 +6,13 @@
 
 class Config extends XMLConfig {
     private static $theInstance;
+    private static $context = false;
 
     /**
      * @return Config
      */
-    public static function getInstance() {
+    public static function getInstance($context = false) {
+    	self::$context = $context;
         if (!self::$theInstance) {
             self::$theInstance = new Config();
         }
@@ -18,6 +20,12 @@ class Config extends XMLConfig {
     }
 
     protected function getConfigFilePath() {
-        return "build/setup/config/config.xml";
+        if(self::$context) {
+            return "tests/config/config.xml";
+        }
+        else {
+            return "build/setup/config/config.xml";
+        }
+
     }
 }

@@ -1,0 +1,14 @@
+/vendor/
+
+/tests/config/ant_properties.xml
+/.DS_Store
+/tests/units/.DS_Store
+
+/composer.lock
+
+
+/tests/config/autoload_classmap_phpfw.php
+/tests/config/autoload_classmap_zend.php
+/build/
+/.buildpath
+/composer.phar

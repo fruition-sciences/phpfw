@@ -19,6 +19,7 @@ class Notification {
     private $subject;
     private $content;
     private $attachments = array(); // Array of IAttachment instances
+    private $format;
     /**
      * @var INotificationManager
      */
@@ -90,7 +91,7 @@ class Notification {
         $this->format = $format;
     }
 
-    public function getFormat($format) {
+    public function getFormat() {
         return $this->format;
     }
 
