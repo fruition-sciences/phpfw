@@ -417,7 +417,7 @@ class Application {
         // CONTEXT_PREFIX is aparently new to apache 2.3.13
         // If undefined, fall back to previous method. This one, though, is known
         // to have a problem when the URL is root. ('/').
-        if ($path === null) {
+        if ($path === null || $path === "") {
             $path = isset($_SERVER['SCRIPT_URL']) ? $_SERVER['SCRIPT_URL'] : $_SERVER['PHP_SELF'];
         }
 
