@@ -29,7 +29,7 @@ class Database {
         }
         # Keep the PagingInfo so we can set total rows later on.
         $this->paging = $paging;
-        $queryPager = new QueryPager($sql, $paging);
+        $queryPager = new QueryPager($sql, $paging, false); // do not filter since doesn't support prepared statements
         $startTime = microtime(true);
         if ($this->debugOn) {
             Logger::debug("SQL: $sql");

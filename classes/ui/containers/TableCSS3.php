@@ -64,6 +64,9 @@ class TableCSS3 extends Table {
     }
 
     private function writePagingBar() {
+        if (!$this->showPaging) {
+            return;
+        }
         if (!$this->getPaging()->getTotalRows()) {
             return;
         }

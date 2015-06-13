@@ -10,9 +10,15 @@ class PagingInfo {
     private $totalRows;
     private $orderByColumn;
     private $orderByAscending = true; // boolean
+    
+    /**
+     * @var SearchInfo
+     */
+    private $searchInfo;
 
     public function __construct() {
         $this->recordsPerPage = Config::getInstance()->getInt("tablePaging/rowsPerPage", 10);
+        $this->searchInfo = new SearchInfo();
     }
 
     /**
@@ -86,5 +92,28 @@ class PagingInfo {
 
     public function isLastPage() {
         return ($this->pageNumber+1) * $this->recordsPerPage >= $this->totalRows;
+    }
+    
+    /**
+     * @return SearchInfo
+     */
+    public function getSearchInfo() {
+        return $this->searchInfo;
+    }
+    
+    /**
+     * Stores the string to look up for filtering
+     * @param String $searchString
+     */
+    public function setSearchString($searchString) {
+        $this->searchInfo->setSearchString($searchString);
+    }
+    
+    /**
+     * Stores the columns on which filtering has to be applied 
+     * @param String[] $searchColumns
+     */
+    public function setSearchColumns($searchColumns) {
+        $this->searchInfo->setSearchColumns($searchColumns);
     }
 }

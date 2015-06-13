@@ -105,7 +105,7 @@ class Request {
 
     public function getBoolean($key, $defaultValue=self::UNDEFINED) {
         $str = $this->getString($key, $defaultValue);
-        if ($str == "1") {
+        if ($str == "1" || $str == "true") {
             return true;
         }
         return false;
