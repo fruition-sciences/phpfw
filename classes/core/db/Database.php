@@ -2,7 +2,7 @@
 /*
  * Wrapper for database class. (Replaces db.php).
  * Current implementation uses mysqli.
- * 
+ *
  * Created on Aug 30, 2013
  * Author: Yoni Rosenbaum
  */
@@ -17,7 +17,7 @@ class Database {
         $dbUserName = Config::getInstance()->getString("database/userName");
         $dbPassword = Config::getInstance()->getString("database/password");
         $dbDatabaseName = Config::getInstance()->getString("database/dbName");
-        
+
         $this->db = new mysqli($dbHost, $dbUserName, $dbPassword, $dbDatabaseName);
 
         $this->debugOn = Config::getInstance()->getBoolean('database/debug', false);
@@ -74,7 +74,7 @@ class Database {
         if (!$success) {
             throw new SQLException("Failed to execute query. " . $sqlOrStmt->error);
         }
-        
+
         if ($this->debugOn) {
             $timeDiff = $endTime - $startTime;
             Logger::debug("Query completed in " . number_format($timeDiff, 2) . " seconds.");
@@ -92,6 +92,7 @@ class Database {
      *          b. String: Plain SQL.
      * @param PagingInfo $paging
      * @return mysqli_stmt
+     * @throws
      */
     public function prepare($sql, $paging=null) {
         if (!$sql) {
@@ -106,19 +107,23 @@ class Database {
 
         # Create a prepared statement
         $stmt = $this->db->prepare($queryPager->getQuery());
-        
+
+        if (!$stmt) {
+            throw new SQLException($this->db->error);
+        }
+
         # Bind parameters, if there are any
         if ($sql instanceof SQLBuilder && $sql->hasParams()) {
             $refArgs = array($sql->getParamTypes());
             foreach ($sql->getParamList() as $param) {
                 $refArgs[] = $param;
             }
-        
+
             // Modify the values in the array to be referenced (ugly, but works).
             for ($i=1; $i<count($refArgs); $i++) {
                 $refArgs[$i] = &$refArgs[$i];
             }
-        
+
             call_user_func_array(array($stmt, 'bind_param'), $refArgs);
             if ($this->debugOn) {
                 Logger::debug("Query params: " . var_export($refArgs, true));
@@ -126,17 +131,17 @@ class Database {
         }
         return $stmt;
     }
-    
+
 
     /**
      * Call this method after fetching all rows.
      * With the current implementation, it is important to call this method only
      * when the query was using a PagingInfo object, so that the PagingInfo will
      * contain the total number of rows.
-     * 
+     *
      * For convinience, in case a prepared statement was used, this method also
      * accepts an optional statement, and will close it.
-     * 
+     *
      * @param mysqli_stmt $statement
      */
     public function disposeQuery($statement=null) {
@@ -195,7 +200,7 @@ class Database {
 
     /**
      * Get the internal (mysqli) db.
-     * 
+     *
      * @return mysqli
      */
     public function getDB() {
