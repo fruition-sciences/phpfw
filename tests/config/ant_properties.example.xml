@@ -1,5 +1,6 @@
-<project name="local_properties" basedir="../../" default="">
-  <property name="phpfw.base" value="${basedir}"/>
-  <property name="zend.base" value="${basedir}/../ZendFramework/library"/>
-  <property name="php.bin" value="/opt/local/bin/php55"/>
+<project name="local_properties" basedir="." default="">
+    <property name="phpfw.base" value="${basedir}"/>
+    <property name="zend.base" value="${basedir}/vendor/fruition-sciences/ZendFramework/library"/>
+    <property name="php.bin" value="/opt/local/bin/php55"/>
+    <property name="toolsdir" value="${phpfw.base}/vendor/bin/"/>
 </project>

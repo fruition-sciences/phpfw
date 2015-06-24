@@ -35,6 +35,14 @@ class FileUtilsTest extends \PHPUnit_Framework_TestCase {
         $content = \FileUtils::fileList(__DIR__);
         $this->assertContains(basename(__FILE__), $content);
     }
+    
+    /**
+     * @covers FileUtils::fileList
+     */
+    public function testFileListEmpty() {
+    	$content = \FileUtils::fileList(__DIR__, 'xslt');
+    	$this->assertEmpty($content);
+    }
 
     /**
      * @covers FileUtils::convertBytes
@@ -49,8 +57,16 @@ class FileUtilsTest extends \PHPUnit_Framework_TestCase {
      * @covers FileUtils::existsInIncludePath
      */
     public function testExistsInIncludePath() {
-        $actual = \FileUtils::existsInIncludePath("autoload.php");
+        $actual = \FileUtils::existsInIncludePath("vendor/autoload.php");
         $this->assertTrue($actual);
+    }
+    
+    /**
+     * @covers FileUtils::existsInIncludePath
+     */
+    public function testExistsInIncludePathNotInc() {
+    	$actual = \FileUtils::existsInIncludePath(__DIR__. '/'. basename(__FILE__));
+    	$this->assertTrue($actual);
     }
 }
 ?>

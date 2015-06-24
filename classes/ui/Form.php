@@ -215,19 +215,36 @@ class Form {
             $control->setValue($this->values[$name]);
         }
     }
-
+    /**
+     * 
+     * @return Map <string, Control>
+     */
     public function getControls(){
         return $this->controls;
     }
-
+    /**
+     * 
+     * @return boolean
+     */
     public function isReadonly() {
         return $this->readonly;
     }
-
+    
+    /**
+     * 
+     * @param boolean $readonly
+     */
     public function setReadonly($readonly) {
         $this->readonly = $readonly;
     }
-
+    
+    /**
+     * 
+     * @param string $name
+     * @param string $type
+     * @param string $forAction
+     * @return Map of Constraint
+     */
     public function addConstraint($name, $type, $forAction=null) {
         $constraint = ConstraintFactory::newConstraint($name, $type, $forAction);
         // If is readonly, constraint will not be in form (and thus, ignored)

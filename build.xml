@@ -1,56 +1,15 @@
 <project name="phpfw" basedir="." default="build">
     <import file="tests/config/ant_properties.xml"/>
-    <property name="php.includepath" value=".${path.separator}${basedir}${path.separator}${zend.base}"/>
-    <!-- Default php executable. You can set a different value in ant_properties.xml -->
-    <condition property="php.bin" value="php">
-        <not><isset property="php.bin"/></not>
-    </condition>
-    <!-- Default lessc path. You can set a different value in ant_properties.xml -->
-    <condition property="phpunit.path" value="/usr/local/bin/">
-        <not><isset property="phpunit.path"/></not>
-    </condition>
-	
-	<property name="toolsdir" value="${phpfw.base}/vendor/bin/"/>
-
-    <target name="build" depends="phpunit, phploc-ci">
+    <property name="toolsdir" value="${phpfw.base}/vendor/bin/"/>
+   
+    <target name="build" depends="phpunit, phploc-ci, phpcpd-ci, lint">
     </target>
-    <target name="generateclassMap">
-        <exec executable="${php.bin}" failonerror="true">
-            <arg value="-d include_path=${php.includepath}"/>
-            <arg value="${phpfw.base}/tools/autoconfig/classmap_generator.php"/>
-            <arg value="-l"/>
-            <arg value="${phpfw.base}"/>
-            <arg value="-w"/>
-            <arg value="-o"/>
-            <arg value="${phpfw.base}/tests/config/autoload_classmap_phpfw.php"/>
-        </exec>
-    </target>
-    <exec executable="${php.bin}" failonerror="true">
-        <arg value="-d include_path=${php.includepath}"/>
-        <arg value="${phpfw.base}/tools/autoconfig/classmap_generator.php"/>
-        <arg value="-l"/>
-        <arg value="${zend.base}"/>
-        <arg value="-w"/>
-        <arg value="-o"/>
-        <arg value="${phpfw.base}/tests/config/autoload_classmap_zend.php"/>
-    </exec>
 	
-    <target name="phpunit" description="Run the unit tests and generate code coverage" depends="prepare, composer, generateclassMap">
+    <target name="phpunit" description="Run the unit tests and generate code coverage" depends="prepare, composer">
         <exec executable="${toolsdir}phpunit" failonerror="true" taskname="phpunit">
         	<arg value="-c"/>
             <arg path="${phpfw.base}/phpunit.xml.dist"/>
         </exec>
-    </target>
-	
-	<target name="prepare" description="Prepare for build" depends="clean">
-		<mkdir dir="${phpfw.base}/build/coverage"/>
-		<mkdir dir="${phpfw.base}/build/logs"/>
-    </target>
-	
-	<target name="clean" description="Cleanup build artifacts" >
-        <delete dir="${phpfw.base}/build/coverage"/>
-		<delete dir="${phpfw.base}/build/logs"/>
-		<delete file="${phpfw.base}/composer.lock"/>
     </target>
 
     <target name="download-composer" description="Downloads composer.phar (when it does not exist or is older than 30 days)">
@@ -68,13 +27,11 @@
     </target>
 
     <target name="composer" depends="download-composer" description="Install dependencies with Composer">
-        <exec executable="${php.bin}">
+        <exec executable="${php.bin}" failonerror="true">
             <arg value="composer.phar"/>
             <arg value="install"/>
         </exec>
     </target>
-
-   
 
     <target name="phploc-ci"
             unless="phploc.done"
@@ -91,6 +48,62 @@
         </exec>
 
         <property name="phploc.done" value="true"/>
+    </target>
+
+    <target name="prepare" description="Prepare for build" depends="clean">
+        <mkdir dir="${phpfw.base}/build/coverage"/>
+        <mkdir dir="${phpfw.base}/build/logs"/>
+    	<mkdir dir="${basedir}/build/pdepend"/>
+    </target>
+    
+    <target name="clean" description="Cleanup build artifacts" >
+        <delete dir="${phpfw.base}/build/coverage"/>
+        <delete dir="${phpfw.base}/build/logs"/>
+    	<delete dir="${basedir}/build/pdepend"/>
+        <delete file="${phpfw.base}/composer.lock"/>
+    </target>
+	
+    <target name="lint" unless="lint.done" description="Perform syntax check of sourcecode files">
+        <apply executable="php" failonerror="true" taskname="lint">
+        <arg value="-l" />
+        
+        <fileset dir="${phpfw.base}/classes">
+            <include name="**/*.php" />
+            <modified />
+        </fileset>
+        
+        <fileset dir="${phpfw.base}/tests">
+            <include name="**/*.php" />
+            <modified />
+        </fileset>
+        </apply>
+        
+        <property name="lint.done" value="true"/>
+    </target>
+	
+    <target name="pdepend" unless="pdepend.done" depends="prepare"
+    	   description="Calculate software metrics using PHP_Depend and log result in XML format.">
+        <exec executable="${toolsdir}pdepend" taskname="pdepend">
+            <arg value="--jdepend-xml=${phpfw.base}/build/logs/jdepend.xml" />
+            <arg value="--jdepend-chart=${phpfw.base}/build/pdepend/dependencies.svg" />
+            <arg value="--overview-pyramid=${phpfw.base}/build/pdepend/overview-pyramid.svg" />
+            <arg path="${phpfw.base}/classes" />
+        </exec>
+    
+        <property name="pdepend.done" value="true"/>
+    </target>
+	
+    <target name="phpcpd-ci"
+             unless="phpcpd.done"
+             depends="prepare"
+             description="Find duplicate code using PHPCPD and log result in XML format.">
+        <exec executable="${toolsdir}phpcpd" taskname="phpcpd">
+            <arg value="--log-pmd" />
+            <arg path="${phpfw.base}/build/logs/pmd-cpd.xml" />
+            <arg path="${phpfw.base}/classes" />
+        </exec>
+        
+        <property name="phpcpd.done" value="true"/>
     </target>
 	
 </project>

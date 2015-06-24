@@ -2,7 +2,6 @@
     <testsuites>
         <testsuite name="phpfw">
             <directory>./tests</directory>
-            <exclude>./tests/units/classes/core/ContextTest.php</exclude>
         </testsuite>
     </testsuites>
 

@@ -16,9 +16,29 @@ class Notification {
     private $ccList = array();
     private $bccList = array();
     private $from;
+    
+    /**
+     * 
+     * @var string
+     */
     private $subject;
+    
+    /**
+     * 
+     * @var Blob
+     */
     private $content;
-    private $attachments = array(); // Array of IAttachment instances
+    
+    /**
+     * 
+     * @var Array of IAttachment
+     */
+    private $attachments = array();
+    
+    /**
+     * Define the content format (txt, html)
+     * @var string
+     */
     private $format;
     /**
      * @var INotificationManager
@@ -32,7 +52,11 @@ class Notification {
     public function setRecipient($recipient) {
         $this->recipient = $recipient;
     }
-
+    
+    /**
+     * Get the message recipient
+     * @return String
+     */
     public function getRecipient() {
         return $this->recipient;
     }

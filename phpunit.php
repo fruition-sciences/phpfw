@@ -1,4 +1,10 @@
 <?php
+/**
+ * Created on Mar 10, 2015
+ * Author: Sidiki Coulibaly
+ *
+ * Make autolaod for tests execution
+ */
 error_reporting(E_ALL);
 $autoloader = __DIR__ . '/vendor/autoload.php';
 if (! file_exists($autoloader)) {

@@ -29,7 +29,6 @@ class SQLJoinTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals("users", $this->object->getTable());
         $this->assertEquals("us", $this->object->getAlias());
         $this->assertEquals("u.id = acc.id", $this->object->getCondition());
-        //$this->assertEquals("users", $this->object->getTable());
     }
     /**
      * @covers SQLJoin::getTable

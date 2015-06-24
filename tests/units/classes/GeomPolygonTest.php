@@ -12,14 +12,6 @@ class GeomPolygonTest extends \PHPUnit_Framework_TestCase {
 
     /**
      * @covers GeomPolygon::__construct
-     */
-    public function test__construct() {
-        $polygon = new \GeomPolygon("POLYGON ((30 10, 40 40, 20 40, 10 20, 30 10))");
-        $this->assertEquals("POLYGON ((30 10, 40 40, 20 40, 10 20, 30 10))", $polygon);
-    }
-
-    /**
-     * @covers GeomPolygon::__construct
      * @expectedException IllegalArgumentException
      */
     public function test__constructException() {
@@ -29,6 +21,7 @@ class GeomPolygonTest extends \PHPUnit_Framework_TestCase {
 
     /**
      * @covers GeomPolygon::toWKT
+     * @covers GeomPolygon::__construct
      */
     public function testToWKT() {
         $polygon = new \GeomPolygon("POLYGON ((30 10, 40 40, 20 40, 10 20, 30 10))");

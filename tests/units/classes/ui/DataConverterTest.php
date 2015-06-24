@@ -5,7 +5,7 @@
  */
 namespace tests\units;
 /**
- * Test class for MeasureTextbox.
+ * Test class for DataConverter.
  */
 class DataConverterTest extends \PHPUnit_Framework_TestCase {
     /**
@@ -17,7 +17,7 @@ class DataConverterTest extends \PHPUnit_Framework_TestCase {
      * This method is called before a test is executed.
      */
     protected function setUp() {
-        $this->converter = \DataConverter::getInstance();;
+        $this->converter = \DataConverter::getInstance();
     }
 
     /**

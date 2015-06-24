@@ -5,14 +5,25 @@
  */
 
 class Config extends XMLConfig {
+	/**
+	 * 
+	 * @var Config
+	 */
     private static $theInstance;
-    private static $context = false;
+    /**
+     *  Define if it is testing en environment or not
+     *  
+     * @var boolean $isTestConfig
+     */
+    private static $isTestConfig = false;
 
     /**
+     * 
+     * @param boolean $isTestConfig
      * @return Config
      */
-    public static function getInstance($context = false) {
-    	self::$context = $context;
+    public static function getInstance($isTestConfig = false) {
+    	self::$isTestConfig = $isTestConfig;
         if (!self::$theInstance) {
             self::$theInstance = new Config();
         }
@@ -20,12 +31,11 @@ class Config extends XMLConfig {
     }
 
     protected function getConfigFilePath() {
-        if(self::$context) {
+        if(self::$isTestConfig) {
             return "tests/config/config.xml";
         }
         else {
             return "build/setup/config/config.xml";
         }
-
     }
 }

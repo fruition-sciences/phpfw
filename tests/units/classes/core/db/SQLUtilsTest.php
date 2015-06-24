@@ -4,8 +4,6 @@
  * @author Sidiki Coulibaly
  */
 namespace tests\units;
-require_once '/Users/Coulibaly/Documents/workspace/phpfw/autoload.php';
-
 /**
  * Test class for SQLUtils.
  */

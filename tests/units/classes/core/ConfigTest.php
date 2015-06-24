@@ -17,7 +17,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase {
      * This method is called before a test is executed.
      */
     protected function setUp() {
-        $this->config = \Config::getInstance();
+        $this->config = \Config::getInstance(true);
     }
 
 
@@ -36,7 +36,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase {
      * @covers Config::getInstance
      * @covers Config::getConfigFilePath
      */
-    public function testGetInstancetestContext() {
+    public function testGetInstanceTestContext() {
         $this->config = \Config::getInstance(true);
         $this->assertInstanceOf("Config", $this->config);
     }
@@ -67,7 +67,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase {
      * $configValue must be defined in config.xml
      * @covers XMLConfig::getString
      * @expectedException ConfigurationException
-     * @expectedExceptionMessage Missing configuration value 'webap/defaultURL' in build/setup/config/config.xml
+     * @expectedExceptionMessage Missing configuration value 'webap/defaultURL' in tests/config/config.xml
      */
     public function testGetStringException() {
         $configValue = "webap/defaultURL";
@@ -118,9 +118,9 @@ class ConfigTest extends \PHPUnit_Framework_TestCase {
      * @covers XMLConfig::get
      */
     public function testGet() {
-        $configValue = "sapip/baseUrl";
+        $configValue = "properties/translator";
         $actual = $this->config->get($configValue);
-        $excepted  = "http://agrisensors.com";
+        $excepted  = "GettextZendTranslator";
         $this->assertContains($excepted, $actual);
     }
 }

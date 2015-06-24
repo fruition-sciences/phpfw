@@ -50,6 +50,4 @@ class Radio extends Control {
         $this->set('disabled');
         return $this->toInput();
     }
-
-
 }

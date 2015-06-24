@@ -26,13 +26,22 @@
     "require": {
       "aura/router": "2.0"
     },
+    "include-path": [
+        "./"
+    ],
+    
+    "require": {
+      "aura/router": "2.0",
+      "fruition-sciences/ZendFramework": "dev-addComposerFile"
+    },
     
     "require-dev": {
       "fruition-sciences/ZendFramework": "dev-addComposerFile",
       "phpunit/phpunit": "4.6.*",
       "sebastian/phpcpd": "2.0.*@dev",
       "phploc/phploc": "2.1.*@dev",
-      "pdepend/pdepend" : "2.1.0"
+      "pdepend/pdepend" : "2.1.0",
+      "fruition-sciences/ZendFramework": "dev-addComposerFile"
     },
     
     "repositories": [
@@ -41,7 +50,6 @@
            "url": "https://github.com/fruition-sciences/ZendFramework"
        }
     ],
-        
     "config": {
         "process-timeout": 3000,
         "bin-dir": "vendor/bin/"

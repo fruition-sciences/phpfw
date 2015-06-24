@@ -65,11 +65,16 @@ class PagingInfo {
     public function getTotalRows() {
         return $this->totalRows;
     }
-
+    /**
+     * @return integer
+     */
     public function getTotalPages() {
         return ceil($this->totalRows / $this->recordsPerPage);
     }
-
+    
+    /**
+     * @return integer
+     */
     public function getFirstRecord() {
         return abs($this->pageNumber * $this->recordsPerPage);
     }

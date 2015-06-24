@@ -1,11 +1,9 @@
 <?php
-/*
- * Created on Oct 11, 2013
- * Author: Yoni Rosenbaum
+/**
+ * Created on Mar 11, 2015
+ * Author: Sidiki Coulibaly
  *
- * Note: Many queries against this table will also want to have the 'end_date',
- *       and will therefore use the view: VIEW_WITH_END_DATE_NAME and the extra
- *       column: END_DATE.
+ * This dummy class is used only to test MapUtils functions
  */
 
 class BlockKcBean extends BlockKcBeanBase {

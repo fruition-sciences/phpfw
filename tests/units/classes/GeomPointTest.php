@@ -12,7 +12,7 @@ class GeomPointTest extends \PHPUnit_Framework_TestCase {
 
     /**
      * @covers GeomPoint::fromXY
-     *  @covers GeomPoint::__construct
+     * @covers GeomPoint::__construct
      */
     public function testFromXY() {
         $x = 12.32;
@@ -27,6 +27,7 @@ class GeomPointTest extends \PHPUnit_Framework_TestCase {
      */
     public function testFromWKT() {
         $point = \GeomPoint::fromWKT("POINT(30.22 -122.3340921148)");
+        $this->assertInstanceOf("GeomPoint", $point);
         $this->assertEquals(30.22, $point->getX());
         $this->assertEquals(-122.3340921148, $point->getY());
     }
@@ -54,19 +55,9 @@ class GeomPointTest extends \PHPUnit_Framework_TestCase {
      */
     public function testToWKT() {
         $point1 = \GeomPoint::fromWKT("POINT(30.22 -122.3340921148)");
-
         $point2 = \GeomPoint::fromXY(21, 3.32);
-
         $this->assertEquals("POINT(30.22 -122.3340921148)", $point1->toWKT());
         $this->assertEquals("POINT(21 3.32)", $point2->toWKT());
-    }
-
-    /**
-     * @covers GeomPoint::toWKT
-     */
-    public function testToWKTEmpty() {
-        $point = \GeomPoint::fromWKT('');
-        $this->assertNull($point);
     }
 
     /**
