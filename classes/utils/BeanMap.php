@@ -5,7 +5,7 @@
  *
  * Map of Beans (assumed to be of the same type). Keys are IDs by default, but
  * can ben overriden by specifying the $keyMethodName.
- * 
+ *
  * Allows lookup by the bean itself or by the key (as specified by $keyMethodName)
  */
 
@@ -19,7 +19,7 @@ class BeanMap {
      * get the key to map by. By default, uses the 'getId' method.
      * If the value returnd by this method is not unique, the map will keep
      * the last bean that was added.
-     * 
+     *
      * @param array $beansArray
      * @param String $keyMethodName (optional)
      */
@@ -78,7 +78,7 @@ class BeanMap {
         }
         return null;
     }
-    
+
     /**
      * Return the full map array
      * @return Array id -> bean
@@ -87,7 +87,7 @@ class BeanMap {
         return $this->map;
     }
 
-    
+
     /**
      * Return the 'plain', i.e. numerically indexed, array of all beans in the map.
      *
@@ -96,9 +96,12 @@ class BeanMap {
     public function getAllAsList(){
         return array_values($this->map);
     }
+
     /**
-     * Get the ids of the beans in the map.
-     * 
+     * Get the keys of the map.
+     * If the map was constructed using the default $keyMethodName then these
+     * keys will be the ids of the beans.
+     *
      * @return Array of ids
      */
     public function getIds() {
