@@ -38,7 +38,7 @@ abstract class BaseView implements View {
      */
     public function prepare($ctx) {
     }
-    
+
     /**
      * @param Context $ctx
      */
@@ -57,11 +57,38 @@ abstract class BaseView implements View {
     }
 
     public function getTemplateName() {
-        return get_class($this) . ".php";
+        return self::getClassName($this) . ".php";
+    }
+
+    /**
+     * Returns the name of the class of an object, but without its namespace.
+     *
+     * @param Object $obj
+     * @return String
+     */
+    private static function getClassName($obj) {
+        $fullClassName = get_class($obj);
+        $pos = strrpos($fullClassName, '\\');
+        if ($pos === false) {
+            return $fullClassName;
+        }
+        return substr($fullClassName, $pos + 1);
     }
 
     public function getTemplateDirPath() {
-        return "application/templates/controller/" . $this->ctx->getControllerAlias();
+        return "application/templates/controller/" . self::controllerAliasToPath($this->ctx->getControllerAlias());
+    }
+
+    /**
+     * Translates a contoller's alias into a path.
+     * This is used in order to find the template for a View class.
+     * Current implementation replaces . with /
+     *
+     * @param String $alias
+     * @return String
+     */
+    private static function controllerAliasToPath($alias) {
+        return str_replace(".", "/", $alias);
     }
 
     protected function getContext() {
@@ -99,7 +126,7 @@ abstract class BaseView implements View {
 
     /**
      * Render the child component with the given name.
-     * 
+     *
      * @param String $name the component's name
      * @param Boolean $ignoreIfMissing if true, does nothing if the component is missing. Otherwise it's an error.
      */
@@ -145,7 +172,7 @@ abstract class BaseView implements View {
         $ui = $this->ctx->getUIManager();
         return $ui->newPage($translator);
     }
-    
+
     /**
      * Set a translation module : $translator must be
      * an instance of a class which implements ITranslator
@@ -155,11 +182,11 @@ abstract class BaseView implements View {
         $this->translator = $translator;
         return $this;
     }
-    
+
     public function getTranslator() {
         return $this->translator;
     }
-    
+
     /**
      * Return the translated sentence
      * @param string $sentence
