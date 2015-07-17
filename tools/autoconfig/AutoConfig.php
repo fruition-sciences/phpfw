@@ -13,6 +13,12 @@ class AutoConfig {
     private $templateFile; // null if $templateDir is available
     private $templateDir;  // null if $templateFile is available
     private $outputDir;
+    /**
+     * Arg deifning the permission on generated file in octacl format 
+     * 
+     * @var string
+     */
+    private $right = null;
 
     public function parseArgs($args) {
         while ($arg = next($args)) {
@@ -41,6 +47,13 @@ class AutoConfig {
                 $this->outputDir = next($args);
                 if (!$this->outputDir) {
                     return $this->printUsage("Missing value for -o argument");
+                }
+                continue;
+            }
+            if ($arg == '-r') {
+                $this->right = next($args);
+                if (!$this->right) {
+                    return $this->printUsage("Missing value for -r argument");
                 }
                 continue;
             }
@@ -81,7 +94,7 @@ class AutoConfig {
      * Then adds it to the given map under the key: 'stage'.
      * For example, if the properties file name is: prod.properties.php then
      * the stage name is 'prod'.
-     * 
+     *
      * @param Map $props
      */
     private function addStageToMap(&$map) {
@@ -112,6 +125,9 @@ class AutoConfig {
         }
         $outFile = $this->outputDir . "/" . basename($templateFile);
         file_put_contents($outFile, $processedTemplate);
+        if ($this->right) {
+            chmod($outFile, intval($this->right, 8));
+        }
         print "Wrote file " . $outFile . "\n";
     }
 
@@ -133,6 +149,7 @@ class AutoConfig {
         echo "  -tf template_file : Template file. Cannot be used with the -td option.\n";
         echo "  -td template_dir : Template directory. Cannot be used with the -tf option.\n";
         echo "  -o output_dir : Output directory.\n";
+        echo "  -r 0744 : permission on generated files in octal format .\n";
         return false;
     }
 }
