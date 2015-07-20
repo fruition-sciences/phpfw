@@ -53,6 +53,8 @@ class PushNotificationiOSManager implements INotificationManager{
         $message = new ApnsPHP_Message();
         $message->setText($notification->getContent());
         $message->setSound();
+
+        $message->setExpiry(30); // 60 seconds
         
         $recipientList = explode(",", $notification->getRecipient());
         foreach ($recipientList as $registrationId) {
