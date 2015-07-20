@@ -18,7 +18,7 @@ class AutoConfig {
      * 
      * @var string
      */
-    private $right = null;
+    private $permissionMode = null;
 
     public function parseArgs($args) {
         while ($arg = next($args)) {
@@ -51,8 +51,8 @@ class AutoConfig {
                 continue;
             }
             if ($arg == '-r') {
-                $this->right = next($args);
-                if (!$this->right) {
+                $this->permissionMode = next($args);
+                if (!$this->permissionMode) {
                     return $this->printUsage("Missing value for -r argument");
                 }
                 continue;
@@ -125,8 +125,8 @@ class AutoConfig {
         }
         $outFile = $this->outputDir . "/" . basename($templateFile);
         file_put_contents($outFile, $processedTemplate);
-        if ($this->right) {
-            chmod($outFile, intval($this->right, 8));
+        if ($this->permissionMode) {
+            chmod($outFile, intval($this->permissionMode, 8));
         }
         print "Wrote file " . $outFile . "\n";
     }
@@ -149,7 +149,7 @@ class AutoConfig {
         echo "  -tf template_file : Template file. Cannot be used with the -td option.\n";
         echo "  -td template_dir : Template directory. Cannot be used with the -tf option.\n";
         echo "  -o output_dir : Output directory.\n";
-        echo "  -r 0744 : permission on generated files in octal format .\n";
+        echo "  -r 0755 : permission on generated files in octal format .\n";
         return false;
     }
 }
