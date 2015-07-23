@@ -126,4 +126,22 @@ class SQLUtils {
         }
         return null;
     }
+    
+    /**
+     * If you want to use call_user_func_array and bind_param then you need
+     * to pass array values as reference.
+     * This function create a new array using the given array where all the
+     * values are references.
+     * 
+     * @see http://stackoverflow.com/questions/3681262/php5-3-mysqli-stmtbind-params-with-call-user-func-array-warnings
+     * @param array $arr
+     * @return array Array with value as reference.
+     */
+    public static function referenceValues($arr) {
+        $refs = array();
+        foreach ($arr as $k => $v) {
+            $refs[$k] = &$arr[$k];
+        }
+        return $refs;
+    }
 }
