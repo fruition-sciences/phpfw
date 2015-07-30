@@ -17,29 +17,23 @@
     
     "autoload": {
          "classmap": ["classes/", "resources/", "tools/", "tests/"],
-         "files": ["classes/utils/functions.php", "classes/notification/notifications.php"]
+         "files": ["classes/utils/functions.php"]
     },
     "include-path": [
         "./"
     ],
     
     "require": {
-      "aura/router": "2.0"
-    },
-    "include-path": [
-        "./"
-    ],
-    
-    "require": {
-      "aura/router": "2.0"
+        "aura/router": "2.0",
+        "pear/mail_mime": "^1.8"
     },
     
     "require-dev": {
-      "fruition-sciences/ZendFramework": "@dev",
       "phpunit/phpunit": "4.6.*",
       "sebastian/phpcpd": "2.0.*@dev",
       "phploc/phploc": "2.1.*@dev",
-      "pdepend/pdepend" : "2.1.0"
+      "pdepend/pdepend" : "2.1.0",
+      "fruition-sciences/zendframework" : "@dev"
     },
     
     "repositories": [

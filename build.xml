@@ -29,7 +29,7 @@
     <target name="composer" depends="download-composer" description="Install dependencies with Composer">
         <exec executable="${php.bin}" failonerror="true">
             <arg value="composer.phar"/>
-            <arg value="install"/>
+            <arg value="update"/>
         </exec>
     </target>
 
