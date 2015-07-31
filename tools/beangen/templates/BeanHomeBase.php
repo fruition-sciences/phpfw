@@ -8,7 +8,7 @@ echo "<" . "?php";
  *
  * Generated on <?php echo date("F j, Y") ?>
  */
-                
+
 abstract class <?php echo $descriptor->xml['name'] ?>BeanHomeBase {
 <?php if ($descriptor->xml['cache']) { ?>
     private static $cache; // Maps id -> <?php echo $descriptor->xml['name'] ?>Bean
@@ -16,17 +16,17 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanHomeBase {
 <?php } ?>
     /**
      * Retrieve a <?php echo $descriptor->xml['name'] ?>Bean by id
-     * 
+     *
      * @param integer $id
      * @return <?php echo $descriptor->xml['name'] ?>Bean
      */
     public static function find($id) {
         $db = Transaction::getInstance()->getDB();
         $sb = new SQLBuilder();
-        $sb->selectAll('<?php echo $descriptor->xml['name'] ?>Bean', 't');     
+        $sb->selectAll('<?php echo $descriptor->xml['name'] ?>Bean', 't');
         $sb->filter('t.' . <?php echo $descriptor->xml['name'] ?>Bean::ID . "=?", 'i', $id);
         $stmt = $db->execute($sb);
-        $result = $stmt->get_result(); 
+        $result = $stmt->get_result();
         $rs = $db->fetchRow($result);
         $bean = self::create($rs,'t');
         $db->disposeQuery($stmt);
@@ -80,15 +80,14 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanHomeBase {
         self::populate($bean, $rs, $prefix);
         return $bean;
     }
-    
+
     /**
-    *
-    * Populate the bean object thanks to the result set.
-    *
-    * @param <?php echo $descriptor->xml['name'] ?>Bean $bean
-    * @param ResultSet $rs
-    * @param String $prefix
-    */
+     * <?php echo wordwrap("Populate the given " . $descriptor->xml['name'] . "Bean using the given result set", 73, "\n     * ") ?>.
+     *
+     * @param <?php echo $descriptor->xml['name'] ?>Bean $bean
+     * @param ResultSet $rs
+     * @param String $prefix
+     */
     public static function populate($bean, $rs, $prefix='') {
 <?php
   foreach ($descriptor->xml->field as $field) {
@@ -97,7 +96,7 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanHomeBase {
             case 'long': case 'Boolean':
                 $rsMethod = "getLong";
                 break;
-            case 'id': 
+            case 'id':
                 $rsMethod = "getId";
                 break;
             case 'double':
@@ -152,7 +151,7 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanHomeBase {
      * @param long[] $ids
      * @param PaginInfo $paging
      * @return <?php echo $descriptor->xml['name'] ?>Bean[]
-     */ 
+     */
     public static function findAllByIds($ids, $paging=null) {
         if (!$ids) {
             return array();
