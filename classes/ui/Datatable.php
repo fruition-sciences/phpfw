@@ -94,6 +94,9 @@ abstract class Datatable {
         $this->aColumns = $aColumns;
     }
 
+    /**
+     * TODO: Add documentation
+     */
     abstract function getSearchColumns();
 
     /**
