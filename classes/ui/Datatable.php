@@ -4,10 +4,10 @@
  * Author: Estelle Wan
  *
  * Purpose: Implements the Datatables plugin server-side request.
- * 
+ *
  * The class parses the ajax request object $ctx and take relevant parameters
  * to construct or populate:
- *    1. Paging information which contain information about 
+ *    1. Paging information which contain information about
  *       - Columns filtering, ordering
  *       - Page size and page offset
  *    2. Object output to be consumed by the datatable plugin
@@ -164,6 +164,7 @@ abstract class Datatable {
 
     /**
      * @param BeanBase $bean
+     * @return Map (associative array)
      */
     abstract function getDataEntry($bean);
 
@@ -179,10 +180,9 @@ abstract class Datatable {
         $this->entries = $entries;
     }
 
-    /*
-     * Getters
+    /**
+     * @return PagingInfo
      */
-
     public function getPagingInfo() {
         return $this->pagingInfo;
     }
