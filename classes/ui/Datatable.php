@@ -146,7 +146,11 @@ abstract class Datatable {
     }
 
     /*
-     * Output
+     * Get the actual content published by this datatable.
+     * This includes metadata regarding the total number of records, as well as
+     * the actual content to be shown on the current page.
+     *
+     * @return Map - an associative array.
      */
     public function getDocument() {
         $doc = array(
