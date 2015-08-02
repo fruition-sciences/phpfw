@@ -96,8 +96,11 @@ abstract class Datatable {
 
     abstract function getSearchColumns();
 
-    /*
-     * Paging
+    /**
+     * Initialize the 'pagingInfo' based on parameters that may exist in the
+     * request, or using default values.
+     *
+     * @param Context $ctx
      */
     private function initPagingInfo($ctx) {
         $offset = $ctx->getRequest()->getLong('iDisplayStart', 0);
@@ -109,9 +112,11 @@ abstract class Datatable {
         }
     }
 
-
-    /*
-     * Ordering
+    /**
+     * Setup order-by info (to be kept in the 'pagingInfo' object), based on
+     * parameters that may exist in the request, or using default values.
+     *
+     * @param Context $ctx
      */
     private function initOrderingInfo($ctx) {
         if ($ctx->getRequest()->containsKey('iSortCol_0')) {
@@ -123,8 +128,11 @@ abstract class Datatable {
         }
     }
 
-    /*
-     * Filtering
+    /**
+     * Setup filter-by data (to be kept in the 'pagingInfo' object), based on
+     * parameters that may exist in the request.
+     *
+     * @param Context $ctx
      */
     private function initFiltering($ctx) {
         $searchString = $ctx->getRequest()->getString('sSearch', '');
@@ -138,14 +146,17 @@ abstract class Datatable {
         $this->pagingInfo->setSearchColumns($searchColumns);
     }
 
-    /*
-     * Total records
+    /**
+     * TODO: 1. Document this method
+     * TODO: 2. Is this method needed?
+     *
+     * @param long $nonFilteredCount
      */
     public function initNonFilteredCount($nonFilteredCount) {
         $this->totalRecords = $nonFilteredCount;
     }
 
-    /*
+    /**
      * Get the actual content published by this datatable.
      * This includes metadata regarding the total number of records, as well as
      * the actual content to be shown on the current page.
