@@ -8,8 +8,6 @@
  * path.
  */
 
-require_once("include/classes.php");
-
 class AppRunner {
     private $thisFileName;
     private $appClass; // Class name to execute.
