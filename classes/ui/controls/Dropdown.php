@@ -46,7 +46,7 @@ class Dropdown extends Control {
         $this->options[] = $option;
         return $this;
     }
-    
+
     /**
      * @param String $label
      * @return Dropdown
@@ -56,7 +56,7 @@ class Dropdown extends Control {
         $optgroup->setForm($this->getForm());
         return $this->addOptgroupObject($optgroup);
     }
-    
+
     /**
      * @param Dropdown_Optgroup $optgroup
      * @return Dropdown
@@ -66,7 +66,7 @@ class Dropdown extends Control {
         $this->optgroups[] = $optgroup;
         return $this;
     }
-    
+
 
     /**
      * Set a link to be shown instead of the regular title in readonly mode.
@@ -128,11 +128,11 @@ class Dropdown extends Control {
         $this->values = is_array($values) ? $values : array($values);
         return $this;
     }
-    
+
     /**
      * The Multi Select Readonly separator is used to separate all the selected values
      * of a multi select field in read-only mode.
-     * 
+     *
      * @param String $multiSelectReadonlySeparator
      */
     public function setMultiSelectReadonlySeparator($multiSelectReadonlySeparator){

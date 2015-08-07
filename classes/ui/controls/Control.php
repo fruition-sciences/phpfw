@@ -58,11 +58,23 @@ class Control extends HtmlElement {
         }
     }
 
+    /**
+     * Return the string representatoin of this control, as it should be shown
+     * in read-only mode.
+     *
+     * @return String
+     */
     public function toString() {
         $value = $this->getValue();
         return $value != null ? $value : "";
     }
 
+    /**
+     * Return the string representation of this control, as it should be shown
+     * in edit mode.
+     *
+     * @return string
+     */
     public function toInput() {
         return parent::__toString();
     }

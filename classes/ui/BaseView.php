@@ -91,6 +91,9 @@ abstract class BaseView implements View {
         return str_replace(".", "/", $alias);
     }
 
+    /**
+     * @return Context
+     */
     protected function getContext() {
         return $this->ctx;
     }
