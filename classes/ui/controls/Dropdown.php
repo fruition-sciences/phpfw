@@ -37,8 +37,19 @@ class Dropdown extends Control {
         return $this->addOption($name, $value);
     }
 
-    public function addOption($name, $value=null, $tooltip=null) {
-        $option = new Dropdown_Option($name, $value);
+    /**
+     * Add a new option to this dropdown.
+     *
+     * @param string $name
+     * @param string $value
+     * @param string $tooltip (optional)
+     * @param Object $readonlyLink (optional) in case the dropdown is rendered in
+     *        readonly mode, this link will shown. The text for this link will be
+     *        set as $name. If not set, the $name will be shown.
+     * @return Dropdown
+     */
+    public function addOption($name, $value=null, $tooltip=null, $readonlyLink=null) {
+        $option = new Dropdown_Option($name, $value, $readonlyLink);
         if ($tooltip) {
             $option->set("title", $tooltip);
         }
@@ -73,6 +84,7 @@ class Dropdown extends Control {
      * The title to this link will be set as the option name.
      *
      * @param Link $readonlyLink the link to show in readonly mode.
+     * @deprecated use $readonlyLink on Dropdown_Option instead.
      */
     public function setReadonlyLink($readonlyLink) {
         $this->readonlyLink = $readonlyLink;
@@ -89,14 +101,10 @@ class Dropdown extends Control {
         foreach ($this->optgroups as $optgroup) {
             $options = array_merge($options, $optgroup->getOptions());
         }
-        foreach($options as $option) {
+        foreach ($options as $option) {
             if (in_array($option->get("value"), $this->values)) {
                 $separator = empty($ret) ? "" : $this->multiSelectReadonlySeparator;
-                if ($this->readonlyLink) {
-                    $ret .= $separator . $this->readonlyLink->setTitle($option->__toString())->__toString();
-                } else {
-                    $ret .= $separator . $option->__toString();
-                }
+                $ret .= $separator . $option->__toString();
             }
         }
         return $ret;
