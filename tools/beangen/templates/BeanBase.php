@@ -403,7 +403,7 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
 <?php
   foreach ($descriptor->xml->field as $field) {
 ?>
-        $this->prevValues[self::<?php echo $descriptor->fieldConstant($field) ?>] = $this-><?php echo $descriptor->getterName($field) ?>();
+        $this->prevValues[self::<?php echo $descriptor->fieldConstant($field) ?>] = $this-><?php echo $field['name'] ?>;
 <?php
   }
 ?>
@@ -418,7 +418,6 @@ abstract class <?php echo $descriptor->xml['name'] ?>BeanBase extends BeanBase {
   $columnAssignmentsForUpdate = array();
   for ($i=1; $i<sizeof($descriptor->xml->field); $i++) {
       $field = $descriptor->xml->field[$i];
-      $fieldStr = 
       $paramsList[] = $descriptor->escapedFieldForPreparedStatement($field);
       $bindParamTypes[] = $descriptor->getBindBaramType($field);
       $paramReferences[] = '$params[' . ($i-1) . ']';
