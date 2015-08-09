@@ -95,7 +95,10 @@ abstract class Datatable {
     }
 
     /**
-     * TODO: Add documentation
+     * Get the column names to query all records filtered from ANY of the given columns.
+     * 
+     * @see QueryPager::applySearchFilter() which adds the columns list to the query.
+     * @return String[]
      */
     abstract function getSearchColumns();
 
@@ -150,16 +153,6 @@ abstract class Datatable {
     }
 
     /**
-     * TODO: 1. Document this method
-     * TODO: 2. Is this method needed?
-     *
-     * @param long $nonFilteredCount
-     */
-    public function initNonFilteredCount($nonFilteredCount) {
-        $this->totalRecords = $nonFilteredCount;
-    }
-
-    /**
      * Get the actual content published by this datatable.
      * This includes metadata regarding the total number of records, as well as
      * the actual content to be shown on the current page.
@@ -181,6 +174,8 @@ abstract class Datatable {
      */
 
     /**
+     * Get the content to be published for each entry in the datatable.
+     * 
      * @param BeanBase $bean
      * @return Map (associative array)
      */
