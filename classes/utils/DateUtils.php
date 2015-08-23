@@ -59,7 +59,7 @@ class DateUtils {
     /**
      * Add given quantity of unit to the given time.
      * Unit examples: hour, day, month, year, etc.
-     * 
+     *
      * @param $timestamp
      * @param $unit String
      * @param $quantity number
@@ -69,7 +69,7 @@ class DateUtils {
     public static function add($timestamp, $unit, $quantity, $timezone=null) {
         $date = self::makeDateFromTimestamp($timestamp, $timezone);
         $date->modify("$quantity $unit");
-        return self::dateTimeToTimestamp($date); 
+        return self::dateTimeToTimestamp($date);
     }
 
     /**
@@ -95,7 +95,7 @@ class DateUtils {
     public static function getBeginningOfPreviousDay($timestamp, $timezone) {
         return self::addDays($timestamp, -1, 0, 0, 0, $timezone);
     }
-    
+
      /**
      * Get a unix timestamp representing 12AM of the first day of the week of the
      * given date in the the given timezone.
@@ -114,12 +114,12 @@ class DateUtils {
         $dt->modify("-$daysDiff day");
         $dt->setTime(0, 0, 0);
         return self::dateTimeToTimestamp($dt);
-    } 
+    }
 
     /**
      * Get the first day of the month of the given timestamp. Time is set to
      * minnight.
-     * 
+     *
      * @param $timestamp
      * @param $timezone
      * @return unix timestamp
@@ -127,7 +127,7 @@ class DateUtils {
     public static function getBeginningOfMonth($timestamp, $timezone) {
         $date = self::makeDateFromTimestamp($timestamp, $timezone);
         $year = $date->format('Y');
-        $month = $date->format('n');        
+        $month = $date->format('n');
         $date->setDate($year, $month, 1);
         $date->setTime(0, 0, 0);
         return self::dateTimeToTimestamp($date);
@@ -160,7 +160,7 @@ class DateUtils {
 
         return $sign . str_pad($hours, 2, '0', STR_PAD_LEFT) . ':' . str_pad($minutes, 2, '0', STR_PAD_LEFT) . ':' . str_pad($seconds, 2, '0', STR_PAD_LEFT);
 	}
-	
+
     /**
      * Modify a timestamp using strtotime() textual datetime description.
      * @param $timestamp Timestamp to modify
@@ -176,10 +176,11 @@ class DateUtils {
         $dateTime->modify($modifier);
         return $dateTime->format("U");
     }
-    
+
     /**
      * Return an array containing all the months
      * The key is the month number and the value is the formatted month
+     *
      * @param string $format "abbreviated" ("jan.") or "wide" ("janvier").
      * @return array containing the 12 months. January is in index 1.
      */
@@ -200,7 +201,7 @@ class DateUtils {
      * @param $second int
      * @param $timezone (String) the timezone to evaluate the given time in. If
      *        null, the current user's account's timezone will be used.
-     * @return DateTime The PHP DateTime object. Call DateUtils::dateTimeToTimestamp() to get the unix timestamp. 
+     * @return DateTime The PHP DateTime object. Call DateUtils::dateTimeToTimestamp() to get the unix timestamp.
      */
     public static function makeDate($year, $month, $day, $hour=0, $minute=0, $second=0, $timezone=null) {
         $date = self::makeDateFromTimestamp(time(), $timezone);
@@ -212,7 +213,7 @@ class DateUtils {
     /**
      * Create a new DateTime object representing the current date/time in the
      * given timezone.
-     * 
+     *
      * @param $timezone (String) the timezone to evaluate the given time in. If
      *        null, the current user's account's timezone will be used.
      * @return DateTime
@@ -230,14 +231,14 @@ class DateUtils {
     /**
      * Convert a DateTime object to a unix timestamp.
      * Equivalent to DateTime::getTimestamp (PHP 5 >= 5.3.0)
-     * 
+     *
      * @param $dateTime
      * @return long unix timestamp
      */
     public static function dateTimeToTimestamp($dateTime) {
         return (int)$dateTime->format('U');
     }
-    
+
     /**
      * Returns the timezone offset from GMT in seconds
      * @param int $timestamp
@@ -252,7 +253,7 @@ class DateUtils {
     /**
      * Check whether the 2 given timestamp represent the same day in the given
      * timezone.
-     * 
+     *
      * @param long $timestamp1
      * @param long $timestamp2
      * @param string $timezone
@@ -262,16 +263,16 @@ class DateUtils {
         $date2 = self::makeDateFromTimestamp($timestamp2, $timezone);
         return $date1->format('Y-m-d') == $date2->format('Y-m-d');
     }
-    
+
     /**
-     * 
+     *
      * check if a time is inside a time interval.
      * It can check for time frames that cross midnight too.
-     * 
-     * @param int $h  the hour of the time you want to check 
-     * @param int $m  the minute of the time you want to check 
-     * @param int $h1 the hour of the lower endpoint of the timeframe 
-     * @param int $m1 the minute of the lower endpoint of the timeframe 
+     *
+     * @param int $h  the hour of the time you want to check
+     * @param int $m  the minute of the time you want to check
+     * @param int $h1 the hour of the lower endpoint of the timeframe
+     * @param int $m1 the minute of the lower endpoint of the timeframe
      * @param int $h2 the hour of the upper endpoint of the timeframe
      * @param int $m2 the minute of the upper endpoint of the timeframe
      * @return boolean return true (if our time is in the timeframe) or false.
@@ -303,7 +304,7 @@ class DateUtils {
     	//cases like 12:00 - 12:30 and 12:30-12:00
     	if ($h1 == $h2){
     		if ($m1 > $m2){
-    			//split it into 2 intervals 
+    			//split it into 2 intervals
     			//12:30-12:00 => 12:30-23:59 and 00:00-12:00
     			$tmp1 = self::timeInInterval($h,$m,$h1,$m1,23,59);
     			$tmp2 = self::timeInInterval($h,$m,0,0,$h2,$m2);
@@ -330,18 +331,18 @@ class DateUtils {
     	return true;
     }
 
-    
+
 
     /**
      * Convert from an Excel decimal datetime number to a unix timestamp.
-     * 
-     * Excel holds date values as the "real" number of days since a base date, which 
-     * can be either 1st January 1900 (the default for Windows versions of Excel) or 
-     * 1st January 1904 (the default for Mac versions of Excel): 
-     * the time is the fractional part, so midday on any given date is 0.5 greater 
-     * than midnight. To add to the misery, Feb29th 1900 is a valid date for the 
+     *
+     * Excel holds date values as the "real" number of days since a base date, which
+     * can be either 1st January 1900 (the default for Windows versions of Excel) or
+     * 1st January 1904 (the default for Mac versions of Excel):
+     * the time is the fractional part, so midday on any given date is 0.5 greater
+     * than midnight. To add to the misery, Feb29th 1900 is a valid date for the
      * Windows 1900 calendar.
-     * 
+     *
      * @see http://stackoverflow.com/questions/9298429/date-from-excel-changes-when-uploaded-into-mysql
      * @param float $excelDateTime
      * @param boolean $isMacExcel
@@ -368,13 +369,13 @@ class DateUtils {
         }
         return $timestamp;
     }
-    
+
     /**
      * Convert the given formatted date/time into a timestamp using the given
      * timezone.
-     * The format accepted are described here : 
+     * The format accepted are described here :
      * http://www.php.net/manual/en/datetime.formats.php
-     * 
+     *
      * @param string $formattedDate
      * @param string $timezone
      * @return int unix timestamp
