@@ -90,4 +90,39 @@ class FileUtils {
 	    }
 	    return file_exists($filename);
 	}
+	
+	/**
+	 * Remove all special characters from file name.
+	 * Keep only characters A-Z, a-z, 0-9 and _,-,. and space.
+	 * Replace other characters by -
+	 *
+	 * @param String $fileName, could be with or without its path
+	 * @return String $sanitizedFileName, file name with or without its path
+	 * depending on what is given in param
+	 */
+	public static function sanitizeFileName($fileName) {
+	    // Sanitize only the filename, not its path
+	    $workingString = pathinfo($fileName)['basename'];
+	    $dirName = pathinfo($fileName)['dirname'];
+	    $sanitizedFileName = preg_replace("/[^A-Za-z0-9_\-. ]/", "-", $workingString);
+	    if (empty($dirName) || $dirName == '.') {
+	        return $sanitizedFileName;
+	    }
+	    return $dirName . '/' . $sanitizedFileName;
+	}
+	
+	/**
+	 * Remove all files with the given extension in the given directory
+	 *
+	 * @param String $directoryPath, must be full path
+	 * @param String $extension
+	 * @return int count: number of files deleted
+	 */
+	public static function removeFilesWithExtensionInFolder($directoryPath, $extension) {
+	    $filesList = FileUtils::fileList($directoryPath, $extension);
+	    foreach ($filesList as $file) {
+	        @unlink($directoryPath . '/' . $file);
+	    }
+	    return count($filesList);
+	}
 }
