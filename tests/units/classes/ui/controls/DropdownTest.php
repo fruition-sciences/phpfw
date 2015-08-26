@@ -175,7 +175,7 @@ class DropdownTest extends \PHPUnit_Framework_TestCase {
         $this->drop = $this->drop->addOption("brazilia", "Fruition Brazil");
         $this->drop->setReadonlyLink(new \Link("fruitionsciences.com", "Fruition Sciences"));
         $actual = $this->drop->toString();
-        $excepted = '<a href="fruitionsciences.com"><option value="Fruition Brazil">brazilia</option></a>';
+        $excepted = '<option value="Fruition Brazil">brazilia</option>';
         $this->assertEquals($excepted, $actual);
     }
 
