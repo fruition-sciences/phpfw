@@ -12,6 +12,18 @@ class Button extends Control {
     private $submit = true;
     private $onclick = array();
 
+    /**
+     * Tracks whether the 'onclick' attribute is needed or not. This is in order
+     * to avoid including it if it's unnecessary.
+     *
+     * Current implementation: We assume 'onclick' is needed only if 'action' or
+     * 'url' have been set. Note: url is always set. We actualy check if there
+     * was an attempt to change it.
+     *
+     * @var boolean
+     */
+    private $onclickNeeded = false;
+
     public function __construct($title) {
         parent::__construct("button");
         $this->title = $title;
@@ -25,16 +37,29 @@ class Button extends Control {
         else {
             $this->href = new Href($url);
         }
+        $this->onclickNeeded = true;
         return $this;
     }
 
     public function setAction($action) {
         $this->href->set("_ac", $action);
+        $this->onclickNeeded = true;
         return $this;
     }
 
+    /**
+     * Use this if you want the button to generate a link to a URL.
+     * Otherwise, if the button has an action, it will perform a POST (submit).
+     *
+     * Do NOT use it if you're planning to attach your own click event handler
+     * to this button.
+     *
+     * @return Button
+     */
     public function noSubmit() {
         $this->submit = false;
+        // To be safe (for backwards compatibility), mark that onclick is needed
+        $this->onclickNeeded = true;
         return $this;
     }
 
@@ -48,6 +73,7 @@ class Button extends Control {
     public function set($key, $val=null) {
         if ($key == "onclick" && $val) {
             $this->onclick[] = $val;
+            $this->onclickNeeded = true;
         }
         else {
             parent::set($key, $val);
@@ -57,11 +83,13 @@ class Button extends Control {
 
     public function setParam($name, $value) {
         $this->href->set($name, $value);
+        $this->onclickNeeded = true;
         return $this;
     }
 
     public function unsetParam($name) {
         $this->href->un_set($name);
+        $this->onclickNeeded = true;
         return $this;
     }
 
@@ -76,18 +104,23 @@ class Button extends Control {
     }
 
     private function setOnClick() {
+        // Avoid setting the 'onclick' attribute if it's not needed
+        if (!$this->onclickNeeded) {
+            return;
+        }
+
         $params = array($this->href);
         if ($this->target) {
             $params[] = $this->target;
         }
-        // Surround params with single quotes 
+        // Surround params with single quotes
         $params = array_map(function($str) {
             return "'" . $str . "'";
         }, $params);
 
         $paramListString = implode(', ', $params);
         $jsFunctionName = $this->submit ? 'button_submit' : 'button_click';
-        $onclick = "$jsFunctionName($paramListString); return false"; 
+        $onclick = "$jsFunctionName($paramListString); return false";
         $this->onclick[] = $onclick;
         $onclickStr = StringUtils::arrayToString($this->onclick, "; ", true);
         parent::set("onclick", $onclickStr);
@@ -103,7 +136,7 @@ class Button extends Control {
 
     /**
      * Allows opening the URL in a new window.
-     * 
+     *
      * @param String $target the name of the new window.
      */
     public function setTarget($target) {
@@ -137,5 +170,16 @@ class Button extends Control {
      */
     public function getOnclick() {
         return $this->onclick;
+    }
+
+    /**
+     * The value of the $onclickNeeded variable is set automatically based
+     * on whether 'action' or 'url' have been set.
+     * However, this method allows to manually override it.
+     *
+     * @param boolean $onclickNeeded
+     */
+    public function setOnclickNeeded($onclickNeeded) {
+        $this->onclickNeeded = $onclickNeeded;
     }
 }
