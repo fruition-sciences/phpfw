@@ -97,6 +97,11 @@ class Application {
             include("www/templates/page_not_found.php");
             return;
         }
+        if ($e instanceof NoPermissionException) {
+            header("HTTP/1.0 403 Forbidden");
+            include("www/templates/access_not_allowed.php");
+            return;
+        }
         // For all other errors - show error page.
         Logger::error($e);
         http_response_code(500);
