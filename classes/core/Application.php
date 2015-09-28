@@ -344,7 +344,30 @@ class Application {
         $methodName = MapUtil::get($route->params, 'action');
         $lang = MapUtil::get($route->params, 'lang');
         $redirectPath = MapUtil::get($route->params, 'redirect');
+
+        // Expand macros. This allows the controller to be a macro which uses other params
+        $controllerAlias = $this->expandMacros($controllerAlias, $route->params);
+
         return array($controllerAlias, $methodName, $lang, $redirectPath);
+    }
+
+    /**
+     * Search for macros in the given text and replace with values of the given
+     * map.
+     * The macros are expected to be of the format: {something}
+     * A macro will then be expanded if the map contains the value 'something'.
+     *
+     * @param String $text
+     * @param Map $params
+     */
+    private function expandMacros($text, $params) {
+        $patterns = array();
+        $replacements = array();
+        foreach ($params as $key => $val) {
+            $patterns[] = "/{" . $key . "}/";
+            $replacements[] = $val;
+        }
+        return preg_replace($patterns, $replacements, $text);
     }
 
      /**
