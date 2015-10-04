@@ -127,7 +127,9 @@ abstract class UI {
      * @return TableCSS3
      */
     public function newTableCSS3($name, $className='css3') {
-        return new TableCSS3($name, $className, $this->ctx);
+        $table = new TableCSS3($name, $className, $this->ctx);
+        $table->set('id', $name);
+        return $table;
     }
 
     /**
