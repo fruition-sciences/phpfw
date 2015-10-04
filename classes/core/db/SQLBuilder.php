@@ -33,17 +33,17 @@ class SQLBuilder {
         $this->from($tableName, $alias);
         $this->addColumns($alias, $columns, $functions);
     }
-    
+
     public function delete($tableName) {
         $this->from($tableName, '');
         $this->command = "delete";
     }
-    
-    /** 
+
+    /**
      * Select all columns from the table represented by the given bean.
      * Uses the $functions variable of the bean so that specific SQL functions
      * are being used if necessary.
-     * 
+     *
      * @param String $beanClassName
      * @param String $alias
      */
@@ -55,7 +55,7 @@ class SQLBuilder {
      * Add the given columns into the columns array. The columns array indicates
      * which columns will be selected in the query.
      * Optionally, applies the given functions to the columns.
-     * 
+     *
      * @param $alias the table's alias.
      * @param $columns
      * @param $functions (option) array of the same size of the given columns array.
@@ -91,13 +91,13 @@ class SQLBuilder {
      * Add a condition to the 'where' clause of the query.
      * All filters are treated as 'AND', and each will be surrounded by
      * parentheses for protection.
-     * 
+     *
      * Use 'varTypes' and arg1, arg2,... for prepapred statements with bound parameters.
      * Note that you can pass extra parameters after arg1.
-     * 
+     *
      * Example:
      *  sqlBuilder.where('name=? and age=?', 'si', 'john', 11);
-     * 
+     *
      * @param string $condition the SQL clause
      * @param string $varTypes defines the types of parameters you pass.
      *               Each character represents the type of the proceeding args.
@@ -113,19 +113,103 @@ class SQLBuilder {
      *               of arguments should match the length of the string $varTypes.
      */
     public function filter($condition, $varTypes=null, $arg1=null) {
+        // Call collectParams, passing all parameters
+        $condition = call_user_func_array(array($this, 'collectParams'), func_get_args());
+        $this->conditions[] = "($condition)";
+    }
+
+    /**
+     * Use this method in order to perform an explicit regular (inner) join.
+     * You can also achieve an inner join using 'select', 'from' and 'filter'.
+     *
+     * Support for prepared statement is limited:
+     * 1. Variables (i.e: the '?' symbol) can be used only in the tableName, not
+     *    in the condition. This is useful when the tableName is actually an
+     *    inner query.
+     * 2. Make sure to call 'innerJoin' method(s) *before* calling 'filter'.
+     *    That is because in the final SQL query, the conditions of the filters
+     *    appear after the joins. If you 'filter' before 'innerJoin', the order
+     *    of the parameters of the prepared statement will be incorrect.
+
+     *
+     * @param string $tableName
+     * @param string $alias
+     * @param string $condition
+     * @param string $columns (optional) columns to be selected
+     * @param string $varTypes defines the types of parameters you pass.
+     *               @see filter
+     * @param string $arg1 the first parameter.
+     * @param string $arg2,... the method accepts additional parameters. Number
+     *               of arguments should match the length of the string $varTypes.
+     */
+    public function join($tableName, $alias, $condition, $columns=null, $varTypes=null, $arg1=null) {
+        // We just call explicitJoin with joinType=INNER_JOIN
+        $params = array($tableName, $alias, $condition, SQLJoin::INNER_JOIN);
+        // Add optional parameters to params list
+        if (func_num_args() > 3) {
+            $params = array_merge($params, array_slice(func_get_args(), 3));
+        }
+        call_user_func_array(array($this, 'explicitJoin'), $params);
+    }
+
+    /**
+     * Adds a left join to the query.
+     * Example:
+     * leftJoin('students', 's', 's.id = x.student_id')
+     *
+     * Support for prepared statement is limited. @see join
+     *
+     * @param string $tableName
+     * @param string $alias
+     * @param string $condition
+     * @param string $columns (optional) columns to be selected
+     * @param string $varTypes defines the types of parameters you pass.
+     *               @see filter
+     * @param string $arg1 the first parameter.
+     * @param string $arg2,... the method accepts additional parameters. Number
+     *               of arguments should match the length of the string $varTypes.
+     */
+    public function leftJoin($tableName, $alias, $condition, $columns=null, $varTypes=null, $arg1=null) {
+        // We just call explicitJoin with joinType=LEFT_JOIN
+        $params = array($tableName, $alias, $condition, SQLJoin::LEFT_JOIN);
+        // Add optional parameters to params list
+        if (func_num_args() > 3) {
+            $params = array_merge($params, array_slice(func_get_args(), 3));
+        }
+        call_user_func_array(array($this, 'explicitJoin'), $params);
+    }
+
+    /**
+     * Collects the parameters to be used in prepared statement.
+     * All the parameters are collected into $this->params and should correspond
+     * to the '?' symbols in the given SQL.
+     *
+     * In case any of the variables where an array, the corresponding '?' symbol
+     * in the given SQL clause will be expanded into multiple '?' symbols
+     * according to the size of the array.
+     *
+     * @param string $sql SQL clause
+     * @param string $varTypes defines the types of parameters you pass.
+     *               @see filter
+     * @param string $arg1 the first parameter.
+     * @param string $arg2,... the method accepts additional parameters. Number
+     *               of arguments should match the length of the string $varTypes.
+     * @return string the given SQL clause
+     */
+    private function collectParams($sql, $varTypes=null, $arg1=null) {
         if ($varTypes) {
             if (func_num_args()-2 != strlen($varTypes)) {
                 throw new IllegalArgumentException("Number of variables must match the length of the varTypes variable: '$varTypes'");
             }
 
-            // This map will indicate which of the variables is an array and 
+            // This map will indicate which of the variables is an array and
             // what its size is.
             $arraySizesMap = array();
 
             foreach (str_split($varTypes) as $i => $varType) {
                 // Get the argument
                 $arg = func_get_arg($i + 2);
-                
+
                 // Handle 'array'
                 if ($varType == 'a') {
                     if (!is_array($arg)) {
@@ -150,45 +234,38 @@ class SQLBuilder {
                 }
             }
             // In case of array vars, expand their '?' to a comma-separated list of '?'
-            $condition = $this->expandArrayVars($condition, $arraySizesMap);
+            $sql = $this->expandArrayVars($sql, $arraySizesMap);
         }
-        $this->conditions[] = "($condition)";
-    }
-
-    /**
-     * Use this method in order to perform an explicit regular (inner) join.
-     *  
-     * @param $tableName
-     * @param $alias
-     * @param $condition
-     * @param $columns (optional) columns to be selected
-     */
-    public function join($tableName, $alias, $condition, $columns=null) {
-        $this->explicitJoin($tableName, $alias, $condition, SQLJoin::INNER_JOIN, $columns);
-    }
-
-    /**
-     * Performs a left join.
-     * 
-     * @param $tableName
-     * @param $alias
-     * @param $condition
-     * @param $columns (optional) columns to be selected
-     */
-    public function leftJoin($tableName, $alias, $condition, $columns=null) {
-        $this->explicitJoin($tableName, $alias, $condition, SQLJoin::LEFT_JOIN, $columns);
+        return $sql;
     }
 
     /**
      * Performs an expilicit join.
-     * 
+     * Supports parameters for prepared statement.
+     * Parameters can be refered by either the 'condition' or in the
+     * 'tableName', which is useful in case of a join with an inner query.
+     * Note: Currently, support for array parameters is available only if it
+     * appears in the 'tableName', not in the 'condition'.
+     *
      * @param $tableName
      * @param $alias
      * @param $condition
      * @param $joinType int self::INNER_JOIN or self::LEFT_JOIN
      * @param $columns (optional) columns to be selected
+     * @param string $varTypes defines the types of parameters you pass.
+     *               @see filter
+     * @param string $arg1 the first parameter.
+     * @param string $arg2,... the method accepts additional parameters. Number
+     *               of arguments should match the length of the string $varTypes.
      */
-    public function explicitJoin($tableName, $alias, $condition, $joinType, $columns=null) {
+    public function explicitJoin($tableName, $alias, $condition, $joinType, $columns=null, $varTypes=null, $arg1=null) {
+        // If there are parameters for prepared statement (param #6 and above)
+        if (func_num_args() > 5) {
+            $params = array($tableName);
+            $params = array_merge($params, array_slice(func_get_args(), 5));
+            $tableName = call_user_func_array(array($this, 'collectParams'), $params);
+        }
+
         $this->tables[$alias] = new SQLJoin($tableName, $alias, $condition, $joinType);
         if ($columns) {
             $this->addColumns($alias, $columns);
@@ -262,7 +339,7 @@ class SQLBuilder {
 
     /**
      * Check whether this builder contains parameters for a prepared statement.
-     * 
+     *
      * @return boolean
      */
     public function hasParams() {
@@ -271,7 +348,7 @@ class SQLBuilder {
 
     /**
      * Get the list of parameters for a prepapred statement.
-     * 
+     *
      * @return array
      */
     public function getParamList() {
@@ -281,7 +358,7 @@ class SQLBuilder {
     /**
      * Get a string which represents the types of the parameters for a prepared
      * statement. See types under http://www.php.net/manual/en/mysqli-stmt.bind-param.php
-     * 
+     *
      * @return string
      */
     public function getParamTypes() {
@@ -303,7 +380,7 @@ class SQLBuilder {
     /**
      * Get the binding type suitable for the given variable.
      * See: http://www.php.net/manual/en/mysqli-stmt.bind-param.php
-     *  
+     *
      * @param unknown $var
      * @return string
      */
@@ -326,7 +403,7 @@ class SQLBuilder {
      * only for occurances which are indicated by the given map.
      * For example: If $arraySizesMap[2] == 5 then the 3rd '?' will be replaced
      * with '?,?,?,?,?'.
-     * 
+     *
      * @param string $condition
      * @param Map $arraySizesMap indicates which indexes of occurances of '?' in
      *        the given condition represents an array, and what the array size is.
@@ -348,7 +425,7 @@ class SQLBuilder {
                 if (isset($arraySizesMap[$i-1])) {
                     $qMarks = implode(',', array_fill(0, $arraySizesMap[$i-1], '?'));
                 }
-                $newCondition .= $qMarks;                
+                $newCondition .= $qMarks;
             }
             $newCondition .= $part;
         }
