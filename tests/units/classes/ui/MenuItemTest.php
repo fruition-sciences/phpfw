@@ -40,8 +40,8 @@ class MenuItemTest extends \PHPUnit_Framework_TestCase {
     public function testGetId() {
         $id = $this->menuItem->getId();
         $actual = "". $id;
-        $excepted = "dashboard";
-        $this->assertSame($excepted, $actual);
+        $expected = "dashboard";
+        $this->assertSame($expected, $actual);
     }
 
     /**
@@ -50,8 +50,8 @@ class MenuItemTest extends \PHPUnit_Framework_TestCase {
     public function testGetName() {
         $name = $this->menuItem->getName();
         $actual = "". $name;
-        $excepted = "Dashboard";
-        $this->assertSame($excepted, $actual);
+        $expected = "Dashboard";
+        $this->assertSame($expected, $actual);
     }
 
     /**
@@ -60,8 +60,8 @@ class MenuItemTest extends \PHPUnit_Framework_TestCase {
     public function testGetHref() {
         $href = $this->menuItem->getHref();
         $actual = "". $href;
-        $excepted = "/vine/map";
-        $this->assertSame($excepted, $actual);
+        $expected = "/vine/map";
+        $this->assertSame($expected, $actual);
     }
 
     /**
@@ -95,30 +95,30 @@ class MenuItemTest extends \PHPUnit_Framework_TestCase {
      * @covers MenuItem::isAdminOnly
      */
     public function testIsAdminOnly() {
-        $excepted = '1';
+        $expected = '1';
         $actual = $this->menuItem->isAdminOnly()->__toString();
-        $this->assertEquals($excepted, $actual);
+        $this->assertEquals($expected, $actual);
     }
 
     /**
      * @covers MenuItem::getXmlElement
      */
     public function testGetXmlElement() {
-        $excepted = new \SimpleXMLElement($this->data);
+        $expected = new \SimpleXMLElement($this->data);
         $actual = $this->menuItem->getXmlElement();
-        $this->assertEquals($excepted, $actual);
+        $this->assertEquals($expected, $actual);
     }
 
     /**
      * @covers MenuItem::getAttributes
      */
     public function testGetAttributes() {
-        $excepted = array(
+        $expected = array(
             'id' => 'dashboard',
             'adminOnly' => 1
         );
         $actual = $this->menuItem->getAttributes();
-        $this->assertEquals($excepted, $actual);
+        $this->assertEquals($expected, $actual);
     }
 
     /**

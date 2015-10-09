@@ -36,11 +36,11 @@ class DateUtilsTest extends \PHPUnit_Framework_TestCase {
     public function testGetHourOfDay() {
         $time = 1430388542;
         $actual = \DateUtils::getHourOfDay($time, "Europe/Paris");
-        $excepted = 12;
-        $this->assertEquals($excepted, $actual);
+        $expected = 12;
+        $this->assertEquals($expected, $actual);
         $nextWeek = $time + (7 * 24 * 60 * 60);
         $actual = \DateUtils::getHourOfDay($nextWeek, "Europe/Paris");
-        $this->assertEquals($excepted, $actual);
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -53,8 +53,8 @@ class DateUtilsTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals($execpted, $actual);
         $nextWeek = $time + (7 * 24 * 60 * 60);
         $actual = \DateUtils::getHourOfDay($nextWeek, "America/Los_Angeles");
-        $excepted = 3;
-        $this->assertSame($excepted, $actual);
+        $expected = 3;
+        $this->assertSame($expected, $actual);
     }
 
     /**
@@ -63,8 +63,8 @@ class DateUtilsTest extends \PHPUnit_Framework_TestCase {
     public function testAddDays() {
         $time = 1430388542;
         $actual = \DateUtils::addDays($time, 2, null, 30, null, "Europe/Paris");
-        $excepted = 1430562602;
-        $this->assertSame($excepted, $actual);
+        $expected = 1430562602;
+        $this->assertSame($expected, $actual);
     }
 
     /**
@@ -73,8 +73,8 @@ class DateUtilsTest extends \PHPUnit_Framework_TestCase {
     public function testAddDaysNoTimeZone() {
         $time = 1430388542;
         $actual = \DateUtils::addDays($time, 2, null, 30, null);
-        $excepted = 1430562602;
-        $this->assertSame($excepted, $actual);
+        $expected = 1430562602;
+        $this->assertSame($expected, $actual);
     }
 
     /**
@@ -83,8 +83,8 @@ class DateUtilsTest extends \PHPUnit_Framework_TestCase {
     public function testAddDaysNohour() {
         $time = 1430388542;
         $actual = \DateUtils::addDays($time, 2, null, null, null, "Europe/Paris");
-        $excepted = 1430561342;
-        $this->assertSame($excepted, $actual);
+        $expected = 1430561342;
+        $this->assertSame($expected, $actual);
     }
 
     /**
@@ -93,8 +93,8 @@ class DateUtilsTest extends \PHPUnit_Framework_TestCase {
     public function testAddDaysWithHour() {
         $time = 1430388542;
         $actual = \DateUtils::addDays($time, 2, 2, null, null, "Europe/Paris");
-        $excepted = 1430525342;
-        $this->assertSame($excepted, $actual);
+        $expected = 1430525342;
+        $this->assertSame($expected, $actual);
     }
 
     /**
@@ -103,8 +103,8 @@ class DateUtilsTest extends \PHPUnit_Framework_TestCase {
     public function testAddDaysWithMinutes() {
         $time = 1430388542;
         $actual = \DateUtils::addDays($time, 2, 2, 30, null,"Europe/Paris");
-        $excepted = 1430526602;
-        $this->assertSame($excepted, $actual);
+        $expected = 1430526602;
+        $this->assertSame($expected, $actual);
     }
 
     /**
@@ -113,8 +113,8 @@ class DateUtilsTest extends \PHPUnit_Framework_TestCase {
     public function testAddDaysWithSecondes() {
         $time = 1430388542;
         $actual = \DateUtils::addDays($time, 2, 2, 30, 45,"Europe/Paris");
-        $excepted = 1430526645;
-        $this->assertSame($excepted, $actual);
+        $expected = 1430526645;
+        $this->assertSame($expected, $actual);
     }
 
     /**
@@ -123,8 +123,8 @@ class DateUtilsTest extends \PHPUnit_Framework_TestCase {
     public function testAddHour() {
         $time = 1430388542;
         $actual = \DateUtils::add($time, "hour", 2, "Europe/Paris");
-        $excepted = 1430395742;
-        $this->assertSame($excepted, $actual);
+        $expected = 1430395742;
+        $this->assertSame($expected, $actual);
     }
 
     /**
@@ -133,8 +133,8 @@ class DateUtilsTest extends \PHPUnit_Framework_TestCase {
     public function testAddDay() {
         $time = 1430388542;
         $actual = \DateUtils::add($time, "day", 8, "Europe/Paris");
-        $excepted = 1431079742;
-        $this->assertSame($excepted, $actual);
+        $expected = 1431079742;
+        $this->assertSame($expected, $actual);
     }
 
     /**
@@ -143,8 +143,8 @@ class DateUtilsTest extends \PHPUnit_Framework_TestCase {
     public function testAddMonth() {
         $time = 1430388542;
         $actual = \DateUtils::add($time, "month", 12, "Europe/Paris");
-        $excepted = 1462010942;
-        $this->assertSame($excepted, $actual);
+        $expected = 1462010942;
+        $this->assertSame($expected, $actual);
     }
 
     /**
@@ -153,8 +153,8 @@ class DateUtilsTest extends \PHPUnit_Framework_TestCase {
     public function testAddYear() {
         $time = 1430388542;
         $actual = \DateUtils::add($time, "year", 1, "Europe/Paris");
-        $excepted = 1462010942;
-        $this->assertSame($excepted, $actual);
+        $expected = 1462010942;
+        $this->assertSame($expected, $actual);
     }
 
     /**
@@ -163,8 +163,8 @@ class DateUtilsTest extends \PHPUnit_Framework_TestCase {
     public function testGetBeginningOfDay() {
         $time = 1430388542;
         $actual = \DateUtils::getBeginningOfDay($time, "Europe/Paris");
-        $excepted = 1430344800;
-        $this->assertSame($excepted, $actual);
+        $expected = 1430344800;
+        $this->assertSame($expected, $actual);
     }
 
     /**
@@ -173,8 +173,8 @@ class DateUtilsTest extends \PHPUnit_Framework_TestCase {
     public function testGetBeginningOfPreviousDay() {
         $time = 1430388542;
         $actual = \DateUtils::getBeginningOfPreviousDay($time, "Europe/Paris");
-        $excepted = 1430258400;
-        $this->assertSame($excepted, $actual);
+        $expected = 1430258400;
+        $this->assertSame($expected, $actual);
     }
 
     /**
@@ -183,8 +183,8 @@ class DateUtilsTest extends \PHPUnit_Framework_TestCase {
     public function testGetBeginningOfWeek() {
         $time = 1430388542;
         $actual = \DateUtils::getBeginningOfWeek($time, "Europe/Paris");
-        $excepted = 1430085600;
-        $this->assertSame($excepted, $actual);
+        $expected = 1430085600;
+        $this->assertSame($expected, $actual);
     }
 
     /**
@@ -193,8 +193,8 @@ class DateUtilsTest extends \PHPUnit_Framework_TestCase {
     public function testGetBeginningOfMonth() {
         $time = 1430388542;
         $actual = \DateUtils::getBeginningOfMonth($time, "America/Los_Angeles");
-        $excepted = 1427871600;
-        $this->assertSame($excepted, $actual);
+        $expected = 1427871600;
+        $this->assertSame($expected, $actual);
     }
 
     /**
@@ -204,8 +204,8 @@ class DateUtilsTest extends \PHPUnit_Framework_TestCase {
         $startTime = 1430388542;
         $end = 1430403672;
         $actual = \DateUtils::timeDiff($startTime, $end);
-        $excepted = "04:12:10";
-        $this->assertSame($excepted, $actual);
+        $expected = "04:12:10";
+        $this->assertSame($expected, $actual);
     }
 
     /**
@@ -215,8 +215,8 @@ class DateUtilsTest extends \PHPUnit_Framework_TestCase {
         $startTime = 1430403672;
         $end = 1430388542;
         $actual = \DateUtils::timeDiff($startTime, $end);
-        $excepted = "-04:12:10";
-        $this->assertSame($excepted, $actual);
+        $expected = "-04:12:10";
+        $this->assertSame($expected, $actual);
     }
 
     /**
@@ -225,8 +225,8 @@ class DateUtilsTest extends \PHPUnit_Framework_TestCase {
     public function testModifyTimestampTimeZone() {
         $time = 1430403672;
         $actual = \DateUtils::modifyTimestamp($time, "+1 day", "America/Los_Angeles");
-        $excepted = "1430490072";
-        $this->assertSame($excepted, $actual);
+        $expected = "1430490072";
+        $this->assertSame($expected, $actual);
     }
 
     /**
@@ -235,8 +235,8 @@ class DateUtilsTest extends \PHPUnit_Framework_TestCase {
     public function testModifyTimestamp() {
         $time = 1430403672;
         $actual = \DateUtils::modifyTimestamp($time, "+1 day");
-        $excepted = "1430490072";
-        $this->assertSame($excepted, $actual);
+        $expected = "1430490072";
+        $this->assertSame($expected, $actual);
     }
 
     /**
@@ -244,8 +244,8 @@ class DateUtilsTest extends \PHPUnit_Framework_TestCase {
      */
     public function testGetMonthsArray() {
         $actual = \DateUtils::getMonthsArray("wide");
-        $excepted = Array( "1" => "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December");
-        $this->assertEquals($excepted, $actual);
+        $expected = Array( "1" => "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December");
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -255,8 +255,8 @@ class DateUtilsTest extends \PHPUnit_Framework_TestCase {
         $date = \DateUtils::makeDate(2015, 5, 1, 10, 34, 23, "Europe/Paris");
         $this->assertInstanceOf("DateTime", $date);
         $actual = $date->getTimestamp();
-        $excepted = 1430469263;
-        $this->assertSame($excepted, $actual);
+        $expected = 1430469263;
+        $this->assertSame($expected, $actual);
     }
 
     /**
@@ -267,8 +267,8 @@ class DateUtilsTest extends \PHPUnit_Framework_TestCase {
         $date = \DateUtils::makeDateFromTimestamp($time, "Europe/Paris");
         $this->assertInstanceOf("DateTime", $date);
         $actual = $date->getTimestamp();
-        $excepted = 1430469263;
-        $this->assertSame($excepted, $actual);
+        $expected = 1430469263;
+        $this->assertSame($expected, $actual);
     }
 
     /**
@@ -279,8 +279,8 @@ class DateUtilsTest extends \PHPUnit_Framework_TestCase {
         $date = \DateUtils::makeDateFromTimestamp($time);
         $this->assertInstanceOf("DateTime", $date);
         $actual = $date->getTimestamp();
-        $excepted = 1430469263;
-        $this->assertSame($excepted, $actual);
+        $expected = 1430469263;
+        $this->assertSame($expected, $actual);
     }
 
     /**
@@ -290,8 +290,8 @@ class DateUtilsTest extends \PHPUnit_Framework_TestCase {
         $timeZone = new \DateTimeZone("Europe/Paris");
         $dateTime = new \DateTime("2015-05-01 10:34:23", $timeZone);
         $actual  = \DateUtils::dateTimeToTimestamp($dateTime);
-        $excepted = 1430469263;
-        $this->assertSame($excepted, $actual);
+        $expected = 1430469263;
+        $this->assertSame($expected, $actual);
     }
 
     /**
@@ -300,8 +300,8 @@ class DateUtilsTest extends \PHPUnit_Framework_TestCase {
     public function testGetGmtOffset() {
         $time = 1430469263;
         $actual = \DateUtils::getGmtOffset($time, "Europe/Paris");
-        $excepted = 7200;
-        $this->assertSame($excepted, $actual);
+        $expected = 7200;
+        $this->assertSame($expected, $actual);
     }
 
     /**
@@ -434,9 +434,9 @@ class DateUtilsTest extends \PHPUnit_Framework_TestCase {
      */
     public function testExcelToTimestamp() {
         $actual = \DateUtils::excelToTimestamp(0);
-        $excepted = 1430870400;
+        $expected = 1430870400;
 
-        $this->assertGreaterThan($excepted, $actual);
+        $this->assertGreaterThan($expected, $actual);
     }
 
     /**
@@ -444,8 +444,8 @@ class DateUtilsTest extends \PHPUnit_Framework_TestCase {
      */
     public function testExcelToTimestampMacDate() {
         $actual = \DateUtils::excelToTimestamp(40932, true);
-        $excepted = 1453680000;
-        $this->assertSame($excepted, $actual);
+        $expected = 1453680000;
+        $this->assertSame($expected, $actual);
     }
 
     /**
@@ -453,8 +453,8 @@ class DateUtilsTest extends \PHPUnit_Framework_TestCase {
      */
     public function testParseDate() {
         $actual = \DateUtils::parseDate("2015-05-01 10:34:23", "Europe/Paris");
-        $excepted = 1430469263;
-        $this->assertEquals($excepted, $actual);
+        $expected = 1430469263;
+        $this->assertEquals($expected, $actual);
     }
 }
 ?>

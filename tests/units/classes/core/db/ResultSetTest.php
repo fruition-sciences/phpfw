@@ -32,8 +32,8 @@ class ResultSetTest extends \PHPUnit_Framework_TestCase {
             'month' => '11',
         ));
         $actual = $this->result->getString('category');
-        $excepted = 'foo';
-        $this->assertSame($actual, $excepted);
+        $expected = 'foo';
+        $this->assertSame($actual, $expected);
     }
 
     /**
@@ -142,8 +142,8 @@ class ResultSetTest extends \PHPUnit_Framework_TestCase {
         $date = '2015-04-23 15:16:17';
         $this->result->setDate($dateKey, $date);
         $actual = $this->result->getDate($dateKey);
-        $excepted = 1429802177;
-        $this->assertSame($actual, $excepted);
+        $expected = 1429802177;
+        $this->assertSame($actual, $expected);
     }
     /**
      * @covers ResultSet::getDate
@@ -153,8 +153,8 @@ class ResultSetTest extends \PHPUnit_Framework_TestCase {
         $date = '2015-04-23 15:16:17';
         $this->result->setDate($dateKey, $date);
         $actual = $this->result->getDate($dateKey, 'Europe/Paris');
-        $excepted = 1429794977;
-        $this->assertSame($actual, $excepted);
+        $expected = 1429794977;
+        $this->assertSame($actual, $expected);
     }
     /**
      * @covers ResultSet::getDate
@@ -164,8 +164,8 @@ class ResultSetTest extends \PHPUnit_Framework_TestCase {
         $date = '2015-04-23';
         $this->result->setDate($dateKey, $date);
         $actual = $this->result->getDate($dateKey);
-        $excepted = 1429747200;
-        $this->assertSame($actual, $excepted);
+        $expected = 1429747200;
+        $this->assertSame($actual, $expected);
     }
 
     /**
@@ -187,8 +187,8 @@ class ResultSetTest extends \PHPUnit_Framework_TestCase {
         $time = '15:22:33';
         $this->result->setTime($timeKey, $time);
         $actual = $this->result->getTime($timeKey);
-        $excepted = 55353;
-        $this->assertSame($actual, $excepted);
+        $expected = 55353;
+        $this->assertSame($actual, $expected);
     }
 
     /**
@@ -210,8 +210,8 @@ class ResultSetTest extends \PHPUnit_Framework_TestCase {
         $geoPoint = 'POINT(-122.3340921148 38.421022632969)';
         $this->result->setString($pointKey, $geoPoint);
         $actual = $this->result->getPoint($pointKey)->toWKT();
-        $excepted = \GeomPoint::fromWKT($geoPoint)->toWKT();
-        $this->assertSame($actual, $excepted);
+        $expected = \GeomPoint::fromWKT($geoPoint)->toWKT();
+        $this->assertSame($actual, $expected);
     }
 
     /**
@@ -233,8 +233,8 @@ class ResultSetTest extends \PHPUnit_Framework_TestCase {
         $geoPolygon = 'POLYGON((1 1,5 1,5 5,1 5,1 1))';
         $this->result->setString($polyKey, $geoPolygon);
         $actual = $this->result->getPolygon($polyKey)->toWKT();
-        $excepted = new \GeomPolygon($geoPolygon);
-        $this->assertSame($actual, $excepted->toWKT());
+        $expected = new \GeomPolygon($geoPolygon);
+        $this->assertSame($actual, $expected->toWKT());
     }
 
     /**

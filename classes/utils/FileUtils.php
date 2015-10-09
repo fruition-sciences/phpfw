@@ -97,18 +97,11 @@ class FileUtils {
 	 * Replace other characters by -
 	 *
 	 * @param String $fileName, could be with or without its path
-	 * @return String $sanitizedFileName, file name with or without its path
-	 * depending on what is given in param
+	 * @return String $sanitizedFileName, file name sanitarized
 	 */
 	public static function sanitizeFileName($fileName) {
-	    // Sanitize only the filename, not its path
-	    $workingString = pathinfo($fileName)['basename'];
-	    $dirName = pathinfo($fileName)['dirname'];
-	    $sanitizedFileName = preg_replace("/[^A-Za-z0-9_\-. ]/", "-", $workingString);
-	    if (empty($dirName) || $dirName == '.') {
-	        return $sanitizedFileName;
-	    }
-	    return $dirName . '/' . $sanitizedFileName;
+	    $sanitizedFileName = preg_replace("/[^A-Za-z0-9_\-. ]/", "-", $fileName);
+	    return $sanitizedFileName;
 	}
 	
 	/**

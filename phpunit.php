@@ -14,3 +14,6 @@ if (! file_exists($autoloader)) {
 }
 require $autoloader;
 Config::getInstance(true); //set test context
+
+// Adding this date setting avoid having warning during test running
+date_default_timezone_set('UTC');

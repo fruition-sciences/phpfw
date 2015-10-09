@@ -38,8 +38,8 @@ class MeasureTextboxTest extends \PHPUnit_Framework_TestCase {
     public function testSetDisplayUnit() {
         $measure = $this->measure->setDisplayUnit("Zend_Measure_Temperature::FAHRENHEIT");
         $actual = $measure->getDisplayUnit();
-        $excepted = "Zend_Measure_Temperature::FAHRENHEIT";
-        $this->assertEquals($excepted, $actual);
+        $expected = "Zend_Measure_Temperature::FAHRENHEIT";
+        $this->assertEquals($expected, $actual);
 
     }
 
@@ -51,8 +51,8 @@ class MeasureTextboxTest extends \PHPUnit_Framework_TestCase {
     public function testToInput() {
         $this->measure->setForm(new \Form());
         $actual = $this->measure->toInput();
-        $excepted = '<input name="measure" type="text"></input><input name="measure__unit" type="hidden" value="Zend_Measure_Temperature::CELSIUS" id="measure__unit"></input> ';
-        $this->assertEquals($excepted, $actual);
+        $expected = '<input name="measure" type="text"></input><input name="measure__unit" type="hidden" value="Zend_Measure_Temperature::CELSIUS" id="measure__unit"></input> ';
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -65,8 +65,8 @@ class MeasureTextboxTest extends \PHPUnit_Framework_TestCase {
         $this->measure->setForm(new \Form());
         $this->measure->setShowSymbol(true);
         $actual = $this->measure->toInput();
-        $excepted = '<input name="measure" type="text"></input><input name="measure__unit" type="hidden" value="Zend_Measure_Temperature::CELSIUS" id="measure__unit"></input> °C';
-        $this->assertEquals($excepted, $actual);
+        $expected = '<input name="measure" type="text"></input><input name="measure__unit" type="hidden" value="Zend_Measure_Temperature::CELSIUS" id="measure__unit"></input> °C';
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -77,8 +77,8 @@ class MeasureTextboxTest extends \PHPUnit_Framework_TestCase {
         $this->measure->setForm(new \Form());
         $this->measure->setValue("Temperature");
         $actual = $this->measure->toString();
-        $excepted = "Temperature ";
-        $this->assertEquals($excepted, $actual);
+        $expected = "Temperature ";
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -90,8 +90,8 @@ class MeasureTextboxTest extends \PHPUnit_Framework_TestCase {
         $this->measure->setValue("25.4");
         $this->measure->setShowSymbol(true);
         $actual = $this->measure->toString();
-        $excepted = "25.4 °C";
-        $this->assertEquals($excepted, $actual);
+        $expected = "25.4 °C";
+        $this->assertEquals($expected, $actual);
     }
 
     /**

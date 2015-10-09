@@ -89,8 +89,8 @@ class HtmlElementTest extends \PHPUnit_Framework_TestCase {
      */
     public function test__toString() {
         $actual = $this->element->__toString();
-        $excepted = '<input name="sensorID"></input>';
-        $this->assertEquals($excepted, $actual);
+        $expected = '<input name="sensorID"></input>';
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -100,8 +100,8 @@ class HtmlElementTest extends \PHPUnit_Framework_TestCase {
      */
     public function testGetElementOpenTag() {
         $actual = $this->element->getElementOpenTag();
-        $excepted = '<input name="sensorID">';
-        $this->assertEquals($excepted, $actual);
+        $expected = '<input name="sensorID">';
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -113,8 +113,8 @@ class HtmlElementTest extends \PHPUnit_Framework_TestCase {
         $this->element = $this->element->addClass("col-lg-12");
         $this->element = $this->element->set("size", "12px");
         $actual = $this->element->getElementOpenTag();
-        $excepted = '<input name="sensorID" size="12px" class="col-lg-12">';
-        $this->assertEquals($excepted, $actual);
+        $expected = '<input name="sensorID" size="12px" class="col-lg-12">';
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -122,8 +122,8 @@ class HtmlElementTest extends \PHPUnit_Framework_TestCase {
      */
     public function testGetElementCloseTag() {
         $actual = $this->element->getElementCloseTag();
-        $excepted = '</input>';
-        $this->assertEquals($excepted, $actual);
+        $expected = '</input>';
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -131,8 +131,8 @@ class HtmlElementTest extends \PHPUnit_Framework_TestCase {
      */
     public function testGetName() {
         $actual = $this->element->getName();
-        $excepted = 'sensorID';
-        $this->assertEquals($excepted, $actual);
+        $expected = 'sensorID';
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -142,9 +142,9 @@ class HtmlElementTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals("input", $this->element->getType());
         $elt = $this->element->setType("select");
         $actual = $elt->getType();
-        $excepted = 'select';
+        $expected = 'select';
         $this->assertInstanceOf("HtmlElement", $elt);
-        $this->assertEquals($excepted, $actual);
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -152,8 +152,8 @@ class HtmlElementTest extends \PHPUnit_Framework_TestCase {
      */
     public function testGetType() {
         $actual = $this->element->getType();
-        $excepted = 'input';
-        $this->assertEquals($excepted, $actual);
+        $expected = 'input';
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -162,9 +162,9 @@ class HtmlElementTest extends \PHPUnit_Framework_TestCase {
     public function testConfirm() {
         $elt = $this->element->confirm("Accept terms");
         $actual = $elt->get("onclick");
-        $excepted = "if (!confirm('Accept terms')) return false";
+        $expected = "if (!confirm('Accept terms')) return false";
         $this->assertInstanceOf("HtmlElement", $elt);
-        $this->assertEquals($excepted, $actual);
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -173,9 +173,9 @@ class HtmlElementTest extends \PHPUnit_Framework_TestCase {
     public function testSetTooltip() {
         $elt = $this->element->setTooltip("Validate changes");
         $actual = $elt->get("title");
-        $excepted = "Validate changes";
+        $expected = "Validate changes";
         $this->assertInstanceOf("HtmlElement", $elt);
-        $this->assertEquals($excepted, $actual);
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -224,9 +224,9 @@ class HtmlElementTest extends \PHPUnit_Framework_TestCase {
     public function testSet() {
         $elt = $this->element->set("color", "red");
         $actual = $elt->get("color");
-        $excepted = "red";
+        $expected = "red";
         $this->assertInstanceOf("HtmlElement", $elt);
-        $this->assertEquals($excepted, $actual);
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -235,8 +235,8 @@ class HtmlElementTest extends \PHPUnit_Framework_TestCase {
     public function testSetCss() {
         $elt = $this->element->set("class", "col-lg-12");
         $actual = $elt->getCssClasses();
-        $excepted = "col-lg-12";
+        $expected = "col-lg-12";
         $this->assertInstanceOf("HtmlElement", $elt);
-        $this->assertContains($excepted, $actual);
+        $this->assertContains($expected, $actual);
     }
 }

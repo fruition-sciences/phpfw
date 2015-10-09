@@ -7,6 +7,7 @@
 namespace tests\units;
 /**
  * Test class for SQLBuilder.
+ * Method selectAll cannot be tested because it need bean class from vmms
  */
 class SQLBuilderTest extends \PHPUnit_Framework_TestCase {
     /**
@@ -22,13 +23,26 @@ class SQLBuilderTest extends \PHPUnit_Framework_TestCase {
     }
 
     /**
+     * This method helps to test private methods
+     *
+     * @param String $name
+     * @return ReflectionMethod $method
+     */
+    protected static function getMethod($name) {
+        $class = new \ReflectionClass('SQLBuilder');
+        $method = $class->getMethod($name);
+        $method->setAccessible(true);
+        return $method;
+    }
+
+    /**
      * @covers SQLBuilder::select
      */
     public function testSelect() {
         $this->sql->select('users', 'u', array('username', 'email'));
         $actual = $this->sql->__toString();
-        $excepted = "select u.username u_username,u.email u_email from users u";
-        $this->assertEquals($actual, $excepted);
+        $expected = "select u.username u_username,u.email u_email from users u";
+        $this->assertEquals($actual, $expected);
     }
 
     /**
@@ -37,8 +51,8 @@ class SQLBuilderTest extends \PHPUnit_Framework_TestCase {
     public function testSelectWithFunction() {
         $this->sql->select('users', 'u', array('username', 'email'), array('max', 'avg'));
         $actual = $this->sql->__toString();
-        $excepted = "select max(u.username) max_u_username,avg(u.email) avg_u_email from users u";
-        $this->assertEquals($actual, $excepted);
+        $expected = "select max(u.username) max_u_username,avg(u.email) avg_u_email from users u";
+        $this->assertEquals($actual, $expected);
     }
 
     /**
@@ -47,8 +61,8 @@ class SQLBuilderTest extends \PHPUnit_Framework_TestCase {
     public function testDelete() {
         $this->sql->delete('users');
         $actual = $this->sql->__toString();
-        $excepted = "delete  from users ";
-        $this->assertEquals($actual, $excepted);
+        $expected = "delete  from users ";
+        $this->assertEquals($actual, $expected);
     }
 
     /**
@@ -57,8 +71,8 @@ class SQLBuilderTest extends \PHPUnit_Framework_TestCase {
     public function testAddColumns() {
         $this->sql->addColumns('u', array('username', 'email'));
         $actual = $this->sql->__toString();
-        $excepted = "select u.username u_username,u.email u_email from ";
-        $this->assertSame($excepted, $actual);
+        $expected = "select u.username u_username,u.email u_email from ";
+        $this->assertSame($expected, $actual);
     }
     /**
      * @covers SQLBuilder::addColumns
@@ -66,8 +80,8 @@ class SQLBuilderTest extends \PHPUnit_Framework_TestCase {
     public function testAddColumnsWithFunction() {
         $this->sql->addColumns('u', array('username', 'email'), array('max', 'avg'));
         $actual = $this->sql->__toString();
-        $excepted = "select max(u.username) max_u_username,avg(u.email) avg_u_email from ";
-        $this->assertSame($excepted, $actual);
+        $expected = "select max(u.username) max_u_username,avg(u.email) avg_u_email from ";
+        $this->assertSame($expected, $actual);
     }
     /**
      * @covers SQLBuilder::addColumns
@@ -75,8 +89,8 @@ class SQLBuilderTest extends \PHPUnit_Framework_TestCase {
     public function testAddColumnsWithLessFunctions() {
         $this->sql->addColumns('u', array('username', 'email'), array('max'));
         $actual = $this->sql->__toString();
-        $excepted = "select u.username u_username,u.email u_email from ";
-        $this->assertSame($excepted, $actual);
+        $expected = "select u.username u_username,u.email u_email from ";
+        $this->assertSame($expected, $actual);
     }
 
     /**
@@ -85,8 +99,8 @@ class SQLBuilderTest extends \PHPUnit_Framework_TestCase {
     public function testColumn() {
         $this->sql->column("username", "us");
         $actual = $this->sql->__toString();
-        $excepted ="select (username) us from ";
-        $this->assertSame($excepted, $actual);
+        $expected ="select (username) us from ";
+        $this->assertSame($expected, $actual);
     }
 
     /**
@@ -95,8 +109,8 @@ class SQLBuilderTest extends \PHPUnit_Framework_TestCase {
     public function testFrom() {
         $this->sql->from("users", "us");
         $actual = $this->sql->__toString();
-        $excepted ="select  from users us";
-        $this->assertSame($excepted, $actual);
+        $expected ="select  from users us";
+        $this->assertSame($expected, $actual);
     }
 
     /**
@@ -109,8 +123,8 @@ class SQLBuilderTest extends \PHPUnit_Framework_TestCase {
         $this->sql->select('users', 'u', array('id', 'username', 'email'));
         $this->sql->filter($condition, 'as', array(1,2,3), 'fr');
         $actual = $this->sql->__toString();
-        $excepted = "select u.id u_id,u.username u_username,u.email u_email from users u where (id in ?,?,? OR email like ?)";
-        $this->assertSame($excepted, $actual);
+        $expected = "select u.id u_id,u.username u_username,u.email u_email from users u where (id in ?,?,? OR email like ?)";
+        $this->assertSame($expected, $actual);
     }
 
     /**
@@ -144,8 +158,8 @@ class SQLBuilderTest extends \PHPUnit_Framework_TestCase {
         $this->sql->select('users', 'u', array('id', 'username', 'email'));
         $this->sql->join("account", "acc", "acc_id=u_id", array("id"));
         $actual = $this->sql->__toString();
-        $excepted = "select u.id u_id,u.username u_username,u.email u_email,acc.id acc_id from users u  join account acc on (acc_id=u_id)";
-        $this->assertSame($excepted, $actual);
+        $expected = "select u.id u_id,u.username u_username,u.email u_email,acc.id acc_id from users u  join account acc on (acc_id=u_id)";
+        $this->assertSame($expected, $actual);
     }
 
     /**
@@ -155,8 +169,8 @@ class SQLBuilderTest extends \PHPUnit_Framework_TestCase {
         $this->sql->select('users', 'u', array('id', 'username', 'email'));
         $this->sql->join("account", "acc", "acc_id=u_id");
         $actual = $this->sql->__toString();
-        $excepted = "select u.id u_id,u.username u_username,u.email u_email from users u  join account acc on (acc_id=u_id)";
-        $this->assertSame($excepted, $actual);
+        $expected = "select u.id u_id,u.username u_username,u.email u_email from users u  join account acc on (acc_id=u_id)";
+        $this->assertSame($expected, $actual);
     }
 
 
@@ -167,8 +181,8 @@ class SQLBuilderTest extends \PHPUnit_Framework_TestCase {
         $this->sql->select('users', 'u', array('id', 'username', 'email'));
         $this->sql->leftJoin("account", "acc", "acc_id=u_id");
         $actual = $this->sql->__toString();
-        $excepted = "select u.id u_id,u.username u_username,u.email u_email from users u left join account acc on (acc_id=u_id)";
-        $this->assertSame($excepted, $actual);
+        $expected = "select u.id u_id,u.username u_username,u.email u_email from users u left join account acc on (acc_id=u_id)";
+        $this->assertSame($expected, $actual);
     }
 
     /**
@@ -178,8 +192,8 @@ class SQLBuilderTest extends \PHPUnit_Framework_TestCase {
         $this->sql->select('users', 'u', array('id', 'username', 'email'));
         $this->sql->leftJoin("account", "acc", "acc_id=u_id", array("id"));
         $actual = $this->sql->__toString();
-        $excepted = "select u.id u_id,u.username u_username,u.email u_email,acc.id acc_id from users u left join account acc on (acc_id=u_id)";
-        $this->assertSame($excepted, $actual);
+        $expected = "select u.id u_id,u.username u_username,u.email u_email,acc.id acc_id from users u left join account acc on (acc_id=u_id)";
+        $this->assertSame($expected, $actual);
     }
 
     /**
@@ -189,8 +203,8 @@ class SQLBuilderTest extends \PHPUnit_Framework_TestCase {
         $this->sql->select('users', 'u', array('id', 'username', 'email'));
         $this->sql->explicitJoin("account", "acc", "acc_id=u_id", \SQLJoin::LEFT_JOIN, array("id"));
         $actual = $this->sql->__toString();
-        $excepted = "select u.id u_id,u.username u_username,u.email u_email,acc.id acc_id from users u left join account acc on (acc_id=u_id)";
-        $this->assertSame($excepted, $actual);
+        $expected = "select u.id u_id,u.username u_username,u.email u_email,acc.id acc_id from users u left join account acc on (acc_id=u_id)";
+        $this->assertSame($expected, $actual);
     }
     /**
      * @covers SQLBuilder::explicitJoin
@@ -199,8 +213,8 @@ class SQLBuilderTest extends \PHPUnit_Framework_TestCase {
         $this->sql->select('users', 'u', array('id', 'username', 'email'));
         $this->sql->explicitJoin("account", "acc", "acc_id=u_id", \SQLJoin::INNER_JOIN);
         $actual = $this->sql->__toString();
-        $excepted = "select u.id u_id,u.username u_username,u.email u_email from users u  join account acc on (acc_id=u_id)";
-        $this->assertSame($excepted, $actual);
+        $expected = "select u.id u_id,u.username u_username,u.email u_email from users u  join account acc on (acc_id=u_id)";
+        $this->assertSame($expected, $actual);
     }
 
     /**
@@ -210,8 +224,8 @@ class SQLBuilderTest extends \PHPUnit_Framework_TestCase {
         $this->sql->select('users', 'u', array('id', 'username', 'email'));
         $this->sql->orderBy("email");
         $actual = $this->sql->__toString();
-        $excepted = "select u.id u_id,u.username u_username,u.email u_email from users u order by email";
-        $this->assertSame($excepted, $actual);
+        $expected = "select u.id u_id,u.username u_username,u.email u_email from users u order by email";
+        $this->assertSame($expected, $actual);
     }
 
     /**
@@ -221,8 +235,8 @@ class SQLBuilderTest extends \PHPUnit_Framework_TestCase {
         $this->sql->select('users', 'u', array('id', 'username', 'email'));
         $this->sql->groupBy("email");
         $actual = $this->sql->__toString();
-        $excepted = "select u.id u_id,u.username u_username,u.email u_email from users u group by email";
-        $this->assertSame($excepted, $actual);
+        $expected = "select u.id u_id,u.username u_username,u.email u_email from users u group by email";
+        $this->assertSame($expected, $actual);
     }
 
     /**
@@ -231,8 +245,8 @@ class SQLBuilderTest extends \PHPUnit_Framework_TestCase {
     public function testGetColumnsString() {
         $this->sql->select('users', 'u', array('id', 'username', 'email'));
         $actual = $this->sql->getColumnsString();
-        $excepted = "u.id u_id,u.username u_username,u.email u_email";
-        $this->assertSame($excepted, $actual);
+        $expected = "u.id u_id,u.username u_username,u.email u_email";
+        $this->assertSame($expected, $actual);
     }
 
     /**
@@ -246,8 +260,8 @@ class SQLBuilderTest extends \PHPUnit_Framework_TestCase {
         $this->sql->setLimit(10);
         $this->sql->setPredicate("predicat");
         $actual = $this->sql->__toString();
-        $excepted = "select predicat u.id u_id,u.username u_username,u.email u_email from users u group by id order by email limit 10";
-        $this->assertSame($excepted, $actual);
+        $expected = "select predicat u.id u_id,u.username u_username,u.email u_email from users u group by id order by email limit 10";
+        $this->assertSame($expected, $actual);
 
     }
 
@@ -258,8 +272,8 @@ class SQLBuilderTest extends \PHPUnit_Framework_TestCase {
         $this->sql->select('users', 'u', array('id', 'username', 'email'));
         $this->sql->filter("id > 11");
         $actual = $this->sql->__toString();
-        $excepted = "select u.id u_id,u.username u_username,u.email u_email from users u where (id > 11)";
-        $this->assertSame($excepted, $actual);
+        $expected = "select u.id u_id,u.username u_username,u.email u_email from users u where (id > 11)";
+        $this->assertSame($expected, $actual);
 
     }
 
@@ -270,8 +284,8 @@ class SQLBuilderTest extends \PHPUnit_Framework_TestCase {
         $this->assertEmpty($this->sql->getPredicate());
         $this->sql->setPredicate("predicate");
         $actual = $this->sql->getPredicate();
-        $excepted = "predicate";
-        $this->assertSame($excepted, $actual);
+        $expected = "predicate";
+        $this->assertSame($expected, $actual);
     }
 
     /**
@@ -280,8 +294,8 @@ class SQLBuilderTest extends \PHPUnit_Framework_TestCase {
     public function testGetPredicate() {
         $this->sql->setPredicate("predicate");
         $actual = $this->sql->getPredicate();
-        $excepted = "predicate";
-        $this->assertSame($excepted, $actual);
+        $expected = "predicate";
+        $this->assertSame($expected, $actual);
     }
 
     /**
@@ -291,8 +305,8 @@ class SQLBuilderTest extends \PHPUnit_Framework_TestCase {
         $this->assertEmpty($this->sql->getLimit());
         $this->sql->setLimit(10);
         $actual = $this->sql->getLimit();
-        $excepted = 10;
-        $this->assertSame($excepted, $actual);
+        $expected = 10;
+        $this->assertSame($expected, $actual);
     }
 
     /**
@@ -301,8 +315,8 @@ class SQLBuilderTest extends \PHPUnit_Framework_TestCase {
     public function testGetLimit() {
         $this->sql->setLimit(10);
         $actual = $this->sql->getLimit();
-        $excepted = 10;
-        $this->assertSame($excepted, $actual);
+        $expected = 10;
+        $this->assertSame($expected, $actual);
     }
 
     /**
@@ -333,6 +347,58 @@ class SQLBuilderTest extends \PHPUnit_Framework_TestCase {
         $this->sql->filter($condition, 'as', array(1,2), 'fr');
         $params = $this->sql->getParamTypes();
         $this->assertEquals('iis', $params);
+    }
+
+    /**
+     * @covers SQLBuilder::getBindVariableType
+     */
+    public function testGetBindVariableTypeString() {
+        $method = self::getMethod('getBindVariableType');
+        $sqlBuilder = new \SQLBuilder();
+        $result = $method->invokeArgs($sqlBuilder, array('string'));
+        $this->assertEquals('s', $result);
+    }
+
+    /**
+     * @covers SQLBuilder::getBindVariableType
+     */
+    public function testGetBindVariableTypeInteger() {
+        $method = self::getMethod('getBindVariableType');
+        $sqlBuilder = new \SQLBuilder();
+        $result = $method->invokeArgs($sqlBuilder, array(3));
+        $this->assertEquals('i', $result);
+    }
+
+    /**
+     * @covers SQLBuilder::getBindVariableType
+     */
+    public function testGetBindVariableTypeDouble() {
+        $method = self::getMethod('getBindVariableType');
+        $sqlBuilder = new \SQLBuilder();
+        $result = $method->invokeArgs($sqlBuilder, array(3.98));
+        $this->assertEquals('d', $result);
+    }
+
+    /**
+     * @covers SQLBuilder::getBindVariableType
+     */
+    public function testGetBindVariableTypeBoolean() {
+        $method = self::getMethod('getBindVariableType');
+        $sqlBuilder = new \SQLBuilder();
+        $result = $method->invokeArgs($sqlBuilder, array(true));
+        $this->assertEquals('b', $result);
+    }
+
+    /**
+     * @covers SQLBuilder::expandArrayVars
+     */
+    public function testExpandArrayVars() {
+        $condition = "id in ? OR email like ?";
+        $this->sql->select('users', 'u', array('id', 'username', 'email'));
+        $this->sql->filter($condition, 'as', array(1,2,3), 'fr');
+        $actual = $this->sql->__toString();
+        $expected = "select u.id u_id,u.username u_username,u.email u_email from users u where (id in ?,?,? OR email like ?)";
+        $this->assertSame($expected, $actual);
     }
 }
 ?>

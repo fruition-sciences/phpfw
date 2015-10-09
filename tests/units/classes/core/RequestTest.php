@@ -54,12 +54,12 @@ class RequestTest extends \PHPUnit_Framework_TestCase {
         $_GET['name'] = "fruition sciences";
         $_POST['value'] = "Californie, Montpellier";
         $attributes = $this->req->getAttributes();
-        $excepted = array(
+        $expected = array(
                         "name" => "fruition sciences",
                         "value" => "Californie, Montpellier",
                         "dateChoice" => "0", "Resolution" => "0",
                         "size" => "0");
-        $this->assertEquals($excepted, $attributes);
+        $this->assertEquals($expected, $attributes);
     }
 
     /**
@@ -107,8 +107,8 @@ class RequestTest extends \PHPUnit_Framework_TestCase {
         $_GET['name'] = "fruition sciences";
         $key = "name";
         $actual = $this->req->getString($key);
-        $excepted = "fruition sciences";
-        $this->assertEquals($excepted, $actual);
+        $expected = "fruition sciences";
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -155,8 +155,8 @@ class RequestTest extends \PHPUnit_Framework_TestCase {
         $_GET['id'] = 12;
         $key = "id";
         $actual = $this->req->getLong($key);
-        $excepted = 12;
-        $this->assertEquals($excepted, $actual);
+        $expected = 12;
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -188,9 +188,9 @@ class RequestTest extends \PHPUnit_Framework_TestCase {
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $_GET['flyDate'] = "02-02-2015";
         $key = "flyDate";
-        $excepted = 1422831600;
+        $expected = 1422831600;
         $actual = $this->req->getDate($key, "default");
-        $this->assertEquals($excepted, $actual);
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -200,9 +200,9 @@ class RequestTest extends \PHPUnit_Framework_TestCase {
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $_GET['flyDate'] = "02-02-2015";
         $key = "flyDate";
-        $excepted = 1422864000;
+        $expected = 1422864000;
         $actual = $this->req->getDate($key, "default", "America/Los_Angeles");
-        $this->assertEquals($excepted, $actual);
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -222,8 +222,8 @@ class RequestTest extends \PHPUnit_Framework_TestCase {
     public function testGetDefault() {
         $key = "undef";
         $actual = $this->req->getDate($key, "default", "America/Los_Angeles");
-        $excepted = "default";
-        $this->assertEquals($excepted, $actual);
+        $expected = "default";
+        $this->assertEquals($expected, $actual);
     }
 }
 ?>

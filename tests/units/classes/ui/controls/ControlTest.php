@@ -68,8 +68,8 @@ class ControlTest extends \PHPUnit_Framework_TestCase {
      */
     public function test__toString() {
         $actual = $this->control->__toString();
-        $excepted = "<DateChoice ></DateChoice>";
-        $this->assertEquals($excepted, $actual);
+        $expected = "<DateChoice ></DateChoice>";
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -79,8 +79,8 @@ class ControlTest extends \PHPUnit_Framework_TestCase {
         $this->control->setReadonly(true);
         $this->control->setValue("Wednesday");
         $actual = $this->control->__toString();
-        $excepted = "Wednesday";
-        $this->assertEquals($excepted, $actual);
+        $expected = "Wednesday";
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -89,8 +89,8 @@ class ControlTest extends \PHPUnit_Framework_TestCase {
     public function testToString() {
         $this->control->setValue("Wednesday");
         $actual = $this->control->toString();
-        $excepted = "Wednesday";
-        $this->assertEquals($excepted, $actual);
+        $expected = "Wednesday";
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -106,7 +106,7 @@ class ControlTest extends \PHPUnit_Framework_TestCase {
      */
     public function testToInput() {
         $actual = $this->control->toInput();
-        $excepted = '<DateChoice ></DateChoice>';
-        $this->assertEquals($excepted, $actual);
+        $expected = '<DateChoice ></DateChoice>';
+        $this->assertEquals($expected, $actual);
     }
 }

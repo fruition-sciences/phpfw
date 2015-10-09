@@ -94,8 +94,8 @@ class DateboxTest extends \PHPUnit_Framework_TestCase {
     public function testSetYearRange() {
         $control = $this->control->setYearRange("2002:2012");
         $actual = $control->getYearRange();
-        $excepted = "2002:2012";
-        $this->assertSame($excepted, $actual);
+        $expected = "2002:2012";
+        $this->assertSame($expected, $actual);
     }
 
     /**
@@ -115,8 +115,8 @@ class DateboxTest extends \PHPUnit_Framework_TestCase {
     public function testToString() {
         $this->control->setValue("13 june");
         $actual =  $this->control->toString();
-        $excepted = "13 june";
-        $this->assertSame($excepted, $actual);
+        $expected = "13 june";
+        $this->assertSame($expected, $actual);
     }
 
     /**
@@ -130,8 +130,8 @@ class DateboxTest extends \PHPUnit_Framework_TestCase {
         $this->control->showTime();
         $this->control->showMinute();
         $actual =  $this->control->toInput();
-        $excepted = '<input name="select" type="text" id="select" value="13 june" class="dateTime"></input><script type="text/javascript">';
-        $this->assertContains($excepted, $actual);
+        $expected = '<input name="select" type="text" id="select" value="13 june" class="dateTime"></input><script type="text/javascript">';
+        $this->assertContains($expected, $actual);
     }
 
     /**
@@ -143,8 +143,8 @@ class DateboxTest extends \PHPUnit_Framework_TestCase {
         $this->control->setForm(new \Form());
         $this->control->setValue("13 june");
         $actual =  $this->control->toInput();
-        $excepted = '<input name="select" type="text" id="select" value="13 june" class="date"></input><script type="text/javascript">';
-        $this->assertContains($excepted, $actual);
+        $expected = '<input name="select" type="text" id="select" value="13 june" class="date"></input><script type="text/javascript">';
+        $this->assertContains($expected, $actual);
     }
 
     /**
@@ -157,8 +157,8 @@ class DateboxTest extends \PHPUnit_Framework_TestCase {
         $this->control->setValue("13 june");
         $this->control->noPopup();
         $actual =  $this->control->toInput();
-        $excepted = '<input name="select" type="text" id="select" value="13 june" class="date"></input>MM/DD/YY';
-        $this->assertEquals($excepted, $actual);
+        $expected = '<input name="select" type="text" id="select" value="13 june" class="date"></input>MM/DD/YY';
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -172,8 +172,8 @@ class DateboxTest extends \PHPUnit_Framework_TestCase {
         $this->control->noPopup();
         $this->control->showTime();
         $actual =  $this->control->toInput();
-        $excepted = '<select name="_select_hour" id="_select_hour" onchange="updateHiddenTimeField(\'select\')" class="dateBox">';
-        $this->assertContains($excepted, $actual);
+        $expected = '<select name="_select_hour" id="_select_hour" onchange="updateHiddenTimeField(\'select\')" class="dateBox">';
+        $this->assertContains($expected, $actual);
     }
 
     /**
@@ -191,7 +191,7 @@ class DateboxTest extends \PHPUnit_Framework_TestCase {
         $this->control->showTime();
         $this->control->showMinute();
         $actual =  $this->control->toInput();
-        $excepted = '<select name="_select_minute" id="_select_minute" onchange="updateHiddenTimeField(\'select\')" class="dateBox">';
-        $this->assertContains($excepted, $actual);
+        $expected = '<select name="_select_minute" id="_select_minute" onchange="updateHiddenTimeField(\'select\')" class="dateBox">';
+        $this->assertContains($expected, $actual);
     }
 }

@@ -19,14 +19,14 @@ class MapUtilTest extends \PHPUnit_Framework_TestCase {
            "phone" => "047839749347"
         );
         $actual = \MapUtil::get($map, "age");
-        $excepted = 24;
-        $this->assertEquals($excepted, $actual);
+        $expected = 24;
+        $this->assertEquals($expected, $actual);
         $actual = \MapUtil::get($map, "city");
-        $excepted = array("Montpellier", "Toulouse", 34000, "Paris");
-        $this->assertEquals($excepted, $actual);
+        $expected = array("Montpellier", "Toulouse", 34000, "Paris");
+        $this->assertEquals($expected, $actual);
         $actual = \MapUtil::get($map, "email", "email@fruitionsciences.com");
-        $excepted = "email@fruitionsciences.com";
-        $this->assertEquals($excepted, $actual);
+        $expected = "email@fruitionsciences.com";
+        $this->assertEquals($expected, $actual);
     }
 }
 ?>

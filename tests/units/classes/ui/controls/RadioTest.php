@@ -52,8 +52,8 @@ class RadioTest extends \PHPUnit_Framework_TestCase {
      */
     public function testToInput() {
         $actual = $this->radio->toInput();
-        $excepted = '<input name="dates" type="radio" value="DatesChoices"></input>';
-        $this->assertEquals($excepted, $actual);
+        $expected = '<input name="dates" type="radio" value="DatesChoices"></input>';
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -64,8 +64,8 @@ class RadioTest extends \PHPUnit_Framework_TestCase {
         $radio = $this->radio->setVal($value);
         $radio = $radio->setValue($value);
         $actual = $radio->toInput();
-        $excepted = '<input name="dates" type="radio" value="June" checked></input>';
-        $this->assertEquals($excepted, $actual);
+        $expected = '<input name="dates" type="radio" value="June" checked></input>';
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -73,8 +73,8 @@ class RadioTest extends \PHPUnit_Framework_TestCase {
      */
     public function testToString() {
         $actual = $this->radio->toString();
-        $excepted = '<input name="dates" type="radio" value="DatesChoices" disabled></input>';
-        $this->assertEquals($excepted, $actual);
+        $expected = '<input name="dates" type="radio" value="DatesChoices" disabled></input>';
+        $this->assertEquals($expected, $actual);
     }
 
 }

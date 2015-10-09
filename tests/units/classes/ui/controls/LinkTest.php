@@ -37,8 +37,8 @@ class LinkTest extends \PHPUnit_Framework_TestCase {
         $title = "fruition sciences";
         $link = $this->link->setTitle($title);
         $actual =  $link->__toString();
-        $excepted = '<a href="">fruition sciences</a>';
-        $this->assertEquals($excepted, $actual);
+        $expected = '<a href="">fruition sciences</a>';
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -72,8 +72,8 @@ class LinkTest extends \PHPUnit_Framework_TestCase {
         $title = "fruition sciences";
         $link = $this->link->setTitle($title);
         $actual =  $link->__toString();
-        $excepted = '<a href="">fruition sciences</a>';
-        $this->assertEquals($excepted, $actual);
+        $expected = '<a href="">fruition sciences</a>';
+        $this->assertEquals($expected, $actual);
     }
 
     /**

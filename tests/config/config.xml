@@ -11,10 +11,10 @@
   </webapp>
 
   <database>
-    <host>localhost</host>
-    <userName>username</userName>
-    <password>password</password>
-    <dbName>database</dbName>
+    <host>33.33.33.10</host>
+    <userName>vey</userName>
+    <password>vey</password>
+    <dbName>vmms</dbName>
     <debug>false</debug>
   </database>
   

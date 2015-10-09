@@ -74,10 +74,10 @@ class ContextTest extends \PHPUnit_Framework_TestCase {
         $_GET['name'] = "fruition sciences";
         $_POST['value'] = "Californie, Montpellier";
         $actual = $this->ctx->getAttributes();
-        $excepted = array(
+        $expected = array(
             "name" => "fruition sciences",
             "value" => "Californie, Montpellier");
-        $this->assertEquals($excepted, $actual);
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -130,8 +130,8 @@ class ContextTest extends \PHPUnit_Framework_TestCase {
      */
     public function testNormalizePath() {
         $actual = $this->ctx->normalizePath("/vmms/vineyard/id=23");
-        $excepted = "/tests/vmms/vineyard/id=23";
-        $this->assertEquals($excepted, $actual);
+        $expected = "/tests/vmms/vineyard/id=23";
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -139,8 +139,8 @@ class ContextTest extends \PHPUnit_Framework_TestCase {
      */
     public function testNormalizePathRoot() {
         $actual = $this->ctx->normalizePath("/vineyard/id=23");
-        $excepted = "/tests/vineyard/id=23";
-        $this->assertEquals($excepted, $actual);
+        $expected = "/tests/vineyard/id=23";
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -148,8 +148,8 @@ class ContextTest extends \PHPUnit_Framework_TestCase {
      */
     public function testNormalizePathRelativePath() {
         $actual = $this->ctx->normalizePath("vineyard/id=23");
-        $excepted = "vineyard/id=23";
-        $this->assertEquals($excepted, $actual);
+        $expected = "vineyard/id=23";
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -165,8 +165,8 @@ class ContextTest extends \PHPUnit_Framework_TestCase {
      */
     public function testGetAppAlias() {
         $actual = $this->ctx->getAppAlias();
-        $excepted = "/tests/";
-        $this->assertEquals($excepted, $actual);
+        $expected = "/tests/";
+        $this->assertEquals($expected, $actual);
     }
 
     /**

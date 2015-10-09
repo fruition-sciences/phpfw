@@ -36,9 +36,9 @@ class DropdownTest extends \PHPUnit_Framework_TestCase {
         $value = "valley";
         $dropDown = $this->drop->add_option($name, $value);
         $actual = $dropDown->getOptions();
-        $excepted = new \Dropdown_Option($name, $value);
+        $expected = new \Dropdown_Option($name, $value);
         $this->assertContainsOnlyInstancesOf("Dropdown_Option", $actual);
-        $this->assertEquals($excepted, $actual[0]);
+        $this->assertEquals($expected, $actual[0]);
     }
 
     /**
@@ -49,9 +49,9 @@ class DropdownTest extends \PHPUnit_Framework_TestCase {
         $value = "valley";
         $dropDown = $this->drop->addOption($name, $value);
         $actual = $dropDown->getOptions();
-        $excepted = new \Dropdown_Option($name, $value);
+        $expected = new \Dropdown_Option($name, $value);
         $this->assertContainsOnlyInstancesOf("Dropdown_Option", $actual);
-        $this->assertEquals($excepted, $actual[0]);
+        $this->assertEquals($expected, $actual[0]);
     }
 
     /**
@@ -63,10 +63,10 @@ class DropdownTest extends \PHPUnit_Framework_TestCase {
         $tooltip = "choose office";
         $dropDown = $this->drop->addOption($name, $value, $tooltip);
         $actual = $dropDown->getOptions();
-        $excepted = new \Dropdown_Option($name, $value);
-        $excepted->setTooltip($tooltip);
+        $expected = new \Dropdown_Option($name, $value);
+        $expected->setTooltip($tooltip);
         $this->assertContainsOnlyInstancesOf("Dropdown_Option", $actual);
-        $this->assertEquals($excepted, $actual[0]);
+        $this->assertEquals($expected, $actual[0]);
     }
 
     /**
@@ -77,8 +77,8 @@ class DropdownTest extends \PHPUnit_Framework_TestCase {
         $value = "valley";
         $dropDown = $this->drop->addOption($name, $value);
         $actual = $dropDown->getOptions();
-        $excepted = new \Dropdown_Option($name, $value);
-        $this->assertEquals($excepted, $actual[0]);
+        $expected = new \Dropdown_Option($name, $value);
+        $this->assertEquals($expected, $actual[0]);
     }
 
     /**
@@ -88,9 +88,9 @@ class DropdownTest extends \PHPUnit_Framework_TestCase {
         $name = "offices";
         $dropDown = $this->drop->addOptgroup($name);
         $actual = $dropDown->getOptgroups();
-        $excepted = new \Dropdown_Optgroup($name);
+        $expected = new \Dropdown_Optgroup($name);
         $this->assertContainsOnlyInstancesOf("Dropdown_Optgroup", $actual);
-        $this->assertEquals($excepted, $actual[0]);
+        $this->assertEquals($expected, $actual[0]);
     }
 
     /**
@@ -100,8 +100,8 @@ class DropdownTest extends \PHPUnit_Framework_TestCase {
         $name = "offices";
         $dropDown = $this->drop->addOptgroup($name);
         $actual = $dropDown->getOptgroups();
-        $excepted = new \Dropdown_Optgroup($name);
-        $this->assertEquals($excepted, $actual[0]);
+        $expected = new \Dropdown_Optgroup($name);
+        $this->assertEquals($expected, $actual[0]);
     }
 
     /**
@@ -111,7 +111,7 @@ class DropdownTest extends \PHPUnit_Framework_TestCase {
         $name = "offices";
         $dropDown = $this->drop->addOptgroup(new \Dropdown_Optgroup($name));
         $actual = $dropDown->getOptgroups();
-        $excepted = new \Dropdown_Optgroup($name);
+        $expected = new \Dropdown_Optgroup($name);
         $this->assertContainsOnlyInstancesOf("Dropdown_Optgroup", $actual);
     }
 
@@ -145,8 +145,8 @@ class DropdownTest extends \PHPUnit_Framework_TestCase {
         $this->drop = $this->drop->addOption("office", "fruition sciences");
         $this->drop = $this->drop->addOptgroupObject($optGp);
         $actual = $this->drop->__toString();
-        $excepted = '<select name="Office Name"><option value="fruition sciences">office</option><optgroup label="dates"></optgroup></select>';
-        $this->assertEquals($excepted, $actual);
+        $expected = '<select name="Office Name"><option value="fruition sciences">office</option><optgroup label="dates"></optgroup></select>';
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -162,8 +162,8 @@ class DropdownTest extends \PHPUnit_Framework_TestCase {
         $this->drop->addOptgroupObject($opt);
         $this->drop = $this->drop->addOption("brazilia", "Fruition Brazil");
         $actual = $this->drop->toString();
-        $excepted = '<option value="Fruition Brazil">brazilia</option>, <option value="Fruition Napa">napa</option>, <option value="Fruition Paris">paris</option>';
-        $this->assertEquals($excepted, $actual);
+        $expected = '<option value="Fruition Brazil">brazilia</option>, <option value="Fruition Napa">napa</option>, <option value="Fruition Paris">paris</option>';
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -175,8 +175,8 @@ class DropdownTest extends \PHPUnit_Framework_TestCase {
         $this->drop = $this->drop->addOption("brazilia", "Fruition Brazil");
         $this->drop->setReadonlyLink(new \Link("fruitionsciences.com", "Fruition Sciences"));
         $actual = $this->drop->toString();
-        $excepted = '<option value="Fruition Brazil">brazilia</option>';
-        $this->assertEquals($excepted, $actual);
+        $expected = '<option value="Fruition Brazil">brazilia</option>';
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -198,8 +198,8 @@ class DropdownTest extends \PHPUnit_Framework_TestCase {
         $this->assertEmpty($this->drop->getValues());
         $this->drop = $this->drop->setValue($city);
         $actual = $this->drop->getValues();
-        $excepted = array($city);
-        $this->assertEquals($excepted, $actual);
+        $expected = array($city);
+        $this->assertEquals($expected, $actual);
     }
 
     /**

@@ -24,11 +24,11 @@ class MeasureUtilsTest extends \PHPUnit_Framework_TestCase {
      */
     public function testGetUnitInfo() {
         $actual = \MeasureUtils::getUnitInfo('Zend_Measure_Temperature::CELSIUS');
-        $excepted = array(
+        $expected = array(
                         'className' => 'Zend_Measure_Temperature',
                         'constantName' => 'CELSIUS'
                         );
-        $this->assertEquals($excepted, $actual);
+        $this->assertEquals($expected, $actual);
     }
 }
 ?>

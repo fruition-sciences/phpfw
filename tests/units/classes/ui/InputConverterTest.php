@@ -37,8 +37,8 @@ class InputConverterTest extends \PHPUnit_Framework_TestCase {
     public function testGetDate() {
         $map = array('today' => "05-01-2015 10:34:23");
         $actual = $this->converter->getDate($map, "today");
-        $excepted = 1430463600;
-        $this->assertEquals($excepted, $actual);
+        $expected = 1430463600;
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -58,8 +58,8 @@ class InputConverterTest extends \PHPUnit_Framework_TestCase {
     public function testSetDate() {
         $map =  array();
         $this->converter->setDate($map, "today", 1430468663);
-        $excepted = array("today"=> "5/01/15");
-        $this->assertEquals($excepted, $map);
+        $expected = array("today"=> "5/01/15");
+        $this->assertEquals($expected, $map);
     }
 
     /**
@@ -68,8 +68,8 @@ class InputConverterTest extends \PHPUnit_Framework_TestCase {
     public function testSetDateTime() {
         $map =  array();
         $this->converter->setDateTime($map, "today", 1430468663);
-        $excepted = array("today"=> "05/01/2015 01:24:23");
-        $this->assertEquals($excepted, $map);
+        $expected = array("today"=> "05/01/2015 01:24:23");
+        $this->assertEquals($expected, $map);
     }
 
     /**
@@ -78,8 +78,8 @@ class InputConverterTest extends \PHPUnit_Framework_TestCase {
     public function testGetTime() {
         $map = array('today' => "10:34:23");
         $actual = $this->converter->getTime($map, "today");
-        $excepted = 38063;
-        $this->assertEquals($excepted, $actual);
+        $expected = 38063;
+        $this->assertEquals($expected, $actual);
     }
     /**
      * @covers InputConverter::getTime
@@ -96,8 +96,8 @@ class InputConverterTest extends \PHPUnit_Framework_TestCase {
     public function testSetTime() {
         $map = array();
         $actual = $this->converter->setTime($map, "time", 38063);
-        $excepted = array("time" => "10:34:23");
-        $this->assertEquals($excepted, $map);
+        $expected = array("time" => "10:34:23");
+        $this->assertEquals($expected, $map);
     }
 
     /**
@@ -127,8 +127,8 @@ class InputConverterTest extends \PHPUnit_Framework_TestCase {
         $key = "mykey";
         $map = array();
         $this->converter->setMeasure($map, $key, $measure);
-        $excepted = array($key=> 100, $key. "__unit"=>"Zend_Measure_Length::METER", $key. "__measure"=>$measure);
-        $this->assertEquals($excepted, $map);
+        $expected = array($key=> 100, $key. "__unit"=>"Zend_Measure_Length::METER", $key. "__measure"=>$measure);
+        $this->assertEquals($expected, $map);
     }
 
     /**

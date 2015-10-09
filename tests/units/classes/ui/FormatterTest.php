@@ -46,8 +46,8 @@ class FormatterTest extends \PHPUnit_Framework_TestCase {
      */
     public function testDate() {
         $actual = $this->formatter->date(1430469263, "2015-05-01");
-        $excepted = "5/01/15";
-        $this->assertEquals($excepted, $actual);
+        $expected = "5/01/15";
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -55,8 +55,8 @@ class FormatterTest extends \PHPUnit_Framework_TestCase {
      */
     public function testDateDefault() {
         $actual = $this->formatter->date(null, "2015-05-01");
-        $excepted = "2015-05-01";
-        $this->assertEquals($excepted, $actual);
+        $expected = "2015-05-01";
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -64,8 +64,8 @@ class FormatterTest extends \PHPUnit_Framework_TestCase {
      */
     public function testDateTime() {
         $actual = $this->formatter->dateTime(1430469263);
-        $excepted = "5/01/15 1:34 AM";
-        $this->assertEquals($excepted, $actual);
+        $expected = "5/01/15 1:34 AM";
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -81,8 +81,8 @@ class FormatterTest extends \PHPUnit_Framework_TestCase {
      */
     public function testDateTime24() {
         $actual = $this->formatter->dateTime24(1430469263);
-        $excepted = "05/01/2015 01:34:23";
-        $this->assertEquals($excepted, $actual);
+        $expected = "05/01/2015 01:34:23";
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -90,8 +90,8 @@ class FormatterTest extends \PHPUnit_Framework_TestCase {
      */
     public function testTime() {
         $actual = $this->formatter->time(1430469263, true);
-        $excepted = "1:34:23 AM";
-        $this->assertEquals($excepted, $actual);
+        $expected = "1:34:23 AM";
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -107,8 +107,8 @@ class FormatterTest extends \PHPUnit_Framework_TestCase {
      */
     public function testSecondsToTime() {
         $actual = $this->formatter->secondsToTime(3697);
-        $excepted = "01:01:37";
-        $this->assertEquals($excepted, $actual);
+        $expected = "01:01:37";
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -116,8 +116,8 @@ class FormatterTest extends \PHPUnit_Framework_TestCase {
      */
     public function testDateFormat() {
         $actual = $this->formatter->dateFormat(1430469263, "Y-m-d H:i:s");
-        $excepted = "2015-05-01 01:34:23";
-        $this->assertEquals($excepted, $actual);
+        $expected = "2015-05-01 01:34:23";
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -143,8 +143,8 @@ class FormatterTest extends \PHPUnit_Framework_TestCase {
      */
     public function testDateTimeUTC() {
         $actual = $this->formatter->dateTimeUTC(1430469263, "Y-m-d H:i:s");
-        $excepted = "2015-05-01 08:34:23 UTC";
-        $this->assertEquals($excepted, $actual);
+        $expected = "2015-05-01 08:34:23 UTC";
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -152,8 +152,8 @@ class FormatterTest extends \PHPUnit_Framework_TestCase {
      */
     public function testNumber() {
         $actual = $this->formatter->number(14304, 4);
-        $excepted = "14,304.0000";
-        $this->assertEquals($excepted, $actual);
+        $expected = "14,304.0000";
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -161,8 +161,8 @@ class FormatterTest extends \PHPUnit_Framework_TestCase {
      */
     public function testGetNumber() {
         $actual = $this->formatter->getNumber("14,304", 1);
-        $excepted = "14304";
-        $this->assertEquals($excepted, $actual);
+        $expected = "14304";
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -178,8 +178,8 @@ class FormatterTest extends \PHPUnit_Framework_TestCase {
      */
     public function testGetTimeZone() {
         $actual = $this->formatter->getTimeZone();
-        $excepted = "America/Los_Angeles";
-        $this->assertEquals($excepted, $actual);
+        $expected = "America/Los_Angeles";
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -187,8 +187,8 @@ class FormatterTest extends \PHPUnit_Framework_TestCase {
      */
     public function testGetLocale() {
         $actual = $this->formatter->getLocale();
-        $excepted = new \Zend_Locale('en_US');;
-        $this->assertEquals($excepted, $actual);
+        $expected = new \Zend_Locale('en_US');;
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -196,8 +196,8 @@ class FormatterTest extends \PHPUnit_Framework_TestCase {
      */
     public function testGetLocaleName() {
         $actual = $this->formatter->getLocaleName();
-        $excepted = "en_US";
-        $this->assertEquals($excepted, $actual);
+        $expected = "en_US";
+        $this->assertEquals($expected, $actual);
     }
 }
 ?>

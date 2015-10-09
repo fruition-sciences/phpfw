@@ -38,8 +38,8 @@ class HrefTest extends \PHPUnit_Framework_TestCase {
         $url = "http://localhost/vmms/admin/vineyard?id=78&size=10";
         $this->href = \Href::from_url($url);
         $actual = $this->href->__toString();
-        $excepted = "http://localhost/vmms/admin/vineyard";
-        $this->assertSame($excepted, $actual);
+        $expected = "http://localhost/vmms/admin/vineyard";
+        $this->assertSame($expected, $actual);
     }
 
     /**
@@ -62,8 +62,8 @@ class HrefTest extends \PHPUnit_Framework_TestCase {
         $newHref = \Href::from_url($url);
         $newHref->setAnchor($enchor);
         $actual = $newHref->__toString();
-        $excepted = $url. "#".$enchor;
-        $this->assertSame($excepted, $actual);
+        $expected = $url. "#".$enchor;
+        $this->assertSame($expected, $actual);
     }
 
     /**
@@ -74,8 +74,8 @@ class HrefTest extends \PHPUnit_Framework_TestCase {
         $url = "http://www.fruitionsciences.com/admin/vineyard?id=169&size=10";
         $newHref = \Href::from_url($url);
         $actual = $newHref->getQueryString();
-        $excepted = "id=169&size=10";
-        $this->assertEquals($excepted, $actual);
+        $expected = "id=169&size=10";
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -96,8 +96,8 @@ class HrefTest extends \PHPUnit_Framework_TestCase {
         $newHref = \Href::from_url($url);
         $newHref->setAll(array("id"=>array(1,2), "name"=>"vincent"));
         $actual = $newHref->getQueryString();
-        $excepted = "id[]=1&id[]=2&name=vincent";
-        $this->assertEquals($excepted, $actual);
+        $expected = "id[]=1&id[]=2&name=vincent";
+        $this->assertEquals($expected, $actual);
     }
 
     /**

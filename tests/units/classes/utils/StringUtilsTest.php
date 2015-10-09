@@ -15,8 +15,8 @@ class StringUtilsTest extends \PHPUnit_Framework_TestCase {
     public function testArrayToString() {
         $data = array("Benjamin", "Sidiki", "Leyla", 23, 24, "Malek");
         $actual = \StringUtils::arrayToString($data, ',', false);
-        $excepted = "Benjamin,Sidiki,Leyla,23,24,Malek";
-        $this->assertEquals($excepted, $actual);
+        $expected = "Benjamin,Sidiki,Leyla,23,24,Malek";
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -25,8 +25,8 @@ class StringUtilsTest extends \PHPUnit_Framework_TestCase {
     public function testArrayToStringEndSeparator() {
         $data = array("Benjamin", "Sidiki", "Leyla", 23, 24, "Malek");
         $actual = \StringUtils::arrayToString($data, ':', true);
-        $excepted = "Benjamin:Sidiki:Leyla:23:24:Malek:";
-        $this->assertEquals($excepted, $actual);
+        $expected = "Benjamin:Sidiki:Leyla:23:24:Malek:";
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -35,8 +35,8 @@ class StringUtilsTest extends \PHPUnit_Framework_TestCase {
     public function testImplodeIgnoreNull() {
         $data = array("Benjamin", "Sidiki", "Leyla", 23, 24, "Malek");
         $actual = \StringUtils::implodeIgnoreNull("==", $data);
-        $excepted = "Benjamin==Sidiki==Leyla==23==24==Malek";
-        $this->assertEquals($excepted, $actual);
+        $expected = "Benjamin==Sidiki==Leyla==23==24==Malek";
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -45,8 +45,8 @@ class StringUtilsTest extends \PHPUnit_Framework_TestCase {
     public function testImplodeIgnoreNullWithNull() {
         $data = array("Benjamin", "Sidiki", null, 23, 24, null);
         $actual = \StringUtils::implodeIgnoreNull("==", $data);
-        $excepted = "Benjamin==Sidiki==23==24";
-        $this->assertEquals($excepted, $actual);
+        $expected = "Benjamin==Sidiki==23==24";
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -56,8 +56,8 @@ class StringUtilsTest extends \PHPUnit_Framework_TestCase {
     public function testTruncateFilePath() {
         $path = "usr/local/bin/phpfile.php";
         $actual = \StringUtils::truncateFilePath($path, 20);
-        $excepted =".../bin/phpfile.php";
-        $this->assertEquals($excepted, $actual);
+        $expected =".../bin/phpfile.php";
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -76,8 +76,8 @@ class StringUtilsTest extends \PHPUnit_Framework_TestCase {
     public function testTruncateFilePathDashed() {
         $path = "usr\\local\\bin\\phpfile.php";
         $actual = \StringUtils::truncateFilePath($path, 20);
-        $excepted = "...\\bin\\phpfile.php";
-        $this->assertEquals($excepted, $actual);
+        $expected = "...\\bin\\phpfile.php";
+        $this->assertEquals($expected, $actual);
     }
 
 
@@ -96,11 +96,11 @@ class StringUtilsTest extends \PHPUnit_Framework_TestCase {
      */
     public function testFormatFileSize() {
         $actual = \StringUtils::formatFileSize(2526);
-        $excepted = "2 KB";
-        $this->assertEquals($excepted, $actual);
+        $expected = "2 KB";
+        $this->assertEquals($expected, $actual);
         $actual = \StringUtils::formatFileSize(1026);
-        $excepted = "1 KB";
-        $this->assertEquals($excepted, $actual);
+        $expected = "1 KB";
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -108,11 +108,11 @@ class StringUtilsTest extends \PHPUnit_Framework_TestCase {
      */
     public function testFormatFileSizeFormat() {
         $actual = \StringUtils::formatFileSize(2526, '%01.5lf %s');
-        $excepted = "2.46680 KB";
-        $this->assertEquals($excepted, $actual);
+        $expected = "2.46680 KB";
+        $this->assertEquals($expected, $actual);
         $actual = \StringUtils::formatFileSize(1026, '%01.5lf %s');
-        $excepted = "1.00195 KB";
-        $this->assertEquals($excepted, $actual);
+        $expected = "1.00195 KB";
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -121,8 +121,8 @@ class StringUtilsTest extends \PHPUnit_Framework_TestCase {
     public function testCapitalizeFirstLetter() {
         $string = "fruition sciences";
         $actual = \StringUtils::capitalizeFirstLetter($string);
-        $excepted = "Fruition sciences";
-        $this->assertEquals($excepted, $actual);
+        $expected = "Fruition sciences";
+        $this->assertEquals($expected, $actual);
     }
 
     /**

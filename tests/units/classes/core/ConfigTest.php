@@ -48,8 +48,8 @@ class ConfigTest extends \PHPUnit_Framework_TestCase {
     public function testGetString() {
         $configValue = "webapp/defaultURL";
         $actual = $this->config->getString($configValue);
-        $excepted  = "/login/home";
-        $this->assertEquals($excepted, $actual);
+        $expected  = "/login/home";
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -59,8 +59,8 @@ class ConfigTest extends \PHPUnit_Framework_TestCase {
     public function testGetStringDefaultValue() {
         $configValue = "database/hos";
         $actual = $this->config->getString($configValue, "localhost");
-        $excepted  = "localhost";
-        $this->assertEquals($excepted, $actual);
+        $expected  = "localhost";
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -72,8 +72,8 @@ class ConfigTest extends \PHPUnit_Framework_TestCase {
     public function testGetStringException() {
         $configValue = "webap/defaultURL";
         $actual = $this->config->getString($configValue);
-        $excepted  = "/login/home";
-        $this->assertEquals($excepted, $actual);
+        $expected  = "/login/home";
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -83,8 +83,8 @@ class ConfigTest extends \PHPUnit_Framework_TestCase {
     public function testGetInt() {
         $configValue = "tablePaging/rowsPerPage";
         $actual = $this->config->getInt($configValue);
-        $excepted  = 40;
-        $this->assertEquals($excepted, $actual);
+        $expected  = 40;
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -120,8 +120,8 @@ class ConfigTest extends \PHPUnit_Framework_TestCase {
     public function testGet() {
         $configValue = "properties/translator";
         $actual = $this->config->get($configValue);
-        $excepted  = "GettextZendTranslator";
-        $this->assertContains($excepted, $actual);
+        $expected  = "GettextZendTranslator";
+        $this->assertContains($expected, $actual);
     }
 }
 ?>

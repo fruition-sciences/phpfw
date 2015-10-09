@@ -32,8 +32,8 @@ class Dropdown_OptionTest extends \PHPUnit_Framework_TestCase {
      */
     public function testAsString() {
         $actual = $this->object->asString(array("Montpellier"));
-        $excepted = '<option value="Montpellier" selected="selected">france</option>';
-        $this->assertEquals($excepted, $actual);
+        $expected = '<option value="Montpellier" selected="selected">france</option>';
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -41,8 +41,8 @@ class Dropdown_OptionTest extends \PHPUnit_Framework_TestCase {
      */
     public function testAsStringNotSelected() {
         $actual = $this->object->asString(array());
-        $excepted = '<option value="Montpellier">france</option>';
-        $this->assertEquals($excepted, $actual);
+        $expected = '<option value="Montpellier">france</option>';
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -50,7 +50,7 @@ class Dropdown_OptionTest extends \PHPUnit_Framework_TestCase {
      */
     public function testToString() {
         $actual = $this->object->toString();
-        $excepted = 'france';
-        $this->assertEquals($excepted, $actual);
+        $expected = 'france';
+        $this->assertEquals($expected, $actual);
     }
 }

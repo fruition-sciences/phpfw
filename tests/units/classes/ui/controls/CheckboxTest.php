@@ -27,8 +27,8 @@ class CheckboxTest extends \PHPUnit_Framework_TestCase {
     public function test__construct() {
         $this->checkbox = new \Checkbox("DateChoice");
         $actual = $this->checkbox->get("type");
-        $excepted = "checkbox";
-        $this->assertEquals($excepted, $actual);
+        $expected = "checkbox";
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -37,8 +37,8 @@ class CheckboxTest extends \PHPUnit_Framework_TestCase {
     public function testSetVal() {
         $this->checkbox->setVal(14);
         $actual = $this->checkbox->get("value");
-        $excepted = 14;
-        $this->assertEquals($excepted, $actual);
+        $expected = 14;
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -57,8 +57,8 @@ class CheckboxTest extends \PHPUnit_Framework_TestCase {
      */
     public function testToInput() {
         $actual = $this->checkbox->toInput();
-        $excepted = '<input name="DateChoice" type="checkbox" value="1"></input>';
-        $this->assertEquals($excepted, $actual);
+        $expected = '<input name="DateChoice" type="checkbox" value="1"></input>';
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -68,8 +68,8 @@ class CheckboxTest extends \PHPUnit_Framework_TestCase {
         $this->checkbox = $this->checkbox->setValue(14);
         $this->checkbox->setVal(14);
         $actual = $this->checkbox->toInput();
-        $excepted = '<input name="DateChoice" type="checkbox" value="14" checked></input>';
-        $this->assertEquals($excepted, $actual);
+        $expected = '<input name="DateChoice" type="checkbox" value="14" checked></input>';
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -79,8 +79,8 @@ class CheckboxTest extends \PHPUnit_Framework_TestCase {
         $this->checkbox = $this->checkbox->setValue(array(14, 21));
         $this->checkbox->setVal(14);
         $actual = $this->checkbox->toInput();
-        $excepted = '<input name="DateChoice" type="checkbox" value="14" checked></input>';
-        $this->assertEquals($excepted, $actual);
+        $expected = '<input name="DateChoice" type="checkbox" value="14" checked></input>';
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -88,7 +88,7 @@ class CheckboxTest extends \PHPUnit_Framework_TestCase {
      */
     public function testToString() {
         $actual = $this->checkbox->toString();
-        $excepted = '<input name="DateChoice" type="checkbox" value="1" disabled></input>';
-        $this->assertEquals($excepted, $actual);
+        $expected = '<input name="DateChoice" type="checkbox" value="1" disabled></input>';
+        $this->assertEquals($expected, $actual);
     }
 }

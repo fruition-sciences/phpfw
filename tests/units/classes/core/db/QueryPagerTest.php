@@ -25,9 +25,9 @@ class QueryPagerTest extends \PHPUnit_Framework_TestCase {
      */
     public function testGetQuery() {
         $sql = "SELECT * FROM office";
-        $excepted = "select SQL_CALC_FOUND_ROWS * from (SELECT * FROM office) _x limit 0, 5";
+        $expected = "select SQL_CALC_FOUND_ROWS * from (SELECT * FROM office) _x limit 0, 5";
         $pager = new \QueryPager($sql, $this->paging);
-        $this->assertEquals($excepted, $pager->getQuery());
+        $this->assertEquals($expected, $pager->getQuery());
     }
 
     /**
@@ -37,9 +37,9 @@ class QueryPagerTest extends \PHPUnit_Framework_TestCase {
     public function testGetQueryWithOrderBy() {
         $sql = "SELECT * FROM office";
         $this->paging->setOrderByColumn('officeName');
-        $excepted = "select SQL_CALC_FOUND_ROWS * from (SELECT * FROM office) _x order by officeName asc limit 0, 5";
+        $expected = "select SQL_CALC_FOUND_ROWS * from (SELECT * FROM office) _x order by officeName asc limit 0, 5";
         $pager = new \QueryPager($sql, $this->paging);
-        $this->assertEquals($excepted, $pager->getQuery());
+        $this->assertEquals($expected, $pager->getQuery());
     }
 
     /**
@@ -50,9 +50,9 @@ class QueryPagerTest extends \PHPUnit_Framework_TestCase {
         $sql = "SELECT * FROM office";
         $this->paging->setOrderByColumn('officeName');
         $this->paging->setOrderByAscending(false);
-        $excepted = "select SQL_CALC_FOUND_ROWS * from (SELECT * FROM office) _x order by officeName desc limit 0, 5";
+        $expected = "select SQL_CALC_FOUND_ROWS * from (SELECT * FROM office) _x order by officeName desc limit 0, 5";
         $pager = new \QueryPager($sql, $this->paging);
-        $this->assertEquals($excepted, $pager->getQuery());
+        $this->assertEquals($expected, $pager->getQuery());
     }
 
     /**
@@ -61,9 +61,9 @@ class QueryPagerTest extends \PHPUnit_Framework_TestCase {
      */
     public function testGetQueryWithNullPagingInfo() {
         $sql = "SELECT * FROM office";
-        $excepted = "SELECT * FROM office";
+        $expected = "SELECT * FROM office";
         $pager = new \QueryPager($sql, null);
-        $this->assertEquals($excepted, $pager->getQuery());
+        $this->assertEquals($expected, $pager->getQuery());
     }
 }
 ?>

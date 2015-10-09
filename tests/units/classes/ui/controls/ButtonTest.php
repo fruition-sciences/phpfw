@@ -46,8 +46,8 @@ class ButtonTest extends \PHPUnit_Framework_TestCase {
         $url = "vmms/vineyar?id=78";
         $resultButton = $this->button->setUrl($url);
         $actual = $resultButton->getHref();
-        $excepted = new \Href($url);
-        $this->assertEquals($excepted, $actual);
+        $expected = new \Href($url);
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -125,8 +125,8 @@ class ButtonTest extends \PHPUnit_Framework_TestCase {
         $resultButton = $this->button->setUrl("vmms/account");
         $resultButton = $resultButton->setTarget("_blank");
         $actual = $resultButton->__toString();
-        $excepted = '<button onclick="button_submit(\'vmms/account\', \'_blank\'); return false; ">button</button>';
-        $this->assertEquals($excepted, $actual);
+        $expected = '<button onclick="button_submit(\'vmms/account\', \'_blank\'); return false; ">button</button>';
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -137,8 +137,8 @@ class ButtonTest extends \PHPUnit_Framework_TestCase {
         $resultButton = $this->button->setUrl("vmms/account");
         $resultButton->setType("notButton");
         $actual = $resultButton->__toString();
-        $excepted = '<notButton onclick="button_submit(\'vmms/account\'); return false; " button="1">button</notButton>';
-        $this->assertEquals($excepted, $actual);
+        $expected = '<notButton onclick="button_submit(\'vmms/account\'); return false; " button="1">button</notButton>';
+        $this->assertEquals($expected, $actual);
     }
 
     /**

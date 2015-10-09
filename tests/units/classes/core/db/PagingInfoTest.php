@@ -16,6 +16,11 @@ class PagingInfoTest extends \PHPUnit_Framework_TestCase {
     protected $paging;
 
     /**
+     * @var SearchInfo
+     */
+    protected $searchInfo;
+
+    /**
      * This method is called before a test is executed.
      */
     protected function setUp() {
@@ -168,6 +173,36 @@ class PagingInfoTest extends \PHPUnit_Framework_TestCase {
     public function testIsOrderByAscending() {
         $this->paging->setOrderByAscending(false);
         $this->assertFalse($this->paging->isOrderByAscending());
+    }
+
+    /**
+     * @covers PagingInfo::getSearchInfo
+     */
+    public function testGetSearchInfo() {
+        $searchString = 'search';
+        $this->paging->setSearchString($searchString);
+        $this->assertInstanceOf('SearchInfo', $this->paging->getSearchInfo());
+        $this->assertAttributeEquals('search', 'searchString', $this->paging->getSearchInfo());
+    }
+
+    /**
+     * @covers PagingInfo::setSearchString
+     */
+    public function testSetSearchString() {
+        $searchString = 'search';
+        $this->paging->setSearchString($searchString);
+        $this->assertInstanceOf('SearchInfo', $this->paging->getSearchInfo());
+        $this->assertAttributeEquals('search', 'searchString', $this->paging->getSearchInfo());
+    }
+
+    /**
+     * @covers PagingInfo::setSearchColumns
+     */
+    public function testSetSearchColumns() {
+        $searchString = array('search1', 'search2');
+        $this->paging->setSearchColumns($searchString);
+        $this->assertInstanceOf('SearchInfo', $this->paging->getSearchInfo());
+        $this->assertAttributeEquals($searchString, 'searchColumns', $this->paging->getSearchInfo());
     }
 }
 ?>

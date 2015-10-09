@@ -13,6 +13,11 @@ class NotificationTest extends \PHPUnit_Framework_TestCase {
      * @var Notification
      */
     protected $notification;
+    
+    /**
+     * @var INotificationManager
+     */
+    private $notificationManager;
 
     /**
      * This method is called before a test is executed.
@@ -34,7 +39,6 @@ class NotificationTest extends \PHPUnit_Framework_TestCase {
 
     /**
      * @covers Notification::getRecipient
-     * @todo Implement testGetRecipient().
      */
     public function testGetRecipient() {
         $this->notification->setRecipient("user@email.com, sender@email.fr");
@@ -220,17 +224,6 @@ class NotificationTest extends \PHPUnit_Framework_TestCase {
         $this->notification->setNotificationManager($manager);
         $actual = $this->notification->getNotificationManager();
         $this->assertSame($manager, $actual);
-    }
-
-    /**
-     * @covers Notification::send
-     * @todo Implement testSend().
-     */
-    public function testSend() {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
     }
 }
 ?>
