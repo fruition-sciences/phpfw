@@ -40,10 +40,15 @@ class Dropdown_Optgroup extends Control {
         }
         return $html;
     }
+
     /**
      * @return Dropdown_Option[]
      */
     public function getOptions(){
         return $this->options;
+    }
+
+    public function isEmpty() {
+        return empty($this->options);
     }
 }
