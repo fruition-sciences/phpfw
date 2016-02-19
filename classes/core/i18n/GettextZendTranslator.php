@@ -1,11 +1,11 @@
 <?php
 /*
  * Created on Aug 10, 2012
-* Author: Julien Fouilhé
-*
-* Translator using Gettext and Zend_Locale.
-* To use it just put the class name in a "translator" property.
-*/
+ * Author: Julien Fouilhé
+ *
+ * Translator using Gettext and Zend_Locale.
+ * To use it just put the class name in a "translator" property.
+ */
 
 class GettextZendTranslator extends Zend_Translate implements ITranslator {
 
@@ -23,6 +23,14 @@ class GettextZendTranslator extends Zend_Translate implements ITranslator {
     protected static $absolutePath = self::DIR_LOCALES;
 
     /**
+     * When debug mode is on, all translated strings are highlighted. This way
+     * developers can detect text that has not been translated.
+     *
+     * @var boolean
+     */
+    private $debugMode = false;
+
+    /**
      * Create a new GettextZendTranslator and configure it with passed params
      * @param string|Zend_Locale $given_locale
      * @param string $filename
@@ -33,6 +41,7 @@ class GettextZendTranslator extends Zend_Translate implements ITranslator {
             $this->filename = $filename;
         }
         self::$absolutePath = Config::getInstance()->getString('appRootDir') . self::DIR_LOCALES;
+        $this->debugMode = Config::getInstance()->getBoolean('i18n/gettextZendTranslator/debug', false);
         $path = self::$absolutePath . self::DEFAULT_LOCALE .'/'. $this->filename;
         parent::__construct(self::GETTEXT, $path, self::DEFAULT_LOCALE);
         // Adding other existing locales
@@ -53,7 +62,7 @@ class GettextZendTranslator extends Zend_Translate implements ITranslator {
             self::$instance = $this;
         }
     }
-    
+
     /**
      * Get all the locales available in the self::DIR_LOCALES directory
      * @return array
@@ -71,13 +80,13 @@ class GettextZendTranslator extends Zend_Translate implements ITranslator {
         }
         return $locales;
     }
-    
+
     public function getLocale() {
         return $this->locale;
     }
-    
+
     /**
-     * Return the language defined in the locale. 
+     * Return the language defined in the locale.
      * By example if the locale is "en_US", this method returns "en"
      * @return string
      */
@@ -85,7 +94,7 @@ class GettextZendTranslator extends Zend_Translate implements ITranslator {
         $locale = explode('_', $this->locale);
         return $locale[0];
     }
-    
+
     public function setLocale($locale) {
         if (!empty($locale)) {
             $this->locale = $locale;
@@ -94,9 +103,13 @@ class GettextZendTranslator extends Zend_Translate implements ITranslator {
     }
 
     public function _($sentence) {
-        return parent::_($sentence);
+        $translation = parent::_($sentence);
+        if ($this->debugMode) {
+            $translation = "[$translation]";
+        }
+        return $translation;
     }
-    
+
     /**
      * @return GettextZendTranslator
      */
