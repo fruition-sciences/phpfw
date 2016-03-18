@@ -108,6 +108,34 @@ class BeanMap {
         return array_keys($this->map);
     }
 
+    /**
+     * Remove the given bean from the map.
+     * @param BeanBase $bean
+     * @return The previous value associated with the id of this bean in the map
+     *         or null if there was no mapping for this key.
+     */
+    public function remove($bean) {
+        $existingBean = $this->get($bean);
+        if (!$existingBean) {
+            return null;
+        }
+        $key = $this->getKey($bean);
+        unset($this->map[$key]);
+        return $existingBean;
+    }
+
+    /**
+     * Remove all the given beans from the map.
+     * Beans that are not in the map are ignored.
+     *
+     * @param BeanBase[] $beans
+     */
+    public function removeAll($beans) {
+        foreach ($beans as $bean) {
+            $this->remove($bean);
+        }
+    }
+
     private function getKey($bean) {
         return call_user_func(array($bean, $this->keyMethodName));
     }
