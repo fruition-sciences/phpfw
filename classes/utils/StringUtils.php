@@ -145,4 +145,16 @@ class StringUtils {
     public static function startsWith($haystack, $needle){
         return strpos($haystack, $needle) === 0;
     }
+
+    /**
+     * If the given string is empty or null, return the default value. Otherwise
+     * return the string.
+     *
+     * @param String $s
+     * @param String $defaultValue
+     * @return String
+     */
+    public static function defaultVal($s, $defaultValue='') {
+        return $s ? $s : $defaultValue;
+    }
 }
