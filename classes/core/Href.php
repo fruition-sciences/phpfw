@@ -101,6 +101,7 @@ class Href extends Element {
      */
     public function setAnchor($anchor) {
         $this->anchor = $anchor;
+        return $this;
     }
 
     private function getQueryStringNameValue($key, $value) {
