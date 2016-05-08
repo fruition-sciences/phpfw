@@ -148,7 +148,7 @@ class Database {
         if ($statement) {
             $statement->close();
         }
-        if ($this->paging) {
+        if ($this->paging && $this->paging->isCareAboutTotal()) {
             $this->paging->setTotalRows($this->getFoundRows());
         }
         if ($this->queryResult instanceof mysqli_result) {

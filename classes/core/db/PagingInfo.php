@@ -10,7 +10,8 @@ class PagingInfo {
     private $totalRows;
     private $orderByColumn;
     private $orderByAscending = true; // boolean
-    
+    private $careAboutTotal = true; // boolean
+
     /**
      * @var SearchInfo
      */
@@ -25,15 +26,15 @@ class PagingInfo {
      * Creates a new PaginInfo object which sorts by the given column.
      * Records per page is set to a large-enough number.
      * This method can be used when you need a certain finder method to sort
-     * by a specific field. 
-     * 
+     * by a specific field.
+     *
      * @param String $orderByColumn
      * @param Boolean $orderByAscending
      * @return PagingInfo
      */
     public static function newSorter($orderByColumn, $orderByAscending=true) {
         $pagingInfo = new PagingInfo();
-        $pagingInfo->setRecordsPerPage(1000);
+        $pagingInfo->limit(1000);
         $pagingInfo->setOrderByColumn($orderByColumn);
         $pagingInfo->setOrderByAscending($orderByAscending);
         return $pagingInfo;
@@ -51,11 +52,23 @@ class PagingInfo {
     }
 
     public function setRecordsPerPage($recordsPerPage) {
-	    $this->recordsPerPage = $recordsPerPage;
-	}
+        $this->recordsPerPage = $recordsPerPage;
+    }
 
     public function getRecordsPerPage() {
         return $this->recordsPerPage;
+    }
+
+    /**
+     * Set the given number of records per page, and indicate that we don't care
+     * about the total number of records in the result set. (i.e: how many other
+     * pages there are). This may slightly improve performance.
+     *
+     * @param long $recordsPerPage
+     */
+    public function limit($recordsPerPage) {
+        $this->setRecordsPerPage($recordsPerPage);
+        $this->setCareAboutTotal(false);
     }
 
     public function setTotalRows($totalRows) {
@@ -71,7 +84,7 @@ class PagingInfo {
     public function getTotalPages() {
         return ceil($this->totalRows / $this->recordsPerPage);
     }
-    
+
     /**
      * @return integer
      */
@@ -98,14 +111,14 @@ class PagingInfo {
     public function isLastPage() {
         return ($this->pageNumber+1) * $this->recordsPerPage >= $this->totalRows;
     }
-    
+
     /**
      * @return SearchInfo
      */
     public function getSearchInfo() {
         return $this->searchInfo;
     }
-    
+
     /**
      * Stores the string to look up for filtering
      * @param String $searchString
@@ -113,12 +126,29 @@ class PagingInfo {
     public function setSearchString($searchString) {
         $this->searchInfo->setSearchString($searchString);
     }
-    
+
     /**
-     * Stores the columns on which filtering has to be applied 
+     * Stores the columns on which filtering has to be applied
      * @param String[] $searchColumns
      */
     public function setSearchColumns($searchColumns) {
         $this->searchInfo->setSearchColumns($searchColumns);
+    }
+
+    /**
+     * If you don't care to know what's the total number of records found, set
+     * this to false. It can increase performance slightly.
+     *
+     * @param boolean $careAboutTotal
+     */
+    public function setCareAboutTotal($careAboutTotal) {
+        $this->careAboutTotal = $careAboutTotal;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isCareAboutTotal() {
+        return $this->careAboutTotal;
     }
 }
